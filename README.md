@@ -1,0 +1,1 @@
+Dual-paned template for GIS web applications.

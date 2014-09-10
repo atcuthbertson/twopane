@@ -1,0 +1,409 @@
+
+
+#centerPane{
+  height: 100%;
+  width: 83%;
+  margin: 0;
+  padding:0;
+}
+
+.combobox{
+	padding:10px;
+}
+
+#rp{
+  background:#f9feff;
+  font-size:14px;
+  top:0;
+  right:0px;
+  margin-right:-285px;
+  width:302px;
+  height:100%;
+  overflow:hidden;
+  z-index:99;
+  box-shadow: 1px 0px 1px 0 #a5b6e0,
+              inset 0 0px 1px 0 #a5b6e0,
+              -1px 1px 2px 0px #a5b6e0;    
+}
+
+#dataCon{
+  overflow:hidden;
+  position:relative;
+  height:100%;
+}
+
+#tabNode{
+  width:85%;
+  margin-top:20px;
+  margin-left:27px;
+  padding-bottom:10px;
+  border-bottom:2px dashed #45fe99;
+}
+
+#layerNode{
+  margin-top:5px;
+  margin-left:27px;
+  word-wrap:break-word;
+  overflow-y:scroll;
+  
+}
+
+.noDownload{
+  display:none;
+}
+#downloadNode{
+  border-top:2px dashed #45fe99;
+  width:85%;
+  height:30px;
+  padding-top:25px;
+  margin:0px 0px 10px 27px;
+  text-align:center;
+}
+#downloadLink:active{
+  line-height:29px;
+}
+#downloadLink:hover{
+  box-shadow:0 1px 2px 1px #4cff4c;
+}
+
+#downloadLink{
+  text-decoration:none;
+  background-color:#98ff98;
+  border-radius:6px;
+  color:white;
+  font-size:20px;
+  font-weight:bolder;
+  font-style:italic;
+  text-shadow:1px 1px 0 #4cff4c;
+  padding:3px 8px;
+  cursor:pointer;
+}
+
+#closeRP{
+  z-index: 300;
+  background:#f6fbfe;
+  padding:15px 1px 1px 4px;
+  border: solid 1px #a5b6e0;
+  width:21px;
+  top:43%;
+  right:5px;
+  cursor:default;
+  height:32px;
+  border-radius:2px;
+  box-shadow: 1px 1px 1px 0 #a5b6e0,
+             -1px 0px 1px 0 #a5b6e0;
+}
+
+#closeRP:hover{
+   cursor:pointer;
+   box-shadow: 1px 1px 2px 0 #728dcf,
+              -1px 0px 2px 0 #728dcf,
+               inset 0px 1px 1px 0 #f1f3fa;
+}
+
+#closeRP:active{
+  padding:16px 1px 0 4px;
+}
+
+#arro{
+  opacity:0.6;
+  width: 16px;
+  height: 16px;
+  background-image:url('../images/ui-icons_222222_256x240.png');
+  background-position:-96px -16px;
+}
+
+.atop{
+  position:absolute;
+  z-index:100;
+}
+
+.mov{
+  transform:translate3d(0,0,0);
+ -webkit-transform:translate3d(0,0,0);
+ -webkit-transition: -webkit-transform 0.15s ease, height 0.2s ease;
+ -moz-transition:    transform 0.15s ease, height 0.2s ease;
+  transition:        transform 0.15s ease, height 0.2s ease;
+ -o-transition:      transform 0.15s ease, height 0.2s ease;
+}
+
+.movd{
+   transform:translate3d(-285px,0,0);
+  -webkit-transform:translate3d(-285px,0,0);
+}
+
+.selectable{
+  -webkit-touch-callout: text;
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+}
+
+.unselectable{
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.dijitTabPane ul{
+  list-style-type:none;
+  margin-left:-20px;
+}
+
+.esriControlsBR{
+  display:none;
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+body{
+  background-color: #FFF;
+  overflow: hidden;
+  font-family: "Trebuchet MS";
+}
+
+#leftPane{
+	height:100%;
+	width:350px;
+	padding:5px;
+	background:#E2F0F1;
+  overflow:hidden;
+}
+
+#leftPaneHeader >a{
+	font-size:16px;
+	font-weight:bold;
+	text-decoration:none;
+	color:#000;
+	font:Verdana, Geneva, sans-serif;
+	
+}
+
+#headingDescrip{
+	font-size:10px;
+	color:#003;
+		
+}
+
+#leftAccordion{
+	height:90%;
+	width:100%;
+	background-color:transparent;
+	font:Verdana, Geneva, sans-serif;
+}
+
+
+#tabContainer{
+	font-size:17px;
+	height:90%;
+	width:100%;
+	background-color:transparent;
+	font:Verdana, Geneva, sans-serif;
+	
+}
+#tab3{
+	font-size:10px;
+}
+
+.levelMeasurementHeadings{
+	font-size:15px;
+	font:bold;
+	margin-bottom:4px;
+	margin-top:20px;
+}
+.levelMeasurementHeadings:nth-child(1){
+  margin-top:2px;
+}
+
+#homeButton {
+  position: absolute;
+  top: 95px;
+  left: 20px;
+  z-index: 50;
+}
+
+.checkBox{
+	margin-left:5px;
+	margin-bottom:15px;
+}
+
+.legendTitle{
+	margin-top:5px;
+	font-size:14px;
+	margin-bottom:2px;
+	margin-left:15px;
+}
+.serviceWrapper{
+  margin-top:20px;
+  font-weight:bolder;
+  font-size:15px;
+}
+.firstServiceWrapper{
+  margin-top:10px;
+  font-weight:bolder;
+  font-size:15px;
+}
+.legendWrapper, .dynamicLegend{
+	margin-left:25px;
+	margin-bottom:2px;
+}
+
+#pane1{
+	font-size:15px;
+	font:Verdana, Geneva, sans-serif;
+  overflow-x:hidden;
+}
+
+#pane1 >div{
+  margin-left:20px;
+}
+.dijitAccordionContainer-dijitContentPane{
+  overflow-y:auto;
+}
+.dijitInputField.dijitInputContainer.dijitReset{
+  padding-left: 5px;
+}
+#tabContainer .dijitTab{
+  width:85px;
+  text-align: center;
+}
+
+#layerDescriptionTitle{
+	font-size:20px;
+	font-weight:bold;
+	text-decoration:none;
+	color:#00F;
+	font:Verdana, Geneva, sans-serif;
+	
+}	
+
+#layerDescription{
+	font-size:14px;
+	text-decoration:none;
+	color:#00F;
+	font:Verdana, Geneva, sans-serif;
+	
+}
+
+.a11yNode{ 
+	background-color:#E8E8E8;
+	border:ridge;
+	elevation:above;
+}
+
+
+#borderContainer {
+  visibility:hidden;
+  width: 100%;
+  height: 100%;
+}
+
+
+#basemapNode{
+	top:10px;
+	left:70px;
+	position:absolute;
+	z-index: 1;
+	width: 66px;
+	height: 80px;
+  background-color:#fdfeff;
+  border:2px solid #666;
+  border-radius: 4px;
+  cursor:pointer;
+  font-size:12px;
+  color:#444;
+}
+#basemapNode > img{
+  margin-left:2px;
+  margin-top:1px;
+  border:1px solid #999;
+}
+#basemapNode > div{
+  margin-top:-5px;
+  position:relative;
+  left:50%;
+  float:left;
+}
+#basemapNode > div > span{
+  position:relative;
+  left:-50%;
+}
+
+.layerCheck{
+  margin-left:25px;
+}
+.serviceRadio{
+	margin-left:25px;
+}
+.poplist{
+  list-style-type: none;
+  margin:0;
+  padding:0;
+}
+
+.poplist >li{
+  margin: 0 0 10px 0;
+}
+
+.poptitle{
+  font-weight: bold;
+}
+
+#zoomLink:hover{
+  cursor:pointer;
+  color:blue;
+  text-decoration: underline;
+}
+
+.atop{
+   position:absolute;
+   z-index:100;
+}
+
+noscript > div{
+  position:absolute;
+  top:5px;
+  left:5px;
+}
+
+
+label:hover,.serviceRadio,.layerCheck{
+  cursor:pointer;
+}
+
+.loadingImg{
+  width:16px;
+  height:16px;
+  margin:0 -18px 0 2px;
+}
+
+.hide{
+  width:16px !important;
+  height:16px !important;
+  background:url(../images/x.png);
+  top:2px;
+  cursor:pointer;
+  opacity:0.8;
+}
+.hide:hover{
+  opacity:1;
+}
+.hide > div{
+  display:none !important;
+}
+
+.identifyLinkImage{
+  width:500px;
+  height:227px;
+  margin:10px 0 -1px 0;
+  background-position: 0 -420px;
+  background-repeat: no-repeat;
+  background-size:500px, 227px;
+}
