@@ -6,6 +6,8 @@ require([
   "esri/map",
   "esri/geometry/Extent",
   "esri/geometry/ScreenPoint",
+  "esri/geometry/Point",
+  "esri/SpatialReference",
   "esri/layers/ArcGISDynamicMapServiceLayer",
   "esri/layers/FeatureLayer",
   "esri/dijit/Scalebar",
@@ -15,8 +17,9 @@ require([
   "esri/TimeExtent", 
   "esri/dijit/TimeSlider",
   "esri/layers/ImageParameters",
-  "dijit/registry",
-  
+  "esri/graphic",
+  "esri/geometry/webMercatorUtils",
+
   "dojo/ready",
   "dojo/_base/Color",
   "dojo/parser",
@@ -28,16 +31,19 @@ require([
   "dijit/form/ComboBox",
   "esri/dijit/HomeButton",
   
-  "esri/symbols/SimpleLineSymbol",
   "esri/symbols/SimpleMarkerSymbol",
+  "esri/symbols/SimpleLineSymbol",
   "dijit/layout/BorderContainer",
   "dijit/layout/ContentPane",
   "dijit/layout/TabContainer",
   "dijit/form/CheckBox",
+  "dijit/registry",
 
   "esri/tasks/identify",
   "esri/tasks/IdentifyTask",
   "esri/tasks/IdentifyParameters",
+
+  "modules/geocode.js",
 
 
   "require"
@@ -47,6 +53,8 @@ function(
    Map,
    Extent,
    ScreenPoint,
+   Point,
+   SpatialReference,
    ArcGISDynamicMapServiceLayer,
    FeatureLayer,
    Scalebar,
@@ -56,7 +64,8 @@ function(
    TimeExtent, 
    TimeSlider,
    ImageParameters,
-   registry,
+   Graphic,
+   wmUtils,
 
    ready,
    Color,
@@ -68,17 +77,21 @@ function(
    Memory,
    ComboBox,
    HomeButton,
-
-   SimpleLineSymbol,
-   SimpleMarkerSymbol,   
+  
+   MarkerSymbol,
+   LineSymbol,
    BorderContainer,
    ContentPane,
    TabContainer,
    CheckBox,
+   registry,
 
    identify,
    IdentifyTask,
    IdentifyParameters,
+
+   geocode,
+
    require
    ){
 
@@ -160,7 +173,6 @@ esri.config.defaults.io.corsDetection = false;
     });
 
 	
-	
 
   // Create infoWindow to assign the the map.
   var infoWindow = new InfoWindow('infoWindow');
@@ -179,20 +191,19 @@ esri.config.defaults.io.corsDetection = false;
       minZoom:6,
 	    maxZoom:12
     });
-
+  console.log("sr after map creation",map.spatialReference)
 
 	var home= new HomeButton({
 	  map: map
 	}, "homeButton");
 	home.startup();
     
-
 	
-  //Once the map is loaded, set the infoWindow's size. And turn in off and on to prevent a flash of
-  //unstyled content on the first point click. This is a bug in the API.
-
+  //Once the map is loaded, set the infoWindow's size. And turn it off and on to prevent a flash of
+  //unstyled content on the first point click.
 
     map.on("load", function(){
+      console.log("loaded",map.spatialReference)
       map.disableDoubleClickZoom();
       svgLayer = dom.byId("centerPane_gc")
       infoWindow.resize(425,325);
@@ -203,14 +214,80 @@ esri.config.defaults.io.corsDetection = false;
       on(dom.byId("basemapNode"),"mousedown",basemapToggle);
     });
 
-
-
-  // Expose the map as part of the esri global object. Useful for debugging and trying out modifications to
-  // the map object directly in the console. This could also be done by creating a variable outside of the
-  // require statement, but it can be dangerous creating too many global variables (especially with common
-  // names), as they can 'collide', leaving you with a variable pointing to the wrong object.
     esri.map = map;
 
+
+    //initialize and hook up geocoder
+    (function(){
+
+      var symbol = new MarkerSymbol(
+        MarkerSymbol.STYLE_CIRCLE
+        , 10
+        , new LineSymbol(LineSymbol.STYLE_SOLID, new Color("#44474d"), 1)
+        , new Color("#041222")
+        );
+      var lastGraphic = null;
+
+
+      var wrapper = DOC.createElement('div');
+      var geocoder = DOC.createElement('input');
+
+
+      wrapper.className = 'geocoderWrapper';
+      geocoder.className = 'geocoder';
+      geocoder.autofocus = 'autofocus';
+
+      wrapper.appendChild(geocoder);
+      mapPane.appendChild(wrapper);
+
+      geocoder.tabIndex = "1";
+
+      on(geocoder,"keyup",function(e){
+        if(e.keyCode === 13){
+          clearLastGeocode();
+          geocode(geocoder.value,parseGeocoder)
+        }
+      });
+
+
+      function parseGeocoder(data){
+        var dataObj = JSON.parse(data);
+        var topResult = dataObj.results[0];
+        if(topResult){
+          var location = topResult.geometry.location;
+          var address = topResult.formatted_address;
+
+          reflectLocationChoice(address)
+          showLocation(location)
+        }
+      }
+
+
+      function reflectLocationChoice(address){
+        return geocoder.value = address;
+      }
+
+
+      function showLocation(location){
+        var loc = wmUtils.lngLatToXY(location.lng,location.lat);
+        var pnt = new Point(loc, new SpatialReference(102100));
+
+        lastGraphic = new Graphic(pnt,symbol)
+
+        map.graphics.add(lastGraphic);
+        map.centerAndZoom(pnt,12);
+      }
+
+
+      function clearLastGeocode(){
+        if(lastGraphic){
+          map.graphics.remove(lastGraphic);
+          lastGraphic = null;
+        }
+      }
+
+
+    })();
 
 
     var identifyParameters = new IdentifyParameters();
@@ -391,10 +468,25 @@ var spanDijit = registry.byId("selectSpan");
 
 
   makeService("https://"+server+"/arcgis/rest/services/" + serverFolder + "/GIC_Boundaries/MapServer", "tab2");
-  //makeService("https://"+server+"/arcgis/rest/services/" + serverFolder + "/Sacramento_Valley_BFW_Map/MapServer", "pane2");
-  //makeService("https://"+server+"/arcgis/rest/services/" + serverFolder + "/Summary_Potential_Subsidence/MapServer","pane3")
- // makeService("https://"+server+"/arcgis/rest/services/" + serverFolder + "/Estimated_Available_Storage/MapServer","pane4")
+  makeService("https://"+server+"/arcgis/rest/services/" + serverFolder + "/Summary_Potential_Subsidence/MapServer","pane3")
+  makeService("https://"+server+"/arcgis/rest/services/" + serverFolder + "/Sacramento_Valley_BFW_Map/MapServer", "pane4");
+  
+  //makeService("https://"+server+"/arcgis/rest/services/" + serverFolder + "/Estimated_Available_Storage/MapServer","pane4")
 
+  makeRadioServices(
+    [
+      { name:"Domestic"
+      , url:"https://"+server+"/arcgis/rest/services/" + serverFolder + "/DomesticWellDepthSummary/MapServer"
+      , checked:1
+      },
+      {
+        name:"Production"
+      , url:"https://"+server+"/arcgis/rest/services/" + serverFolder + "/ProductionWellDepthSummary1/MapServer"
+      }
+    ]
+    ,"pane2"
+    ,"Well Type"
+  );
 
   forEach(serviceTypes,function(type){
     forEach(serviceNames,function(name){
@@ -407,8 +499,8 @@ var spanDijit = registry.byId("selectSpan");
       staticServices[type+name] = layer;
       identifyTasks[url] = new IdentifyTask(url);
       layer.on('load',function(evt){initializeLayers(evt.layer,type,name)});
-    })
-  })
+    });
+  });
 
   // Add active layers to map
   map.addLayers(layers);
@@ -446,10 +538,78 @@ var spanDijit = registry.byId("selectSpan");
   }
 
 
+  function makeRadioServices(services, id, dataType){
+    var header = DOC.createElement('h3');
+    var radioForm = DOC.createElement('form');
+    var radios = [];
+
+    header.className = "paneHeadings"
+    header.textContent = (dataType || "Data Type")+":";
+
+    function addDesc(e){serviceDescriptions[id] = e.layer.description}
+
+    function switchRadio(e){
+      var radio = e.target;
+      for(var i=0;i<radios.length;i++){
+        if(radios[i] !== radio){
+          wipeLayer(servicesById[radios[i].id])
+        }
+      }
+      updateLayerVisibility(servicesById[radio.id],this.parentNode.parentNode);
+    }
+
+    for(var i=0; i<services.length;i++){
+      var url = services[i].url;
+      var name = services[i].name;
+      var checked = services[i].checked;
+      var currId = id + name;
+      var service = new ArcGISDynamicMapServiceLayer(url, {"imageParameters": imageParameters});
+
+      var radio = DOC.createElement('input');
+      var label = DOC.createElement('label')
+      radio.type="radio";
+      radio.id = currId;
+      radio.name = id +"radio";
+      radio.className = "serviceRadio";
+      if(checked) radio.checked = "checked";
+      label.textContent = name;
+      label.className = "radioLabel";
+      label.setAttribute('for',currId);
+      radioForm.appendChild(radio);
+      radioForm.appendChild(label);
+      radioForm.appendChild(DOC.createElement('br'));
+
+      on(radio, "click", switchRadio)
+
+      radios.push(radio)
+      services[i].service = service;
+      service.suspend();
+      layers.push(service);
+      identifyTasks[url] = new IdentifyTask(url);
+      servicesById[currId] = service;
+      service.on("load",addDesc);
+    }
+
+    var pane = dom.byId(id);
+    pane.insertBefore(radioForm,pane.firstChild);
+    pane.insertBefore(header,pane.firstChild);
+
+    on(query("#"+id+" input[type=checkbox]"), "click", function(){
+      for(var i=0; i<radios.length;i++){
+        if(radios[i].checked){
+          updateLayerVisibility(servicesById[radios[i].id],this.parentNode.parentNode);
+          break;
+        }
+      }
+    });
+
+  }
+
+
 
 
   function updateLayerVisibility (service,pane) {
-    var inputs = query("input",pane);
+    var inputs = query("input[type='checkbox']",pane);
     var inputCount = inputs.length;
     var visibleLayerIds = [-1]
     //in this application no layer is always on
@@ -466,6 +626,12 @@ var spanDijit = registry.byId("selectSpan");
       addVisibleUrl(service.url,service)
     }
     service.setVisibleLayers(visibleLayerIds);
+  }
+
+  function wipeLayer(service){
+    service.suspend();
+    removeVisibleUrl(service.url);
+    service.setVisibleLayers([-1]);
   }
 
 
@@ -917,7 +1083,13 @@ infoWindow.on('hide',function(){
   function makeContent(attributes,blurb){
     var list = blurb+"<ul>";
     for (var key in attributes){
-      if(attributes.hasOwnProperty(key)&&key!=="OBJECTID"&&key!=="Shape"&&key!=="Shape_Area"&&key!=="Shape_Length"){
+      if(attributes.hasOwnProperty(key)
+        &&key!=="OBJECTID"
+        &&key!=="Shape"
+        &&key!=="Shape_Area"
+        &&key!=="Shape_Length"
+        &&key!=="Pixel Value"
+        ){
         var spaced = makeSpaced(key)
         list+= "<li><strong>"+spaced+"</strong>: "+getAttributeHTML(attributes[key])+"</li>"
       }
@@ -1095,8 +1267,8 @@ infoWindow.on('hide',function(){
 
 
   function tabClick(e){
-      populateFromTab();
-      resetDataHeight();
+    populateFromTab();
+    resetDataHeight();
   }
 
   function accTabClick(){
@@ -1112,6 +1284,10 @@ infoWindow.on('hide',function(){
     layerNode.style.height = DOC.documentElement.offsetHeight - 134 + "px"
   }
 
+  function makeDataZip(key,layer){
+    return "downloads/GIC_"+key+"_"+layer+".zip";
+  }
+
   function getDataZips(){
     var type = getRadio();
     var services = getFilteredServices(getCheckedServices());
@@ -1125,11 +1301,13 @@ infoWindow.on('hide',function(){
     return zips;
   }
 
-  function makeDataZip(key,layer){
-    return "downloads/GIC_"+key+"_"+layer+".zip";
-  }
 
-  function getServiceZips(id){
+  function getServiceZips(id,radio){
+    if(radio){
+      radio.forEach(function(v){
+        if(v.checked) id = v.id;
+      })
+    }
     var service = servicesById[id];
     var zips = ["downloads/_readme.txt"];
     for(var i =1, len = service.visibleLayers.length;i<len;i++){
@@ -1154,7 +1332,11 @@ infoWindow.on('hide',function(){
       if(paneId==="pane1"){
         makeDownloads(getDataZips())
       }else{
-        makeDownloads(getServiceZips(paneId))
+        if(paneId==="pane2"){
+          makeDownloads(getServiceZips(paneId,query("input[type='radio']",accDijit.selectedChildWidget.domNode)))
+        }else{
+          makeDownloads(getServiceZips(paneId))
+        }
       }
     }else{
       makeDownloads(getServiceZips(tabId))

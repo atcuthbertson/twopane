@@ -6,6 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
   <link rel="icon" href="../favicon.ico">
   <title>Groundwater Information Center</title>
+  <link href='http://fonts.googleapis.com/css?family=PT+Sans:400,700' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" href="http://js.arcgis.com/3.8/js/dojo/dijit/themes/nihilo/nihilo.css">
   <link rel="stylesheet" href="http://js.arcgis.com/3.8/js/esri/css/esri.css">
   <link rel="stylesheet" href="css/groundwater.css"/>
@@ -33,7 +34,7 @@
           <div id="pane1" data-dojo-type="dijit/layout/AccordionPane" title="Groundwater Level Measurements">
             
 
-            <h3 class="levelMeasurementHeadings">Data Type:</h3>
+            <h3 class="paneHeadings">Data Type:</h3>
             <form>
       		    <input type="radio"  id="radio1" class= "serviceRadio" name="depthselector">
               <label for="radio1">Depth Below Ground</label><br/>
@@ -44,7 +45,7 @@
             </form>                
 
 
-		        <h3 class="levelMeasurementHeadings" style= "font:bolder">Selection Parameters:</h3>	
+		        <h3 class="paneHeadings" style= "font:bolder">Selection Parameters:</h3>	
             <div align="left" style="padding:0px 0px 6px 5px">
               <span><input id="selectYear" class="combobox">&nbsp;&nbsp;&nbsp;Select Year</span>
             </div>
@@ -57,7 +58,7 @@
             <div style="margin-top:-1px; font-size:9px;">(Change in Groundwater Level Only)</div>
                       
 
-            <h3 class="levelMeasurementHeadings">Show Layers:</h3>            
+            <h3 class="paneHeadings">Show Layers:</h3>            
           		<div class="layer_list" id="activeLayers">
                 <div>
                   <input type='checkbox' class='layerCheck' id='levelMeasurement' value=0 />
@@ -71,7 +72,7 @@
                   <input type='checkbox' class='layerCheck' id='levelRamp' value=2 />
                   <label for=levelRamp> Color Ramp</label>
                 </div>  
-                <h3 class="levelMeasurementHeadings">Legend:</h3>
+                <h3 class="paneHeadings">Legend:</h3>
                 <h4 class="legendTitle">Measurements</h4>
                 <img class="dynamicLegend" src="images/Dynamic_ChangePoints.png">
                 <h4 class="legendTitle">Contours</h4>
@@ -82,41 +83,41 @@
             </div>
 
 
-
-          <!--div id="pane2" data-dojo-type="dijit/layout/AccordionPane" title="Base of Fresh Groundwater (BFGW)">
-              <div class="firstServiceWrapper">
-                <input type='checkbox' class="checkBox" id='layerB0CheckBox' value=0 />
-                <label for="layerB0CheckBox">CA DOGGR Data</label>
+            <div id="pane2" data-dojo-type="dijit/layout/AccordionPane" title="Well Data">
+              <div class="serviceWrapper">
+                <input type='checkbox' class="checkBox" id='avdepth' value=3 />
+                <label for="avdepth">Average Depth (ft)</label>
               </div>
               <div class="legendWrapper">
-                <img src="images/CA_DOGGER.PNG"></img>
+                <img src="images/WellDepthLegend.PNG"></img>
               </div>
               <div class="serviceWrapper">
-                <input type='checkbox' class="checkBox" id='layerB1CheckBox' value=1 />
-                <label for="layerB1CheckBox">Water Resource Data</label>
-              </div>                                    
+                <input type='checkbox'  class="checkBox" id='mindepth' value=1 />
+                <label for="mindepth">Minimum Depth (ft)</label>
+              </div>
               <div class="legendWrapper">
-                <img src="images/WR_Data.PNG"></img>
+                <img src="images/WellDepthLegend.PNG"></img>
               </div>
               <div class="serviceWrapper">
-                <input type='checkbox'  class="checkBox" id='layerB2CheckBox' value=2 />
-                <label for="layerB2CheckBox">BFGW - Below Ground Surface (ft)</label>
+                <input type='checkbox' class="checkBox" id='maxdepth' value=2 />
+                <label for="maxdepth">Maximum Depth (ft)</label>
               </div>
               <div class="legendWrapper">
-                <img src="images/Elev_BFG_BGS.PNG"></img>
+                <img src="images/WellDepthLegend.PNG"></img>
               </div>
               <div class="serviceWrapper">
-                <input type='checkbox' class="checkBox" id='layerB5CheckBox' value=5 />
-                <label for="layerB5CheckBox">BFGW - Elevation (ft)</label>
+                <input type='checkbox' class="checkBox" id='wellcountpoly' value=0 />
+                <label for="wellcountpoly">Well Count and Summary</label>
               </div>
               <div class="legendWrapper">
-                <img src="images/Elev_BFg_MSL.PNG"></img>
+                <img src="images/WellCountLegend.PNG"></img>
+                <img src="images/WellSummary.PNG"></img>
               </div>
-            </div>
+            </div>  
 
 
 
-            <div id="pane3" data-dojo-type="dijit/layout/AccordionPane" title="Subsidence">
+            <div id="pane3" data-dojo-type="dijit/layout/AccordionPane" title="Subsidence Data">
               <div class="firstServiceWrapper">
                 <input type='checkbox' id="extensometersCheck" class="checkBox" value=0>
                 <label for="extensometersCheck">Active Extensometers</label>
@@ -166,11 +167,42 @@
               <div class="legendWrapper">
                 <img src="images/EstPotentialSub.PNG">
               </div> 
-           </div-->
-                    
+           </div>
+           
+
+          <div id="pane4" data-dojo-type="dijit/layout/AccordionPane" title="Base of Fresh Groundwater">
+              <div class="firstServiceWrapper">
+                <input type='checkbox' class="checkBox" id='layerB0CheckBox' value=0 />
+                <label for="layerB0CheckBox">CA DOGGR Data</label>
+              </div>
+              <div class="legendWrapper">
+                <img src="images/CA_DOGGER.PNG"></img>
+              </div>
+              <div class="serviceWrapper">
+                <input type='checkbox' class="checkBox" id='layerB1CheckBox' value=1 />
+                <label for="layerB1CheckBox">Water Resource Data</label>
+              </div>                                    
+              <div class="legendWrapper">
+                <img src="images/WR_Data.PNG"></img>
+              </div>
+              <div class="serviceWrapper">
+                <input type='checkbox'  class="checkBox" id='layerB2CheckBox' value=2 />
+                <label for="layerB2CheckBox">BFGW - Below Ground Surface (ft)</label>
+              </div>
+              <div class="legendWrapper">
+                <img src="images/Elev_BFG_BGS.PNG"></img>
+              </div>
+              <div class="serviceWrapper">
+                <input type='checkbox' class="checkBox" id='layerB5CheckBox' value=5 />
+                <label for="layerB5CheckBox">BFGW - Elevation (ft)</label>
+              </div>
+              <div class="legendWrapper">
+                <img src="images/Elev_BFg_MSL.PNG"></img>
+              </div>
+            </div>  
 
 
-            <!--div id="pane4" data-dojo-type="dijit/layout/AccordionPane" title="Estimated Available Storage" selected="true">
+            <!--div id="pane5" data-dojo-type="dijit/layout/AccordionPane" title="Estimated Available Storage" selected="true">
               <div>
                 <input type='checkbox' id="asCheck1" class="checkBox" value=0>
                 <label for="asCheck1">Agencies Involved in Conjunctive Management</label>
