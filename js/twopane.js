@@ -103,14 +103,19 @@ esri.config.defaults.io.corsDetection = false;
   ready(function() {
     var W = window;
     var DOC = document;
-    var server = DOC.location.host;
+
+    var server = DOC.location.hostname;
+    server = server === "localhost" ? "gis.water.ca.gov" : server;
+
     var serverFolder = server.slice(0,3) === "gis" ? "Public" : "GGI";
+
+
     var layers = [];
     var mapPane = dom.byId("centerPane");
     var svgLayer;
     var movers = query(".mov");
-    var rp = dom.byId('rp');
-    var tabNode = dom.byId('tabNode');
+    var rp = dom.byId('rightPane');
+    var titleNode = dom.byId('titleNode');
     var layerNode = dom.byId('layerNode');
     var closeButton = dom.byId('closeRP');
     var arro = dom.byId("arro");
@@ -121,6 +126,8 @@ esri.config.defaults.io.corsDetection = false;
     var noLayers = [-1];
     var prefix = "https://"+server+"/arcgis/rest/services/" + serverFolder + "/GIC_";
     var suffix = "/MapServer";
+
+
     var serviceTypes = ["Change","Elevation","Depth"];
     var serviceNames = ["_Ramp","_Contours","_Points"];
 
@@ -138,8 +145,6 @@ esri.config.defaults.io.corsDetection = false;
     var contoursLegend = legends[1];
     var rampLegend = legends[2];
 
-    var tabContainer;
-    var currentAccPane;
 
     var totalServices = serviceTypes.length*serviceNames.length;
     var loadedServices = 0;
@@ -414,10 +419,6 @@ function checkYear(year,years){
 
 
 
-//essentially copy/pasted from the service, then massaged in non-Bill format (everyone hates the trailing p)
-// this could/should be done as a request to the API for the layer list
-
-
 var levelStoreYr = new Memory({
   data: []
 });
@@ -467,27 +468,6 @@ var spanDijit = registry.byId("selectSpan");
 
 
 
-  makeService("https://"+server+"/arcgis/rest/services/" + serverFolder + "/GIC_Boundaries/MapServer", "tab2");
-  makeService("https://"+server+"/arcgis/rest/services/" + serverFolder + "/Summary_Potential_Subsidence/MapServer","pane3")
-  makeService("https://"+server+"/arcgis/rest/services/" + serverFolder + "/Sacramento_Valley_BFW_Map/MapServer", "pane4");
-  
-  //makeService("https://"+server+"/arcgis/rest/services/" + serverFolder + "/Estimated_Available_Storage/MapServer","pane4")
-
-  makeRadioServices(
-    [
-      { name:"Domestic"
-      , url:"https://"+server+"/arcgis/rest/services/" + serverFolder + "/DomesticWellDepthSummary/MapServer"
-      , checked:1
-      },
-      {
-        name:"Production"
-      , url:"https://"+server+"/arcgis/rest/services/" + serverFolder + "/ProductionWellDepthSummary1/MapServer"
-      }
-    ]
-    ,"pane2"
-    ,"Well Type"
-  );
-
   forEach(serviceTypes,function(type){
     forEach(serviceNames,function(name){
       var url = prefix+type+name+suffix;
@@ -522,89 +502,6 @@ var spanDijit = registry.byId("selectSpan");
       attachInputHandlers();
     }
   }
-
- //Checkbox controls for pane 1,4
-
-
-
-  function makeService(url, id){
-    var service = new ArcGISDynamicMapServiceLayer(url, {"imageParameters": imageParameters});
-    service.suspend();
-    layers.push(service);
-    identifyTasks[url] = new IdentifyTask(url);
-    servicesById[id] = service;
-    on(query("#"+id+" input"), "click", function(){updateLayerVisibility(service,this.parentNode.parentNode)});
-    service.on("load",function(e){serviceDescriptions[id] = e.layer.description})
-  }
-
-
-  function makeRadioServices(services, id, dataType){
-    var header = DOC.createElement('h3');
-    var radioForm = DOC.createElement('form');
-    var radios = [];
-
-    header.className = "paneHeadings"
-    header.textContent = (dataType || "Data Type")+":";
-
-    function addDesc(e){serviceDescriptions[id] = e.layer.description}
-
-    function switchRadio(e){
-      var radio = e.target;
-      for(var i=0;i<radios.length;i++){
-        if(radios[i] !== radio){
-          wipeLayer(servicesById[radios[i].id])
-        }
-      }
-      updateLayerVisibility(servicesById[radio.id],this.parentNode.parentNode);
-    }
-
-    for(var i=0; i<services.length;i++){
-      var url = services[i].url;
-      var name = services[i].name;
-      var checked = services[i].checked;
-      var currId = id + name;
-      var service = new ArcGISDynamicMapServiceLayer(url, {"imageParameters": imageParameters});
-
-      var radio = DOC.createElement('input');
-      var label = DOC.createElement('label')
-      radio.type="radio";
-      radio.id = currId;
-      radio.name = id +"radio";
-      radio.className = "serviceRadio";
-      if(checked) radio.checked = "checked";
-      label.textContent = name;
-      label.className = "radioLabel";
-      label.setAttribute('for',currId);
-      radioForm.appendChild(radio);
-      radioForm.appendChild(label);
-      radioForm.appendChild(DOC.createElement('br'));
-
-      on(radio, "click", switchRadio)
-
-      radios.push(radio)
-      services[i].service = service;
-      service.suspend();
-      layers.push(service);
-      identifyTasks[url] = new IdentifyTask(url);
-      servicesById[currId] = service;
-      service.on("load",addDesc);
-    }
-
-    var pane = dom.byId(id);
-    pane.insertBefore(radioForm,pane.firstChild);
-    pane.insertBefore(header,pane.firstChild);
-
-    on(query("#"+id+" input[type=checkbox]"), "click", function(){
-      for(var i=0; i<radios.length;i++){
-        if(radios[i].checked){
-          updateLayerVisibility(servicesById[radios[i].id],this.parentNode.parentNode);
-          break;
-        }
-      }
-    });
-
-  }
-
 
 
 
@@ -704,7 +601,7 @@ function inputQuery(){
 }
 
 function clearAndQuery(){
-  populateFromAcc(accDijit.selectedChildWidget);
+  populateRightPane();
   showLegend(this.id)
   clearAllLayers();
   setYearData(this);
@@ -1177,7 +1074,7 @@ infoWindow.on('hide',function(){
   function showPane(){
     var i = 0, j = movers.length;
     showing = 1;
-    arro.style.backgroundPosition = "-32px -16px";
+    arro.textContent = "\u25B6"
     if(oldIE){
       for(;i<j;i++){
         if(movers[i] === rp)
@@ -1195,7 +1092,7 @@ infoWindow.on('hide',function(){
   function hidePane(){
     var i = 0, j = movers.length;
     showing = 0;
-    arro.style.backgroundPosition = "-96px -16px";
+    arro.textContent = "\u25C0"
     if(oldIE){
       for(;i<j;i++){
       if(movers[i] === rp)
@@ -1220,69 +1117,32 @@ infoWindow.on('hide',function(){
 
 
   function hookRightPane(){
-    accDijit = registry.byId("leftAccordion");
-    tabContainer = registry.byId("tabContainer");
-    currentAccPane = accDijit.selectedChildWidget;
-
-    on(accDijit.domNode,".dijitAccordionTitle:click",accTabClick);
-    on(tabContainer.domNode,".dijitTab:click",tabClick)
-
-    populateFromTab();
     dom.byId("mainContainer").style.visibility="visible";
 
     W.setTimeout(function(){
-      on.emit(dom.byId("pane1_button"),"click",{bubbles:true,cancelable:true});
       on.emit(closeButton, "mousedown",{bubbles:true,cancelable:true})
     },300);
   }
 
 
 
-  function populateFromTab(){
-    var tab = tabContainer.selectedChildWidget;
-    if(tab.id === "tab1"){
-      populateFromAcc(accDijit.selectedChildWidget);
-    }else if(tab.id === "tab2"){
-      tabNode.innerHTML = tab.title;
-      layerNode.innerHTML = serviceDescriptions.tab2
-    }else if(tab.id === "tab3"){
-      tabNode.innerHTML = '';
-      layerNode.innerHTML = '';
-    }
-  }
-
-
-
-  function populateFromAcc(pane){
-    if(pane.id === "pane1"){
-      var type = getRadio();
-      tabNode.innerHTML = radioNames[type]
-      layerNode.innerHTML = serviceDescriptions[type]
-    }else{
-      tabNode.innerHTML = pane.title;
-      layerNode.innerHTML = serviceDescriptions[pane.id]
-    }
-  }
-
-
-
-  function tabClick(e){
-    populateFromTab();
+  function populateRightPane(pane){
+    var type = getRadio();
+    titleNode.innerHTML = radioNames[type]
+    layerNode.innerHTML = serviceDescriptions[type];
     resetDataHeight();
   }
 
-  function accTabClick(){
-    var pane = accDijit.selectedChildWidget;
-    clearAllLayers();
-    uncheckLayers(currentAccPane);
-    populateFromAcc(pane);
-    resetDataHeight();
-    currentAccPane = pane;
-  }
+
+
+
 
   function resetDataHeight (){
     layerNode.style.height = DOC.documentElement.offsetHeight - 134 + "px"
   }
+
+
+
 
   function makeDataZip(key,layer){
     return "downloads/GIC_"+key+"_"+layer+".zip";
@@ -1302,20 +1162,6 @@ infoWindow.on('hide',function(){
   }
 
 
-  function getServiceZips(id,radio){
-    if(radio){
-      radio.forEach(function(v){
-        if(v.checked) id = v.id;
-      })
-    }
-    var service = servicesById[id];
-    var zips = ["downloads/_readme.txt"];
-    for(var i =1, len = service.visibleLayers.length;i<len;i++){
-      zips.push(makeServiceZip(service.layerInfos[service.visibleLayers[i]].name))
-    }
-    return zips
-  }
-
   function makeServiceZip(name){
     return "downloads/" + name.split(" ").join("_") + ".zip"
   }
@@ -1326,21 +1172,7 @@ infoWindow.on('hide',function(){
   on(dom.byId("downloadLink"),"click",downloadZips)
 
   function downloadZips(){
-    var tabId = tabContainer.selectedChildWidget.id;
-    var paneId = accDijit.selectedChildWidget.id;
-    if(tabId==="tab1"){
-      if(paneId==="pane1"){
-        makeDownloads(getDataZips())
-      }else{
-        if(paneId==="pane2"){
-          makeDownloads(getServiceZips(paneId,query("input[type='radio']",accDijit.selectedChildWidget.domNode)))
-        }else{
-          makeDownloads(getServiceZips(paneId))
-        }
-      }
-    }else{
-      makeDownloads(getServiceZips(tabId))
-    }
+    makeDownloads(getDataZips())
   }
 
 
