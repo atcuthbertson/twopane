@@ -1,3 +1,73 @@
+html, body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body{
+  background-color: #FFF;
+  overflow: hidden;
+  font-family: 'PT Sans', sans-serif;
+  color:#020911;
+}
+
+
+
+#mainContainer {
+  visibility:hidden;
+  width: 100%;
+  height: 100%;
+}
+
+#leftPane{
+  position:absolute;
+  left:0;
+  height:100%;
+  width:20%;
+  overflow:hidden;
+
+  background-color:#fafafa;
+  background: -webkit-linear-gradient(0deg, #ecfafd 10%, #fafcff 90%); /* Chrome 10+, Saf5.1+ */
+  background:    -moz-linear-gradient(0deg, #ecfafd 10%, #fafcff 90%); /* FF3.6+ */
+  background:     -ms-linear-gradient(0deg, #ecfafd 10%, #fafcff 90%); /* IE10 */
+  background:      -o-linear-gradient(0deg, #ecfafd 10%, #fafcff 90%); /* Opera 11.10+ */
+  background:         linear-gradient(0deg, #ecfafd 10%, #fafcff 90%); /* W3C */
+        
+}
+
+#leftPaneHeader{
+  font-size:24px;
+  font-weight:bold;
+  padding:15px;
+  border-bottom: 2px dashed #dadedf;
+}
+#leftPaneHeader >a{
+  text-decoration:none;
+  color:#020911;
+}
+
+#pane1{
+  font-size:15px;
+  overflow-x:hidden;
+  padding:10px;
+}
+
+#pane1 >div{
+  margin-left:20px;
+}
+
+
+
+#centerPane{
+  height: 100%;
+  width: 80%;
+  margin: 0;
+  padding:0;
+  position:absolute;
+  left:20%;
+}
+
 .geocoderWrapper{
   position:absolute;
   top:28px;
@@ -16,12 +86,7 @@
   margin-left:5px;
 }
 
-#centerPane{
-  height: 100%;
-  width: 83%;
-  margin: 0;
-  padding:0;
-}
+
 
 .combobox{
 	padding:10px;
@@ -175,34 +240,7 @@
   display:none;
 }
 
-html, body {
-  height: 100%;
-  width: 100%;
-  margin: 0;
-  padding: 0;
-}
-body{
-  background-color: #FFF;
-  overflow: hidden;
-  font-family: 'PT Sans', sans-serif;
-}
 
-#leftPane{
-	height:100%;
-	width:350px;
-	padding:5px;
-	background:#E2F0F1;
-  overflow:hidden;
-}
-
-#leftPaneHeader >a{
-	font-size:16px;
-	font-weight:bold;
-	text-decoration:none;
-	color:#000;
-	font:Verdana, Geneva, sans-serif;
-	
-}
 
 #headingDescrip{
 	font-size:10px;
@@ -267,15 +305,6 @@ body{
 	margin-bottom:2px;
 }
 
-#pane1{
-	font-size:15px;
-	font:Verdana, Geneva, sans-serif;
-  overflow-x:hidden;
-}
-
-#pane1 >div{
-  margin-left:20px;
-}
 .dijitAccordionContainer-dijitContentPane{
   overflow-y:auto;
 }
@@ -311,11 +340,6 @@ body{
 }
 
 
-#borderContainer {
-  visibility:hidden;
-  width: 100%;
-  height: 100%;
-}
 
 .esriSimpleSlider{
   top:15px;
