@@ -20,13 +20,16 @@ body{
   height: 100%;
 }
 
+
+
 #leftPane{
   position:absolute;
   left:0;
+  z-index: 1;
   height:100%;
   width:20%;
   overflow:hidden;
-
+  box-shadow: 0 0 2px 0 #8596b0;
   background-color:#fafafa;
   background: -webkit-linear-gradient(0deg, #ecfafd 10%, #fafcff 90%); /* Chrome 10+, Saf5.1+ */
   background:    -moz-linear-gradient(0deg, #ecfafd 10%, #fafcff 90%); /* FF3.6+ */
@@ -68,31 +71,9 @@ body{
   left:20%;
 }
 
-.geocoderWrapper{
-  position:absolute;
-  top:28px;
-  left:60px;
-  z-index:1;
-  border:2px solid #666;
-  background-color:#fdfeff;
-}
-
-.geocoder{
-  background-color:#fdfeff;
-  border:none;
-  outline:none;
-  width:250px;
-  height:36px;
-  margin-left:5px;
-}
 
 
-
-.combobox{
-	padding:10px;
-}
-
-#rp{
+#rightPane{
   background:#f9feff;
   font-size:14px;
   top:0;
@@ -102,9 +83,7 @@ body{
   height:100%;
   overflow:hidden;
   z-index:99;
-  box-shadow: 1px 0px 1px 0 #a5b6e0,
-              inset 0 0px 1px 0 #a5b6e0,
-              -1px 1px 2px 0px #a5b6e0;    
+  box-shadow: 0 0 2px 0 #8596b0; 
 }
 
 #dataCon{
@@ -113,12 +92,11 @@ body{
   height:100%;
 }
 
-#tabNode{
-  width:85%;
+#titleNode{
+  width:100%;
   margin-top:20px;
-  margin-left:27px;
   padding-bottom:10px;
-  border-bottom:2px dashed #45fe99;
+  border-bottom:2px dashed #dadedf;
 }
 
 #layerNode{
@@ -133,45 +111,55 @@ body{
 }
 
 #downloadNode{
-  border-top:2px dashed #45fe99;
-  width:85%;
+  border-top:2px dashed #dadedf;
+  width:100%;
   height:30px;
   padding-top:25px;
-  margin:0px 0px 10px 27px;
+  margin-bottom:10px;
   text-align:center;
 }
 
-#downloadLink:active{
-  line-height:29px;
-}
 
-#downloadLink:hover{
-  box-shadow:0 1px 2px 1px #4cff4c;
-}
+
 
 #downloadLink{
   text-decoration:none;
-  background-color:#98ff98;
+  background-color:#d4e4ff;
   border-radius:6px;
   color:white;
-  font-size:20px;
+  font-size:24px;
   font-weight:bolder;
   font-style:italic;
-  text-shadow:1px 1px 0 #4cff4c;
-  padding:3px 8px;
+  text-shadow:1px 1px 0 #5a6069;
+  padding:5px 8px;
   cursor:pointer;
+  margin:0 auto;
+  width:200px;
+  display:block;
+  box-shadow:0 1px 1px 0 #5a6069;
+}
+
+#downloadLink:hover{
+  background-color:#688FED;
+}
+
+#downloadLink:active{
+  margin-top:1px;
+  background-color:#F2BFEB;
 }
 
 #closeRP{
   z-index: 300;
-  background:#f6fbfe;
-  padding:15px 1px 1px 4px;
-  border: solid 1px #a5b6e0;
-  width:21px;
+
   top:43%;
   right:5px;
+  height:60px;
+  width:40px;
+
+  background:#f6fbfe;
+  border: solid 1px #a5b6e0;
+
   cursor:default;
-  height:32px;
   border-radius:2px;
   box-shadow: 1px 1px 1px 0 #a5b6e0,
              -1px 0px 1px 0 #a5b6e0;
@@ -179,21 +167,18 @@ body{
 
 #closeRP:hover{
    cursor:pointer;
-   box-shadow: 1px 1px 2px 0 #728dcf,
-              -1px 0px 2px 0 #728dcf,
+   box-shadow: 1px 1px 1px 0 #728dcf,
+              -1px 0px 1px 0 #728dcf,
                inset 0px 1px 1px 0 #f1f3fa;
 }
 
-#closeRP:active{
-  padding:16px 1px 0 4px;
-}
 
 #arro{
-  opacity:0.6;
+  color:#888;
   width: 16px;
   height: 16px;
-  background-image:url('../images/ui-icons_222222_256x240.png');
-  background-position:-96px -16px;
+  font-size:20px;
+  margin:16px 0 0 11px;
 }
 
 .atop{
@@ -231,6 +216,30 @@ body{
   user-select: none;
 }
 
+.geocoderWrapper{
+  position:absolute;
+  top:28px;
+  left:60px;
+  z-index:1;
+  border:2px solid #666;
+  background-color:#fdfeff;
+}
+
+.geocoder{
+  background-color:#fdfeff;
+  border:none;
+  outline:none;
+  width:250px;
+  height:36px;
+  margin-left:5px;
+}
+
+
+
+.combobox{
+  padding:10px;
+}
+
 .dijitTabPane ul{
   list-style-type:none;
   margin-left:-20px;
@@ -248,25 +257,6 @@ body{
 		
 }
 
-#leftAccordion{
-	height:90%;
-	width:100%;
-	background-color:transparent;
-	font:Verdana, Geneva, sans-serif;
-}
-
-
-#tabContainer{
-	font-size:17px;
-	height:90%;
-	width:100%;
-	background-color:transparent;
-	font:Verdana, Geneva, sans-serif;
-	
-}
-#tab3{
-	font-size:10px;
-}
 
 .paneHeadings{
 	font-size:15px;
