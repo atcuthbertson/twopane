@@ -1228,7 +1228,7 @@ infoWindow.on('hide',function(){
     on(tabContainer.domNode,".dijitTab:click",tabClick)
 
     populateFromTab();
-    dom.byId("borderContainer").style.visibility="visible";
+    dom.byId("mainContainer").style.visibility="visible";
 
     W.setTimeout(function(){
       on.emit(dom.byId("pane1_button"),"click",{bubbles:true,cancelable:true});
