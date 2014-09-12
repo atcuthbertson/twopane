@@ -79,3 +79,10 @@
     });
 
   }
+
+  function wipeLayer(service){
+    service.suspend();
+    removeVisibleUrl(service.url);
+    service.setVisibleLayers([-1]);
+  }
+
