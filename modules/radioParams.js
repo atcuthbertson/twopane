@@ -13,6 +13,10 @@
     var totalServices = serviceTypes.length*serviceNames.length;
     var loadedServices = 0;
 
+    var changeSpans;
+    var changeYears=[];
+    var depthYears=[];
+
 
 
   forEach(serviceTypes,function(type){
@@ -34,7 +38,7 @@
 
 
 
-      function initializeLayers(layer,type,name){
+  function initializeLayers(layer,type,name){
     var key = type+name;
     if(name==="_Points")serviceDescriptions[type] = layer.description;
     if(key==="Change_Points"){
@@ -51,6 +55,184 @@
     }
   }
 
+
+function buildChangeYears(layerInfos){
+  var yearObj= {};
+  forEach(layerInfos,function(info,i){
+    var years = extractYears(info.name);
+    addYearsFromSpan(yearObj,years);
+  })
+
+  for(var year in yearObj){
+    changeYears.push({"year":year})
+    yearObj[year].sort(sortSpans);
+  }
+  changeYears.sort(sortYears)
+  return yearObj;
+}
+
+function buildDepthYears(layerInfos){
+  var yearReg = /\d{4}/;
+  forEach(layerInfos,function(info,i){
+    depthYears.push({"year":info.name.match(yearReg)})
+  });
+  return depthYears.sort(sortYears);
+}
+
+
+function extractYears(name){
+  var arr = name.split("_");
+  return [arr[0].slice(1),arr[1].slice(1)]
+}
+
+
+function addYearsFromSpan(yearObj,years){
+  var end = years[0];
+  var start = years[1];
+  var phrase = makeSpanPhrase(start,end);
+
+  ensureKeyExists(yearObj,start);
+  ensureKeyExists(yearObj,end);
+
+  yearObj[start].push({span:phrase});
+  yearObj[end].push({span:phrase});
+}
+
+
+function ensureKeyExists(obj,year){
+  if(obj[year] === undefined) obj[year] = [];
+}
+
+
+function makeSpanPhrase(start, end){
+  return start+" to "+end;
+}
+
+function sortObj(a,b,key){
+  return a[key]-b[key];
+}
+
+function sortSpans(a,b){
+  return sortObj(a,b,"span")
+}
+function sortYears(a,b){
+  return sortObj(a,b,"year")
+}
+
+
+function setSpanData(year){
+  var years = changeSpans[year];
+  levelStoreSpan.setData(years)
+  levelComboSpan.setValue(years[0].span);
+}
+
+
+function setYearData(radio){
+  if(radio === changeRadio){
+    levelStoreYr.setData(changeYears);
+    if(!checkYear(selectYear.value,changeYears))
+      levelComboYr.setValue(changeYears[changeYears.length-1].year);
+  }else{
+    levelStoreYr.setData(depthYears);
+    if(!checkYear(selectYear.value,depthYears))
+      levelComboYr.setValue(depthYears[depthYears.length-1].year);
+  }
+}
+
+function checkYear(year,years){
+  for(var i=0;i<years.length;i++){
+    if(years[i].year == year) return 1;
+  }
+  return 0;
+}
+
+
+
+var levelStoreYr = new Memory({
+  data: []
+});
+
+var levelStoreSeason = new Memory({
+  data: [
+    {name:"Spring"}
+  ]
+});
+
+var levelStoreSpan= new Memory({
+  data:[]
+});
+
+
+var levelComboYr = new ComboBox({
+        id: "selectYear",
+        name: "Year",
+        style:{width: "100px"},
+        value: "",
+        store: levelStoreYr,
+        searchAttr: "year"
+    },"selectYear");
+
+var levelComboSeason = new ComboBox({
+        id: "selectSeason",      
+        name: "Season",
+        style:{width: "100px"},
+        value: "Spring",
+        store: levelStoreSeason,
+        searchAttr: "name"
+    }, "selectSeason");
+  
+var levelComboSpan= new ComboBox({
+        id: "selectSpan",
+        name: "Comparison Period",
+        style:{width: "125px", align:"center"},
+        value: "",
+        store: levelStoreSpan,
+        searchAttr: "span"
+    }, "selectSpan");
+
+var selectSeason=dom.byId("selectSeason");
+var selectYear = dom.byId("selectYear");
+var selectSpan = dom.byId("selectSpan");
+var spanDijit = registry.byId("selectSpan");
+
+
+//Getting layer ID from combobox dropdown selections
+
+function getLayerId(type,key){
+  var layerInfos = staticServices[key].layerInfos
+  var season = selectSeason.value;
+  var year = selectYear.value;
+  var span = type === "Change"
+           ? selectSpan.value
+           : ''
+           ;
+  return matchLayer(layerInfos,season,year,span);
+}
+
+function getLayerName(type,key){
+  var layerInfos = staticServices[key].layerInfos;
+  var id = getLayerId(type,key);
+  if(layerInfos[id])
+    return layerInfos[id].name
+}
+
+//misguided service-specific. There is a better way than layer name regexes...maybe
+//Need to at least provide the layer matching function
+function matchLayer(layerInfos,season,year,span){
+  var reg;
+  if(span !== ''){
+    var spl = span.split(' ');
+    var start = spl[0];
+    var end = spl[2];
+    reg = new RegExp(end + ".*" + start);
+  }else{
+    reg = new RegExp("("+season+"|"+season[0]+").*"+year)
+  }
+  for(var i=0; i < layerInfos.length;i++){
+    if(reg.test(layerInfos[i].name))
+      return i;
+  }
+}
 function yearChange(year){
   setSpanData(year);
   inputQuery();
@@ -68,6 +250,13 @@ function checkHandler(e){
   inputQuery();
 }
 
+
+
+    var radioNames = {
+      Depth : "Depth Below Ground",
+      Elevation : "Groundwater Elevation",
+      Change : "Change in Groundwater Level"
+    }
 /*radioNames[type]
   serviceDescriptions[type];
   */
@@ -142,6 +331,18 @@ function hideLayer(serviceName,layerId){
     removeVisibleUrl(service.url);
   }
 }
+
+function disableLayer(input){
+  input.disabled = true;
+  input.checked = false;
+  input.parentNode.style.opacity="0.7"
+}
+
+function enableLayer(input){
+  input.disabled = false;
+  input.parentNode.style.opacity="1"
+}
+
 
 
 //Build this dynamically from an array of radio categories provided

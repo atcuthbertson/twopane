@@ -114,7 +114,6 @@ esri.config.defaults.io.corsDetection = false;
 
     var mapPane = dom.byId("centerPane");
     var svgLayer;
-    var movers = query(".mov");
     var rp = dom.byId('rightPane');
     var titleNode = dom.byId('titleNode');
     var layerNode = dom.byId('layerNode');
@@ -123,19 +122,6 @@ esri.config.defaults.io.corsDetection = false;
     var closeToggle;
 
     var oldIE =(DOC.all&&!W.atob)?true:false;
-    var addDijit;
-
-    var noLayers = [-1];
-
-
-
-
-
-    var legends = query(".dynamicLegend");
-    var pointsLegend = legends[0];
-    var contoursLegend = legends[1];
-    var rampLegend = legends[2];
-
 
 
 
@@ -144,16 +130,12 @@ esri.config.defaults.io.corsDetection = false;
     var identifyTasks = {};
     var servicesById = {};
 
-    var changeSpans;
-    var changeYears=[];
-    var depthYears=[];
+    var serviceDescriptions = {};
     var imageParameters = new ImageParameters({layerIds:[-1],layerOption:ImageParameters.LAYER_OPTION_SHOW});
     
 
     if(oldIE) fx = require("dojo/_base/fx", function(fx){return fx});
-  // Parse widgets included in the HTML. In this case, the BorderContainer and ContentPane.
-  // data-dojo -types and -props get analyzed to initialize the application properly.
-    parser.parse().then(hookRightPane);
+
 
   // Choose your initial extent. The easiest way to find this is to pan around the map, checking the
   // current extent with 'esri.map.extent' in the Javascript console (F12 to open it)
@@ -169,10 +151,15 @@ esri.config.defaults.io.corsDetection = false;
 
 	
 
-  // Create infoWindow to assign the the map.
+
   var infoWindow = new InfoWindow('infoWindow');
   infoWindow.startup();
   infoWindow.setTitle('<a id="zoomLink" action="javascript:void 0">Information at this Point</a>')
+
+  var identifyParameters = new IdentifyParameters();
+  identifyParameters.layerOption = IdentifyParameters.LAYER_OPTION_VISIBLE;
+  identifyParameters.tolerance = 3;
+  identifyParameters.returnGeometry = false;
 
   // Create the map. The first argument is either an HTML element (usually a div) or, as in this case,
   // the id of an HTML element as a string. See https://developers.arcgis.com/en/javascript/jsapi/map-amd.html#map1
@@ -186,7 +173,9 @@ esri.config.defaults.io.corsDetection = false;
       minZoom:6,
 	    maxZoom:12
     });
-  console.log("sr after map creation",map.spatialReference)
+
+
+
 
 	var home= new HomeButton({
 	  map: map
@@ -194,11 +183,12 @@ esri.config.defaults.io.corsDetection = false;
 	home.startup();
     
 	
+
+
   //Once the map is loaded, set the infoWindow's size. And turn it off and on to prevent a flash of
   //unstyled content on the first point click.
 
     map.on("load", function(){
-      console.log("loaded",map.spatialReference)
       map.disableDoubleClickZoom();
       svgLayer = dom.byId("centerPane_gc")
       infoWindow.resize(425,325);
@@ -209,7 +199,8 @@ esri.config.defaults.io.corsDetection = false;
       on(dom.byId("basemapNode"),"mousedown",basemapToggle);
     });
 
-    esri.map = map;
+
+
 
 
     //initialize and hook up geocoder
@@ -281,23 +272,15 @@ esri.config.defaults.io.corsDetection = false;
         }
       }
 
-
     })();
 
 
-    var identifyParameters = new IdentifyParameters();
-    identifyParameters.layerOption = IdentifyParameters.LAYER_OPTION_VISIBLE;
-    identifyParameters.tolerance = 3;
-    identifyParameters.returnGeometry = false;
 
-    var serviceDescriptions = {
-    };
 
-    var radioNames = {
-      Depth : "Depth Below Ground",
-      Elevation : "Groundwater Elevation",
-      Change : "Change in Groundwater Level"
-    }
+
+
+
+
 
 
     function addLoading(check){
@@ -316,158 +299,6 @@ esri.config.defaults.io.corsDetection = false;
 
 
 
-
-function buildChangeYears(layerInfos){
-  var yearObj= {};
-  forEach(layerInfos,function(info,i){
-    var years = extractYears(info.name);
-    addYearsFromSpan(yearObj,years);
-  })
-
-  for(var year in yearObj){
-    changeYears.push({"year":year})
-    yearObj[year].sort(sortSpans);
-  }
-  changeYears.sort(sortYears)
-  return yearObj;
-}
-
-function buildDepthYears(layerInfos){
-  var yearReg = /\d{4}/;
-  forEach(layerInfos,function(info,i){
-    depthYears.push({"year":info.name.match(yearReg)})
-  });
-  return depthYears.sort(sortYears);
-}
-
-
-function extractYears(name){
-  var arr = name.split("_");
-  return [arr[0].slice(1),arr[1].slice(1)]
-}
-
-
-function addYearsFromSpan(yearObj,years){
-  var end = years[0];
-  var start = years[1];
-  var phrase = makeSpanPhrase(start,end);
-
-  ensureKeyExists(yearObj,start);
-  ensureKeyExists(yearObj,end);
-
-  yearObj[start].push({span:phrase});
-  yearObj[end].push({span:phrase});
-}
-
-
-function ensureKeyExists(obj,year){
-  if(obj[year] === undefined) obj[year] = [];
-}
-
-
-function makeSpanPhrase(start, end){
-  return start+" to "+end;
-}
-
-function sortObj(a,b,key){
-  return a[key]-b[key];
-}
-
-function sortSpans(a,b){
-  return sortObj(a,b,"span")
-}
-function sortYears(a,b){
-  return sortObj(a,b,"year")
-}
-
-
-function setSpanData(year){
-  var years = changeSpans[year];
-  levelStoreSpan.setData(years)
-  levelComboSpan.setValue(years[0].span);
-}
-
-
-function setYearData(radio){
-  if(radio === changeRadio){
-    levelStoreYr.setData(changeYears);
-    if(!checkYear(selectYear.value,changeYears))
-      levelComboYr.setValue(changeYears[changeYears.length-1].year);
-  }else{
-    levelStoreYr.setData(depthYears);
-    if(!checkYear(selectYear.value,depthYears))
-      levelComboYr.setValue(depthYears[depthYears.length-1].year);
-  }
-}
-
-function checkYear(year,years){
-  for(var i=0;i<years.length;i++){
-    if(years[i].year == year) return 1;
-  }
-  return 0;
-}
-
-
-
-var levelStoreYr = new Memory({
-  data: []
-});
-
-var levelStoreSeason = new Memory({
-  data: [
-    {name:"Spring"}
-  ]
-});
-
-var levelStoreSpan= new Memory({
-  data:[]
-});
-
-
-var levelComboYr = new ComboBox({
-        id: "selectYear",
-        name: "Year",
-        style:{width: "100px"},
-        value: "",
-        store: levelStoreYr,
-        searchAttr: "year"
-    },"selectYear");
-
-var levelComboSeason = new ComboBox({
-        id: "selectSeason",      
-        name: "Season",
-        style:{width: "100px"},
-        value: "Spring",
-        store: levelStoreSeason,
-        searchAttr: "name"
-    }, "selectSeason");
-  
-var levelComboSpan= new ComboBox({
-        id: "selectSpan",
-        name: "Comparison Period",
-        style:{width: "125px", align:"center"},
-        value: "",
-        store: levelStoreSpan,
-        searchAttr: "span"
-    }, "selectSpan");
-
-var selectSeason=dom.byId("selectSeason");
-var selectYear = dom.byId("selectYear");
-var selectSpan = dom.byId("selectSpan");
-var spanDijit = registry.byId("selectSpan");
-
-
-
-
-
-
-
-
-
-
-
-
-
   function addVisibleUrl(url,service){
     visibleServiceUrls[url] = service;
   }
@@ -475,63 +306,6 @@ var spanDijit = registry.byId("selectSpan");
   function removeVisibleUrl(url){
     visibleServiceUrls[url] = null;
   }
-
-
-
-//Getting layer ID from combobox dropdown selections
-
-function getLayerId(type,key){
-  var layerInfos = staticServices[key].layerInfos
-  var season = selectSeason.value;
-  var year = selectYear.value;
-  var span = type === "Change"
-           ? selectSpan.value
-           : ''
-           ;
-  return matchLayer(layerInfos,season,year,span);
-}
-
-function getLayerName(type,key){
-  var layerInfos = staticServices[key].layerInfos;
-  var id = getLayerId(type,key);
-  if(layerInfos[id])
-    return layerInfos[id].name
-}
-
-function matchLayer(layerInfos,season,year,span){
-  var reg;
-  if(span !== ''){
-    var spl = span.split(' ');
-    var start = spl[0];
-    var end = spl[2];
-    reg = new RegExp(end + ".*" + start);
-  }else{
-    reg = new RegExp("("+season+"|"+season[0]+").*"+year)
-  }
-  for(var i=0; i < layerInfos.length;i++){
-    if(reg.test(layerInfos[i].name))
-      return i;
-  }
-}
-
-
-
-
-
-
-
-
-function disableLayer(input){
-  input.disabled = true;
-  input.checked = false;
-  input.parentNode.style.opacity="0.7"
-}
-
-function enableLayer(input){
-  input.disabled = false;
-  input.parentNode.style.opacity="1"
-}
-
 
 
 
@@ -731,6 +505,7 @@ infoWindow.on('hide',function(){
       map.centerAndZoom(event.mapPoint,12)
     });
   }
+
   function runIdentify(event){
     var noneShowing = 1;
     infoWindow.show(event.screenPoint);
@@ -902,6 +677,7 @@ infoWindow.on('hide',function(){
   closeToggle = function(){
     var showing = 0;
     var arro = dom.byId("arro");
+    var movers = query(".mov");
 
     function arrowRight(){
       arro.style.marginLeft = "0px";
@@ -957,17 +733,14 @@ infoWindow.on('hide',function(){
     }
   }();
 
+
+
   on(closeButton,"mousedown", closeToggle);
+  dom.byId("mainContainer").style.visibility="visible";
+  W.setTimeout(function(){
+    on.emit(closeButton, "mousedown",{bubbles:true,cancelable:true})
+  },300);
 
-
-
-  function hookRightPane(){
-    dom.byId("mainContainer").style.visibility="visible";
-
-    W.setTimeout(function(){
-      on.emit(closeButton, "mousedown",{bubbles:true,cancelable:true})
-    },300);
-  }
 
 
 
