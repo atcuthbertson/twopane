@@ -156,8 +156,8 @@ label:hover,.serviceRadio,.layerCheck{
 
 .geocoderWrapper{
   position:absolute;
-  top:28px;
-  left:60px;
+  top:30px;
+  left:65px;
   z-index:1;
   border:2px solid #666;
   background-color:#fdfeff;
@@ -175,7 +175,7 @@ label:hover,.serviceRadio,.layerCheck{
 #homeButton {
   position: absolute;
   top: 95px;
-  left: 15px;
+  left: 20px;
   z-index: 50;
 }
 
@@ -255,13 +255,13 @@ label:hover,.serviceRadio,.layerCheck{
 
 
 #rightPane{
-  background:#f9feff;
-  font-size:14px;
   top:0;
   right:0px;
   margin-right:-285px;
   width:302px;
   height:100%;
+  background:#f9feff;
+  font-size:14px;
   overflow:hidden;
   z-index:99;
   box-shadow: 0 0 2px 0 #8596b0; 
@@ -297,20 +297,22 @@ label:hover,.serviceRadio,.layerCheck{
 }
 
 #downloadLink{
-  text-decoration:none;
+  display:block;
+  width:240px;
+  margin:0 auto;
+  padding:5px 8px;
   background-color:#d4e4ff;
+  box-shadow:0 1px 1px 0 #5a6069;
   border-radius:6px;
+
   color:white;
   font-size:24px;
   font-weight:bolder;
   font-style:italic;
   text-shadow:1px 1px 0 #5a6069;
-  padding:5px 8px;
+  text-decoration:none;
+
   cursor:pointer;
-  margin:0 auto;
-  width:200px;
-  display:block;
-  box-shadow:0 1px 1px 0 #5a6069;
 }
 
 #downloadLink:hover{
