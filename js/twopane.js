@@ -107,10 +107,11 @@ esri.config.defaults.io.corsDetection = false;
     var server = DOC.location.hostname;
     server = server === "localhost" ? "gis.water.ca.gov" : server;
 
-    var serverFolder = server.slice(0,3) === "gis" ? "Public" : "GGI";
+    var serverFolder = server.slice(0,3) === "gis" ? "Public" : "cadre";
+    var prefix = "https://"+server+"/arcgis/rest/services/" + serverFolder 
+    var suffix = "/MapServer";
 
 
-    var layers = [];
     var mapPane = dom.byId("centerPane");
     var svgLayer;
     var movers = query(".mov");
@@ -118,27 +119,17 @@ esri.config.defaults.io.corsDetection = false;
     var titleNode = dom.byId('titleNode');
     var layerNode = dom.byId('layerNode');
     var closeButton = dom.byId('closeRP');
-    var arro = dom.byId("arro");
-    var showing = 0;
+
+    var closeToggle;
+
     var oldIE =(DOC.all&&!W.atob)?true:false;
     var addDijit;
 
     var noLayers = [-1];
-    var prefix = "https://"+server+"/arcgis/rest/services/" + serverFolder + "/GIC_";
-    var suffix = "/MapServer";
 
 
-    var serviceTypes = ["Change","Elevation","Depth"];
-    var serviceNames = ["_Ramp","_Contours","_Points"];
 
-    var depthRadio = dom.byId("radio1");
-    var elevRadio = dom.byId("radio2");
-    var changeRadio = dom.byId("radio3");
 
-    var measurementCheck = dom.byId("levelMeasurement");
-    var contoursCheck = dom.byId("levelContours");
-    var rampCheck = dom.byId("levelRamp");
-    var checks = query("#activeLayers input");
 
     var legends = query(".dynamicLegend");
     var pointsLegend = legends[0];
@@ -146,8 +137,7 @@ esri.config.defaults.io.corsDetection = false;
     var rampLegend = legends[2];
 
 
-    var totalServices = serviceTypes.length*serviceNames.length;
-    var loadedServices = 0;
+
 
     var staticServices = {};
     var visibleServiceUrls = {};
@@ -182,7 +172,7 @@ esri.config.defaults.io.corsDetection = false;
   // Create infoWindow to assign the the map.
   var infoWindow = new InfoWindow('infoWindow');
   infoWindow.startup();
-  infoWindow.setTitle('<a id="zoomLink" action="javascript:void(0)">Information at this Point</a>')
+  infoWindow.setTitle('<a id="zoomLink" action="javascript:void 0">Information at this Point</a>')
 
   // Create the map. The first argument is either an HTML element (usually a div) or, as in this case,
   // the id of an HTML element as a string. See https://developers.arcgis.com/en/javascript/jsapi/map-amd.html#map1
@@ -468,68 +458,14 @@ var spanDijit = registry.byId("selectSpan");
 
 
 
-  forEach(serviceTypes,function(type){
-    forEach(serviceNames,function(name){
-      var url = prefix+type+name+suffix;
-      var layer = new ArcGISDynamicMapServiceLayer(url,
-            {"imageParameters": imageParameters})
-      layer.on('update-end',layerUpdateEnd);
-      layer.suspend();
-      layers.push(layer)
-      staticServices[type+name] = layer;
-      identifyTasks[url] = new IdentifyTask(url);
-      layer.on('load',function(evt){initializeLayers(evt.layer,type,name)});
-    });
-  });
-
-  // Add active layers to map
-  map.addLayers(layers);
-
-
-  function initializeLayers(layer,type,name){
-    var key = type+name;
-    if(name==="_Points")serviceDescriptions[type] = layer.description;
-    if(key==="Change_Points"){
-      changeSpans = buildChangeYears(layer.layerInfos);
-      
-    }else if(key==="Depth_Points"){
-      depthYears = buildDepthYears(layer.layerInfos);
-    }
-    loadedServices++;
-    if(loadedServices===totalServices){
-      setYearData(changeRadio);
-      inputQuery();
-      attachInputHandlers();
-    }
-  }
 
 
 
-  function updateLayerVisibility (service,pane) {
-    var inputs = query("input[type='checkbox']",pane);
-    var inputCount = inputs.length;
-    var visibleLayerIds = [-1]
-    //in this application no layer is always on
-    for (var i = 0; i < inputCount; i++) {
-      if (inputs[i].checked) {
-        visibleLayerIds.push(inputs[i].value);
-      }
-    }
-    if(visibleLayerIds.length === 1){
-      service.suspend();
-      removeVisibleUrl(service.url);
-    }else{
-      service.resume();
-      addVisibleUrl(service.url,service)
-    }
-    service.setVisibleLayers(visibleLayerIds);
-  }
 
-  function wipeLayer(service){
-    service.suspend();
-    removeVisibleUrl(service.url);
-    service.setVisibleLayers([-1]);
-  }
+
+
+
+
 
 
   function addVisibleUrl(url,service){
@@ -578,52 +514,12 @@ function matchLayer(layerInfos,season,year,span){
   }
 }
 
-function getRadio(){
-    var type = depthRadio.checked === true
-             ? "Depth"
-             : elevRadio.checked
-               ? "Elevation"
-               : "Change"
-             ;
-    return type;
-}
 
-//Query builder for Groundwater Level Change
 
-function inputQuery(){
-  var type = getRadio();
-  if(type === "Change") spanDijit.attr("disabled",false);
-  else spanDijit.attr("disabled",true);
 
-  var checkedServices = getCheckedServices();
 
-  toggleLayers(type,checkedServices);
-}
 
-function clearAndQuery(){
-  populateRightPane();
-  showLegend(this.id)
-  clearAllLayers();
-  setYearData(this);
-  inputQuery();
-}
 
-function toggleLayers(type,checkedServices){
-  var services = getServicesFromChecks(checkedServices);
-  forEach(services,function(name,i){
-    var key = type+name;
-    var layerId = getLayerId(type,key);
-    if(layerId===undefined){
-      disableLayer(checks[i])
-    }else{
-      enableLayer(checks[i])
-      if(checkedServices[i])
-        showLayer(key,layerId)
-      else
-        hideLayer(key,layerId)
-    }
-  })
-}
 
 function disableLayer(input){
   input.disabled = true;
@@ -638,33 +534,7 @@ function enableLayer(input){
 
 
 
-function showLayer(serviceName,layerId){
-  var service = staticServices[serviceName];
-    service.resume();
-    service.setVisibleLayers([layerId])
-    addVisibleUrl(service.url,service)
-}
 
-function hideLayer(serviceName,layerId){
-  var service = staticServices[serviceName];
-  if(!service.suspended){
-    service.setVisibleLayers(noLayers)
-    service.suspend();
-    removeVisibleUrl(service.url);
-  }
-}
-
-function clearAllLayers(){
-  var checked = getCheckedServices();
-  forEach(serviceTypes,function(type){
-    var services = getServicesFromChecks(checked);
-    forEach(services,function(name, i){
-      var key = type+name;
-      var layerId = getLayerId(type,key);
-      hideLayer(key,layerId)
-    })
-  })
-}
 
 function uncheckLayers(pane){
   var paneChecks = query("input",pane.domNode)
@@ -677,11 +547,7 @@ function uncheckLayers(pane){
 }
 
 
-function getCheckedServices(){
-  return checks.map(function(node,i){
-    return node.checked
-  });
-}
+
 
 function getFilteredServices(checkedArray){
   var arr=[];
@@ -700,41 +566,11 @@ function getServicesFromChecks(checkedArray){
 }
 
 
-function showLegend(id){
-  if(id === "radio1"){
-    pointsLegend.src = "images/Dynamic_DepthPoints.png";
-  contoursLegend.src= "images/Dynamic_DepthContour.png";
-  rampLegend.src= "images/Dynamic_DepthRamp.png";
-  }else if (id === "radio2"){
-    pointsLegend.src = "images/Dynamic_ElevationPoints.png"
-  contoursLegend.src= "images/Dynamic_ElevationContour.png";
-  rampLegend.src= "images/Dynamic_ElevationRamp.png";
-
-  }else{
-    pointsLegend.src = "images/Dynamic_ChangePoints.png";
-  contoursLegend.src= "images/Dynamic_ChangeContours.png";
-  rampLegend.src= "images/Dynamic_ChangeRamp.png";
-
-  }
-}
 
 
-function yearChange(year){
-  setSpanData(year);
-  inputQuery();
-}
 
-function spanChange(){
-  inputQuery();
-}
 
-function checkHandler(e){
-  var check = e.target;
-  if(check.checked) addLoading(check);
-  else removeLoading(check);
 
-  inputQuery();
-}
 
 function layerUpdateEnd(e){
   var layer = e.target;
@@ -761,19 +597,7 @@ function toggleLoading(check){
 }
 
 //attach datapane handlers. Called when dijit is loaded.
-function attachInputHandlers(){
-  on(levelComboYr,"change",yearChange)
-  on(levelComboSeason,"change",inputQuery)
-  on(levelComboSpan,"change",inputQuery)
 
-  on(depthRadio,"click",clearAndQuery)
-  on(elevRadio,"click",clearAndQuery)
-  on(changeRadio,"click",clearAndQuery)
-
-  on(measurementCheck,"click", checkHandler)
-  on(contoursCheck,"click", checkHandler)
-  on(rampCheck,"click", checkHandler)
-}
 
 
 //ie shim
@@ -1071,48 +895,67 @@ infoWindow.on('hide',function(){
 
 
 
-  function showPane(){
-    var i = 0, j = movers.length;
-    showing = 1;
-    arro.textContent = "\u25B6"
-    arro.style.marginLeft = "9px";
-    if(oldIE){
-      for(;i<j;i++){
+
+
+
+
+  closeToggle = function(){
+    var showing = 0;
+    var arro = dom.byId("arro");
+
+    function arrowRight(){
+      arro.style.marginLeft = "0px";
+      arro.textContent = "\u25B6";
+    }
+
+    function arrowLeft(){
+      arro.style.marginLeft = "-25px";
+      arro.textContent = "\u25C0";
+    }
+
+    function showPane(){
+      var i = 0, j = movers.length;
+      showing = 1;
+      
+      setTimeout(arrowRight,100)
+
+      if(oldIE){
+        for(;i<j;i++){
+          if(movers[i] === rp)
+            fx.animateProperty({node:movers[i], duration:300, properties:{marginRight:0}}).play();
+          else fx.animateProperty({node:movers[i], duration:300, properties:{marginRight:285}}).play();
+        }
+      }else{
+        for(;i<j;i++)
+          domClass.add(movers[i],"movd");
+      }
+    }
+
+
+
+    function hidePane(){
+      var i = 0, j = movers.length;
+      showing = 0;
+
+      setTimeout(arrowLeft,100)
+
+      if(oldIE){
+        for(;i<j;i++){
         if(movers[i] === rp)
-          fx.animateProperty({node:movers[i], duration:300, properties:{marginRight:0}}).play();
-        else fx.animateProperty({node:movers[i], duration:300, properties:{marginRight:285}}).play();
+          fx.animateProperty({node:movers[i], duration:250, properties:{marginRight:-285}}).play();
+        else fx.animateProperty({node:movers[i], duration:250, properties:{marginRight:0}}).play();
+        }
+      }else{
+        for(;i<j;i++)
+          domClass.remove(movers[i],"movd");
       }
-    }else{
-      for(;i<j;i++)
-        domClass.add(movers[i],"movd");
     }
-  }
 
-
-
-  function hidePane(){
-    var i = 0, j = movers.length;
-    showing = 0;
-    arro.textContent = "\u25C0";
-    arro.style.marginLeft = "7px";
-    if(oldIE){
-      for(;i<j;i++){
-      if(movers[i] === rp)
-        fx.animateProperty({node:movers[i], duration:250, properties:{marginRight:-285}}).play();
-      else fx.animateProperty({node:movers[i], duration:250, properties:{marginRight:0}}).play();
-      }
-    }else{
-      for(;i<j;i++)
-        domClass.remove(movers[i],"movd");
+    return function(){
+      if(showing) hidePane();
+      else showPane();
     }
-  }
-
-
-
-  function closeToggle(){
-    if(showing) hidePane();
-    else showPane();
-  }
+  }();
 
   on(closeButton,"mousedown", closeToggle);
 
@@ -1128,10 +971,9 @@ infoWindow.on('hide',function(){
 
 
 
-  function populateRightPane(pane){
-    var type = getRadio();
-    titleNode.innerHTML = radioNames[type]
-    layerNode.innerHTML = serviceDescriptions[type];
+  function populateRightPane(title,data){
+    titleNode.innerHTML = title;
+    layerNode.innerHTML = data;
     resetDataHeight();
   }
 
