@@ -87,7 +87,7 @@ body{
   color:#020911;
 }
 
-#pane1{
+#serviceNode{
   font-size:15px;
   overflow-x:hidden;
   padding:10px 25px;
@@ -113,7 +113,7 @@ body{
   font-size:15px;
 }
 
-#pane1 >div{
+#serviceNode >div{
   margin-left:20px;
 }
 

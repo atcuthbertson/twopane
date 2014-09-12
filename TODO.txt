@@ -6,6 +6,8 @@ Each service interace type needs to provide:
   Right pane data access.
   Legend mgmt
   Download selected
+  Sensible infowindow contents / filtering
+
 
 Current types:
   Simple checkbox with adjoining legend (subsidence, grounwater boundaries)

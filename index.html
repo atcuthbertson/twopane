@@ -16,60 +16,11 @@
   <div id="mainContainer">
 
     <div id="leftPane">
-
       <div id="leftPaneHeader" align="center">
         <a target="_blank" href="http://dwrgis.water.ca.gov/">Two Pane Template</a>
       </div>
 
-
-      <div id="pane1">
-        <h3 class="paneHeading">Data Type:</h3>
-        <form>
-  		    <input type="radio"  id="radio1" class= "serviceRadio" name="depthselector">
-          <label for="radio1">Depth Below Ground</label><br/>
-          <input type="radio"  id="radio2" class= "serviceRadio" checked name="depthselector">
-          <label for="radio2">Groundwater Elevation</label><br/>
-          <input type="radio"  id="radio3" class= "serviceRadio" checked name="depthselector">
-          <label for="radio3">Change in Groundwater Level</label>
-        </form>                
-
-
-        <h3 class="paneHeading" style= "font:bolder">Selection Parameters:</h3>	
-        <div align="left" style="padding:0px 0px 6px 5px">
-          <span><input id="selectYear" class="combobox">&nbsp;&nbsp;&nbsp;Select Year</span>
-        </div>
-        <div align="left" style="padding:0px 0px 4px 5px">
-          <span><input id="selectSeason" class="combobox">&nbsp;&nbsp;&nbsp;Select Season</span>
-        </div>                                                   
-        <div align="left" style="padding:0px 0px 6px 5px">
-          <span><input id="selectSpan" class="combobox">&nbsp;&nbsp;&nbsp;Select Period</span>
-        </div>	
-        <div style="margin-top:-1px; font-size:9px;">(Change in Groundwater Level Only)</div>
-                  
-
-        <h3 class="paneHeading">Show Layers:</h3>            
-    		<div class="layer_list" id="activeLayers">
-          <div>
-            <input type='checkbox' class='layerCheck' id='levelMeasurement' value=0 />
-            <label for='levelMeasurement'> Measurements</label>
-          </div>                
-          <div>
-            <input type='checkbox' class='layerCheck' id='levelContours' value=1 />
-            <label for='levelContours'> Contours</label>
-          </div> 
-          <div>
-            <input type='checkbox' class='layerCheck' id='levelRamp' value=2 />
-            <label for=levelRamp> Color Ramp</label>
-          </div>  
-          <h3 class="paneHeading">Legend:</h3>
-          <h4 class="legendTitle">Measurements</h4>
-          <!--img class="dynamicLegend" src="images/Dynamic_ChangePoints.png"-->
-          <h4 class="legendTitle">Contours</h4>
-          <!--img class="dynamicLegend" src="images/Dynamic_ChangeContours.png"-->
-          <h4 class="legendTitle">Color Ramp</h4>
-          <!--img class="dynamicLegend" src="images/Dynamic_ChangeRamp.png"-->
-        </div>    
-      </div>
+      <div id="serviceNode"></div>
     </div>
       
 
