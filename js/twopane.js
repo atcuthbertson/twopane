@@ -1075,6 +1075,7 @@ infoWindow.on('hide',function(){
     var i = 0, j = movers.length;
     showing = 1;
     arro.textContent = "\u25B6"
+    arro.style.marginLeft = "9px";
     if(oldIE){
       for(;i<j;i++){
         if(movers[i] === rp)
@@ -1092,7 +1093,8 @@ infoWindow.on('hide',function(){
   function hidePane(){
     var i = 0, j = movers.length;
     showing = 0;
-    arro.textContent = "\u25C0"
+    arro.textContent = "\u25C0";
+    arro.style.marginLeft = "7px";
     if(oldIE){
       for(;i<j;i++){
       if(movers[i] === rp)
