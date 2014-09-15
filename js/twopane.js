@@ -1,7 +1,7 @@
 
 // Include modules That you want to use in your application. The first argument is an array of
 // strings identifying the modules to be included and the second argument is a function that gets
-// its arguments populated by the return value of the module. Order matters.
+// its arguments populated by the return value of each module. Order matters.
 require([
   "esri/map",
   "esri/geometry/Extent",
@@ -95,8 +95,8 @@ function(
    require
    ){
 
-//Disable CORS detection, since services.arcgisonline.com is not CORS enabled
-esri.config.defaults.io.corsDetection = false;
+  //Disable CORS detection, since services.arcgisonline.com is not CORS enabled
+  esri.config.defaults.io.corsDetection = false;
 
 
   // Fires when the DOM is ready and all dependencies are resolved. Usually needed when using dijits.
@@ -137,8 +137,8 @@ esri.config.defaults.io.corsDetection = false;
     if(oldIE) fx = require("dojo/_base/fx", function(fx){return fx});
 
 
-  // Choose your initial extent. The easiest way to find this is to pan around the map, checking the
-  // current extent with 'esri.map.extent' in the Javascript console (F12 to open it)
+    // Choose your initial extent. The easiest way to find this is to pan around the map, checking the
+    // current extent with 'map.extent' in the Javascript console (F12 to open it)
     var initialExtent = new Extent({
 	    "xmin" : -13300000,
       "ymin" : 3500000,
@@ -152,41 +152,46 @@ esri.config.defaults.io.corsDetection = false;
 	
 
 
-  var infoWindow = new InfoWindow('infoWindow');
-  infoWindow.startup();
-  infoWindow.setTitle('<a id="zoomLink" action="javascript:void 0">Information at this Point</a>')
+    var infoWindow = new InfoWindow('infoWindow');
+    infoWindow.startup();
+    infoWindow.setTitle('<a id="zoomLink" action="javascript:void 0">Information at this Point</a>')
 
-  var identifyParameters = new IdentifyParameters();
-  identifyParameters.layerOption = IdentifyParameters.LAYER_OPTION_VISIBLE;
-  identifyParameters.tolerance = 3;
-  identifyParameters.returnGeometry = false;
-
-  // Create the map. The first argument is either an HTML element (usually a div) or, as in this case,
-  // the id of an HTML element as a string. See https://developers.arcgis.com/en/javascript/jsapi/map-amd.html#map1
-  // for the full list of options that can be passed in the second argument.
-    
-
-	var map = new Map(mapPane, {
-      basemap : "topo",
-	    extent:initialExtent,
-      infoWindow:infoWindow,
-      minZoom:6,
-	    maxZoom:12
-    });
+    var identifyParameters = new IdentifyParameters();
+    identifyParameters.layerOption = IdentifyParameters.LAYER_OPTION_VISIBLE;
+    identifyParameters.tolerance = 3;
+    identifyParameters.returnGeometry = false;
 
 
 
 
-	var home= new HomeButton({
-	  map: map
-	}, "homeButton");
-	home.startup();
+    // Create the map. The first argument is either an HTML element (usually a div) or, as in this case,
+    // the id of an HTML element as a string. See https://developers.arcgis.com/en/javascript/jsapi/map-amd.html#map1
+    // for the full list of options that can be passed in the second argument.
+  	var map = new Map(mapPane, {
+        basemap : "topo",
+  	    extent:initialExtent,
+        infoWindow:infoWindow,
+        minZoom:6,
+  	    maxZoom:12
+      });
+
+
+    //save the map to a global variable, useful for app development
+    window.map = map;
+
+
+
+
+  	var home= new HomeButton({
+  	  map: map
+  	}, "homeButton");
+  	home.startup();
     
 	
 
 
-  //Once the map is loaded, set the infoWindow's size. And turn it off and on to prevent a flash of
-  //unstyled content on the first point click.
+    //Once the map is loaded, set the infoWindow's size. And turn it off and on to prevent a flash of
+    //unstyled content on the first point click.
 
     map.on("load", function(){
       map.disableDoubleClickZoom();
@@ -282,7 +287,7 @@ esri.config.defaults.io.corsDetection = false;
 
 
 
-
+    //could/should likely be a module that each of the layers add
     function addLoading(check){
       var img = DOC.createElement('img')
       img.className = "loadingImg";
@@ -295,49 +300,31 @@ esri.config.defaults.io.corsDetection = false;
       var prev = check.previousSibling
       if(prev&&prev.tagName === 'IMG')
         p.removeChild(prev)
-    }      
-
-
-
-  function addVisibleUrl(url,service){
-    visibleServiceUrls[url] = service;
-  }
-
-  function removeVisibleUrl(url){
-    visibleServiceUrls[url] = null;
-  }
-
-
-
-
-function uncheckLayers(pane){
-  var paneChecks = query("input",pane.domNode)
-  forEach(paneChecks,function(v){
-    if(v.checked&&v.type=="checkbox"){
-      v.checked=false;
-      on.emit(v, "click",{bubbles:true,cancelable:true})
     }
-  })
-}
 
-
-
-
-function getFilteredServices(checkedArray){
-  var arr=[];
-  forEach(checkedArray,function(checked,i){
-    if(checked){
-      arr.push(serviceNames[serviceNames.length-i-1])
+    function toggleLoading(check){
+      if(check.checked) removeLoading(check);
     }
-  })
-  return arr;
-}
 
-function getServicesFromChecks(checkedArray){
-  return checkedArray.map(function(checked,i){
-        return serviceNames[serviceNames.length-i-1]
-    })
-}
+    function layerUpdateEnd(e){
+      var layer = e.target;
+      if(layer){
+        toggleLoading(getCheckFromLayer(layer))
+      }
+    }
+
+    function getCheckFromLayer(layer){
+      var arr = layer.url.split('_');
+      var type = arr[arr.length-1].split('/')[0];
+      switch(type){
+        case "Points":
+          return measurementCheck;
+        case "Contours":
+          return contoursCheck;
+        case "Ramp":
+          return rampCheck;
+      }
+    }
 
 
 
@@ -346,29 +333,10 @@ function getServicesFromChecks(checkedArray){
 
 
 
-function layerUpdateEnd(e){
-  var layer = e.target;
-  if(layer){
-    toggleLoading(getCheckFromLayer(layer))
-  }
-}
 
-function getCheckFromLayer(layer){
-  var arr = layer.url.split('_');
-  var type = arr[arr.length-1].split('/')[0];
-  switch(type){
-    case "Points":
-      return measurementCheck;
-    case "Contours":
-      return contoursCheck;
-    case "Ramp":
-      return rampCheck;
-  }
-}
 
-function toggleLoading(check){
-  if(check.checked) removeLoading(check);
-}
+
+
 
 //attach datapane handlers. Called when dijit is loaded.
 
@@ -504,6 +472,14 @@ infoWindow.on('hide',function(){
     infoWindow.zoomHandler = on(DOC.getElementById('zoomLink'),'click',function(){
       map.centerAndZoom(event.mapPoint,12)
     });
+  }
+
+  function addVisibleUrl(url,service){
+    visibleServiceUrls[url] = service;
+  }
+
+  function removeVisibleUrl(url){
+    visibleServiceUrls[url] = null;
   }
 
   function runIdentify(event){
@@ -758,66 +734,25 @@ infoWindow.on('hide',function(){
     layerNode.style.height = DOC.documentElement.offsetHeight - 134 + "px"
   }
 
-
-
-
-  function makeDataZip(key,layer){
-    return "downloads/GIC_"+key+"_"+layer+".zip";
-  }
-
-  function getDataZips(){
-    var type = getRadio();
-    var services = getFilteredServices(getCheckedServices());
-    var zips = ["downloads/_readme.txt"];
-    forEach(services,function(name,i){
-      var key = type+name;
-      var layerName = getLayerName(type,key);
-      if(layerName)
-        zips.push(makeDataZip(key,layerName));
-    })
-    return zips;
-  }
-
-
-  function makeServiceZip(name){
-    return "downloads/" + name.split(" ").join("_") + ".zip"
-  }
-
-
   resetDataHeight();
   on(W,"resize",resetDataHeight)
-  on(dom.byId("downloadLink"),"click",downloadZips)
 
+
+
+
+
+  //This needs to be repurposed to pull in the download module.. then step through
+  //visible layers and ask them to provide download links, then hand these in a flattened array
+  //to the download module
+  on(dom.byId("downloadLink"),"click",downloadZips)
   function downloadZips(){
     makeDownloads(getDataZips())
   }
 
 
-  function makeDownloads(arr){
-    if(arr.length>1)
-      forEach(arr,makeDownload)
-  }
 
-  function makeDownload(url){
-    var ifr = DOC.createElement('iframe');
-    ifr.style.display="none";
 
-    ifr.onload=function(){
-      var ifrDoc = ifr.contentWindow||ifr.contentDocument;
-      if(ifrDoc.document) ifrDoc = ifrDoc.document;
 
-      var form = ifrDoc.createElement('form');
-      form.action = url;
-      form.method = "GET";
-      ifrDoc.body.appendChild(form);
-      form.submit();
-      setTimeout(function(){
-        DOC.body.removeChild(ifr);
-      },2000);
-    }
-    
-    DOC.body.appendChild(ifr);
-  }
 
   });
 });

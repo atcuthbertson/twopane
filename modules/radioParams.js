@@ -304,6 +304,15 @@ function getCheckedServices(){
   });
 }
 
+function getServicesFromChecks(checkedArray){
+  return checkedArray.map(function(checked,i){
+        return serviceNames[serviceNames.length-i-1]
+    })
+}
+
+
+
+
 function clearAllLayers(){
   var checked = getCheckedServices();
   forEach(serviceTypes,function(type){
@@ -356,6 +365,34 @@ function getRadio(){
     return type;
 }
 
+function getFilteredServices(checkedArray){
+  var arr=[];
+  forEach(checkedArray,function(checked,i){
+    if(checked){
+      arr.push(serviceNames[serviceNames.length-i-1])
+    }
+  })
+  return arr;
+}
+
+
+
+  function makeDataZip(key,layer){
+    return "downloads/GIC_"+key+"_"+layer+".zip";
+  }
+
+  function getDataZips(){
+    var type = getRadio();
+    var services = getFilteredServices(getCheckedServices());
+    var zips = ["downloads/_readme.txt"];
+    forEach(services,function(name,i){
+      var key = type+name;
+      var layerName = getLayerName(type,key);
+      if(layerName)
+        zips.push(makeDataZip(key,layerName));
+    })
+    return zips;
+  }
 
 
 

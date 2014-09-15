@@ -27,3 +27,21 @@
     }
     service.setVisibleLayers(visibleLayerIds);
   }
+
+    function getServiceZips(id,radio){
+    if(radio){
+      radio.forEach(function(v){
+        if(v.checked) id = v.id;
+      })
+    }
+    var service = servicesById[id];
+    var zips = ["downloads/_readme.txt"];
+    for(var i =1, len = service.visibleLayers.length;i<len;i++){
+      zips.push(makeServiceZip(service.layerInfos[service.visibleLayers[i]].name))
+    }
+    return zips
+  }
+
+  function makeServiceZip(name){
+    return "downloads/" + name.split(" ").join("_") + ".zip"
+  }
