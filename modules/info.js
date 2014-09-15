@@ -1,9 +1,30 @@
+     "esri/dijit/InfoWindow",
+   "dijit/layout/ContentPane",
+  "dijit/layout/TabContainer",
+
+    "esri/geometry/ScreenPoint",
+
+    "esri/tasks/identify",
+  "esri/tasks/IdentifyTask",
+  "esri/tasks/IdentifyParameters",
+
+
    (function(){
       var mdX = 0;
       var mdY = 0;
       var lastClick = 0;
       var wasDouble = 0;
       var notMap = 0;
+
+          var infoWindow = new InfoWindow('infoWindow');
+    infoWindow.startup();
+    infoWindow.setTitle('<a id="zoomLink" action="javascript:void 0">Information at this Point</a>')
+    map.setInfoWindow(infoWindow);
+
+    var identifyParameters = new IdentifyParameters();
+    identifyParameters.layerOption = IdentifyParameters.LAYER_OPTION_VISIBLE;
+    identifyParameters.tolerance = 3;
+    identifyParameters.returnGeometry = false;
 
 
       var tabs = new TabContainer({style:"height:100%;"},'infoTabContainer');

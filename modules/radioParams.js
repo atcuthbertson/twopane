@@ -1,3 +1,14 @@
+   
+  "esri/layers/ArcGISDynamicMapServiceLayer",
+
+  "esri/layers/ImageParameters",
+    "dijit/form/ComboBox",
+
+
+    var imageParameters = new ImageParameters({layerIds:[-1],layerOption:ImageParameters.LAYER_OPTION_SHOW});
+
+
+
     var serviceTypes = ["Change","Elevation","Depth"];
     var serviceNames = ["_Ramp","_Contours","_Points"];
 

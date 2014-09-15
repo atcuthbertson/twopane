@@ -5,95 +5,58 @@
 require([
   "esri/map",
   "esri/geometry/Extent",
-  "esri/geometry/ScreenPoint",
-  "esri/geometry/Point",
   "esri/SpatialReference",
-  "esri/layers/ArcGISDynamicMapServiceLayer",
-  "esri/layers/FeatureLayer",
-  "esri/dijit/Scalebar",
+
   "esri/dijit/BasemapToggle",
-  "esri/dijit/InfoWindow",
-  "esri/dijit/Legend",
-  "esri/TimeExtent", 
-  "esri/dijit/TimeSlider",
-  "esri/layers/ImageParameters",
+  "esri/dijit/HomeButton",
+  "esri/dijit/Scalebar",
+
+  "esri/geometry/Point",
+  "esri/symbols/SimpleMarkerSymbol",
+  "esri/symbols/SimpleLineSymbol",
+
   "esri/graphic",
   "esri/geometry/webMercatorUtils",
 
-  "dojo/ready",
-  "dojo/_base/Color",
-  "dojo/parser",
   "dojo/on",
   "dojo/dom",
   "dojo/dom-class",
   "dojo/query",
-  "dojo/store/Memory",
-  "dijit/form/ComboBox",
-  "esri/dijit/HomeButton",
-  
-  "esri/symbols/SimpleMarkerSymbol",
-  "esri/symbols/SimpleLineSymbol",
-  "dijit/layout/BorderContainer",
-  "dijit/layout/ContentPane",
-  "dijit/layout/TabContainer",
-  "dijit/form/CheckBox",
-  "dijit/registry",
-
-  "esri/tasks/identify",
-  "esri/tasks/IdentifyTask",
-  "esri/tasks/IdentifyParameters",
+  "dojo/_base/Color",
+  "dojo/ready",
 
   "modules/geocode.js",
-
 
   "require"
   ], 
 
 function(
-   Map,
-   Extent,
-   ScreenPoint,
-   Point,
-   SpatialReference,
-   ArcGISDynamicMapServiceLayer,
-   FeatureLayer,
-   Scalebar,
-   BasemapToggle,
-   InfoWindow,
-   Legend,
-   TimeExtent, 
-   TimeSlider,
-   ImageParameters,
-   Graphic,
-   wmUtils,
+  Map,
+  Extent,
+  SpatialReference,
 
-   ready,
-   Color,
-   parser,
-   on,
-   dom,
-   domClass,
-   query,
-   Memory,
-   ComboBox,
-   HomeButton,
-  
-   MarkerSymbol,
-   LineSymbol,
-   BorderContainer,
-   ContentPane,
-   TabContainer,
-   CheckBox,
-   registry,
+  BasemapToggle,
+  HomeButton,
+  Scalebar,
 
-   identify,
-   IdentifyTask,
-   IdentifyParameters,
+  Point,
+  MarkerSymbol,
+  LineSymbol,
 
-   geocode,
+  Graphic,
+  wmUtils,
 
-   require
-   ){
+  on,
+  dom,
+  domClass,
+  query,
+  Color,
+  ready,
+
+  geocode,
+
+  require
+  ){
 
   //Disable CORS detection, since services.arcgisonline.com is not CORS enabled
   esri.config.defaults.io.corsDetection = false;
@@ -131,7 +94,6 @@ function(
     var servicesById = {};
 
     var serviceDescriptions = {};
-    var imageParameters = new ImageParameters({layerIds:[-1],layerOption:ImageParameters.LAYER_OPTION_SHOW});
     
 
     if(oldIE) fx = require("dojo/_base/fx", function(fx){return fx});
@@ -175,15 +137,11 @@ function(
 	
 
 
-    //Once the map is loaded, set the infoWindow's size. And turn it off and on to prevent a flash of
-    //unstyled content on the first point click.
+
 
     map.on("load", function(){
       map.disableDoubleClickZoom();
       svgLayer = dom.byId("centerPane_gc")
-      infoWindow.resize(425,325);
-      infoWindow.show(0,0);
-      setTimeout(function(){infoWindow.hide()},0);
 
       var basemapToggle = BasemapToggle();
       on(dom.byId("basemapNode"),"mousedown",basemapToggle);
@@ -364,17 +322,8 @@ function(
 
 
     //Info window and identify
-    var infoWindow = new InfoWindow('infoWindow');
-    infoWindow.startup();
-    infoWindow.setTitle('<a id="zoomLink" action="javascript:void 0">Information at this Point</a>')
-    map.setInfoWindow(infoWindow);
 
-    var identifyParameters = new IdentifyParameters();
-    identifyParameters.layerOption = IdentifyParameters.LAYER_OPTION_VISIBLE;
-    identifyParameters.tolerance = 3;
-    identifyParameters.returnGeometry = false;
-
-    //info.init(map,infoWindow, identifyParameters)
+    //info.init(map,mapPane)
 
 
 

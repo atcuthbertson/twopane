@@ -1,3 +1,12 @@
+    "esri/layers/ArcGISDynamicMapServiceLayer",
+
+  "esri/layers/ImageParameters",
+
+
+
+    var imageParameters = new ImageParameters({layerIds:[-1],layerOption:ImageParameters.LAYER_OPTION_SHOW});
+
+
   function makeService(url, id){
     var service = new ArcGISDynamicMapServiceLayer(url, {"imageParameters": imageParameters});
     service.suspend();
