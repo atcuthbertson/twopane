@@ -38,13 +38,19 @@ function(
 
     , activeUrls = {}
     , identifyTasks = {}
+
+    , titleFn
+    , contentFn
     ;
 
 
 
 
-  function init (mapArg){
+  function init (mapArg, options){
     map = mapArg;
+    titleFn = options&&options.setTitle ? options.setTitle : setTitle;
+    contentFn = options&&options.setContent ? options.setContent : setContent;
+
     mapPane = map.container;
     mapPaneId = mapPane.id;
 
@@ -118,21 +124,14 @@ function(
   }
 
 
-  function activate(url,service){
-    activeUrls[url] = service;
+
+
+  function fireZoom(e){
+    addEventCoordinates(e)
+    lastClick = 0;
+    infoWindow.hide();
+    map.centerAndZoom(e.mapPoint,map.getLevel()+1)
   }
-
-
-  function deactivate(url){
-    activeUrls[url] = null;
-  }
-
-
-  function register(url,task){
-    identifyTasks[url] = task;
-  }
-
-
 
 
   function addEventCoordinates(e){
@@ -141,14 +140,6 @@ function(
 
     e.screenPoint = new ScreenPoint(x,y);
     e.mapPoint = map.toMap(e.screenPoint)
-  }
-
-
-  function fireZoom(e){
-    addEventCoordinates(e)
-    lastClick = 0;
-    infoWindow.hide();
-    map.centerAndZoom(e.mapPoint,map.getLevel()+1)
   }
 
 
@@ -165,20 +156,25 @@ function(
 
 
 
+
   function runIdentify(event){
     var noneShowing = 1;
     infoWindow.show(event.screenPoint);
+
     identifyParameters.geometry = event.mapPoint;
     identifyParameters.mapExtent = map.extent;
     identifyParameters.width = map.width;
     identifyParameters.height = map.height;
+
     forEach(tabs.getChildren(),function(v){tabs.removeChild(v)});
 
     for(var taskUrl in identifyTasks){
-      if(!activeUrls[taskUrl]) continue;
-        noneShowing = 0;
-        identifyParameters.layerIds = activeUrls[taskUrl].visibleLayers;
-        identifyTasks[taskUrl].execute(identifyParameters,doProcess(taskUrl))
+      var service = activeUrls[taskUrl];
+      if(!service) continue;
+
+      noneShowing = 0;
+      identifyParameters.layerIds = service.visibleLayers;
+      identifyTasks[taskUrl].execute(identifyParameters,processIdentify(taskUrl))
     }
 
     if(noneShowing){
@@ -186,57 +182,42 @@ function(
     }
   }
 
-  function doProcess(url){
-    return function(results){
-      processIdentify(results,url);
-    }
-  }
 
-  function processIdentify (results,url){
-    if(!results.length) return
+
+
+  function processIdentify (results){
+    if(!results.length) return;
+
     forEach(results,function(result){
-      var tab = new ContentPane(makePane(result,url))
+      var tab = new ContentPane(makePane(result))
       tabs.addChild(tab);
     })
+
     tabs.resize();
   }
 
-  function makePane(result,url){
-    var isChange = !!url.match("GIC_Change");
-    var activeData = !!url.match(/_Change_|_Depth_|_Elevation_/);
-    var title;
-    var blurb;
-    if(activeData){
-      title = getTitle(result,isChange);
-      blurb = getBlurb(title,isChange,url);
-    }else{
-      title = makeSpaced(result.layerName)
-      blurb = '';
-    }
-    var content = makeContent(result.feature.attributes,blurb)
 
-    return{title:title,content:content}
+
+
+  function makePane(result){
+    var title = titleFn(result);
+    var content = contentFn(result)
+
+    return {
+            title:title,
+            content:content
+           }
   }
 
 
-
-  function getTitle(result,isChange){
-    var name = result.layerName;
-    var season = name.match(/S|F/);
-    if(season[0] === "S") season = "Spring "
-    else season = "Fall "
-
-    if(isChange){
-      var arr=name.match(/(\d{4}).*(\d{4})/);
-      return arr[2] +" to "+arr[1];
-    }
-    return season+name.match(/\d{4}/)[0]
+  function setTitle(result){
+    return result.layerName;
   }
 
 
-
-  function makeContent(attributes,blurb){
-    var list = blurb+"<ul>";
+  function setContent(result){
+    var attributes = result.features.attributes;
+    var list = "<ul>";
     for (var key in attributes){
       if(attributes.hasOwnProperty(key)
         &&key!=="OBJECTID"
@@ -245,7 +226,7 @@ function(
         &&key!=="Shape_Length"
         &&key!=="Pixel Value"
         ){
-        var spaced = makeSpaced(key)
+        var spaced = makeSpaced(key);
         list+= "<li><strong>"+spaced+"</strong>: "+getAttributeHTML(attributes[key])+"</li>"
       }
     }
@@ -254,67 +235,20 @@ function(
   }
 
 
-
   function makeSpaced(name){
     return name.replace(/_/g," ")
   }
 
 
 
-  function getAttributeHTML(value){
-    var pboLink = /http:\/\/pboshared\.unavco\.org.*/i;
-    var regLink = /(?:^https?|^ftp):\/\//i;
-    var hydstraImg = /^<img.*hydstra/i;
 
-    if(pboLink.test(value))
-      return makeImage(value);
-    else if(regLink.test(value))
+  function getAttributeHTML(value){
+    var link = /(?:^https?|^ftp):\/\//i;
+
+    if(link.test(value))
       return '<a target="_blank" href="'+value+'">'+value+'</a>'
-    else if(hydstraImg.test(value))
-      return makeEmbedded(value,0);
     else
       return value;
-  }
-
-
-
-  function makeImage(link){
-    setTimeout(function(){
-      infoWindow.resize(560,420);
-      tabs.resize();
-    },0)
-    var image = '<div class="identifyLinkImage" style="background-image:url('+link+')"></div>';
-    return '<a target="_blank" href="'+link+'">'+image+'</a>'
-  }
-
-
-
-  function makeEmbedded(value){
-    var urlReg = /src=['"](.*?)['"]/;
-    var url = urlReg.exec(value)[1];
-
-    value = value.slice(0,5)+'style="width:512px;height:384px;" '+value.slice(5);
-
-    setTimeout(function(){
-      infoWindow.resize(612,500);
-      tabs.resize();
-    },0)
-
-    return '<a target="_blank" href="'+url+'">'+value+'</a>'
-  }
-
-
-
-  function getBlurb(title,isChange,url){
-    var type;
-    if(isChange){
-        return "<span>Groundwater change from "+ title+".</span>";
-    }else{
-      if(url.match("GIC_Elevation"))
-        type = "Groundwater elevation measured in "
-      else type = "Water depth below ground measured in "
-      return "<span>"+ type + name +".</span>"
-    }
   }
 
 
@@ -333,6 +267,22 @@ function(
     for(var i=0;i<arr.length;i++){
       fn(arr[i],i,arr)
     }
+  }
+
+
+
+  function activate(url,service){
+    activeUrls[url] = service;
+  }
+
+
+  function deactivate(url){
+    activeUrls[url] = null;
+  }
+
+
+  function register(url,task){
+    identifyTasks[url] = task;
   }
 
 
