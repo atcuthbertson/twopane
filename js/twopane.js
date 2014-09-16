@@ -26,6 +26,7 @@ require([
   "dojo/ready",
 
   "modules/geocode.js",
+  "modules/info.js",
 
   "require"
   ], 
@@ -54,6 +55,7 @@ function(
   ready,
 
   geocode,
+  info,
 
   require
   ){
@@ -76,21 +78,19 @@ function(
 
 
     var mapPane = dom.byId("centerPane");
-    var svgLayer;
     var rp = dom.byId('rightPane');
     var titleNode = dom.byId('titleNode');
     var dataNode = dom.byId('dataNode');
     var closeButton = dom.byId('closeRP');
 
     var closeToggle;
+    var home;
 
     var oldIE =(DOC.all&&!W.atob)?true:false;
 
 
 
     var staticServices = {};
-    var visibleServiceUrls = {};
-    var identifyTasks = {};
     var servicesById = {};
 
     var serviceDescriptions = {};
@@ -141,10 +141,11 @@ function(
 
     map.on("load", function(){
       map.disableDoubleClickZoom();
-      svgLayer = dom.byId("centerPane_gc")
 
       var basemapToggle = BasemapToggle();
       on(dom.byId("basemapNode"),"mousedown",basemapToggle);
+
+      info.init(map);
     });
 
 
@@ -313,19 +314,13 @@ function(
 
 
 
+
     //Home extent button
-    var home= new HomeButton({
+    home = new HomeButton({
       map: map
     }, "homeButton");
 
     home.startup();
-
-
-    //Info window and identify
-
-    //info.init(map,mapPane)
-
-
 
 
     //toggling right pane
@@ -422,14 +417,6 @@ function(
       titleNode.innerHTML = title;
       dataNode.innerHTML = data;
       resetDataHeight();
-    }
-
-
-    //ie shim
-    function forEach(arr,fn){
-      for(var i=0;i<arr.length;i++){
-        fn(arr[i],i,arr)
-      }
     }
 
 
