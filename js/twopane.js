@@ -387,15 +387,16 @@ function(
 
 
 
-    //Show the application
+
     function resetDataHeight (){
       dataNode.style.height = DOC.documentElement.offsetHeight - 134 + "px"
     }
 
 
     resetDataHeight();
-    on(W,"resize",resetDataHeight)
+    on(W,"resize",resetDataHeight);
     on(closeButton,"mousedown", closeToggle);
+    populateRightPane("","Read information about selected layers here")
     dom.byId("mainContainer").style.visibility="visible";
 
     W.setTimeout(function(){
@@ -416,12 +417,7 @@ function(
     function populateRightPane(title,data){
       titleNode.innerHTML = title;
       dataNode.innerHTML = data;
-      resetDataHeight();
     }
-
-
-
-
 
   });
 });
