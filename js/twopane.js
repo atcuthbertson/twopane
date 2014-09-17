@@ -28,6 +28,8 @@ require([
   "modules/geocode.js",
   "modules/info.js",
 
+  "modules/layers/checks.js",
+
   "require"
   ], 
 
@@ -57,6 +59,8 @@ function(
   geocode,
   info,
 
+  CheckLayer,
+
   require
   ){
 
@@ -78,7 +82,8 @@ function(
 
 
     var mapPane = dom.byId("centerPane");
-    var rp = dom.byId('rightPane');
+    var serviceNode = dom.byId("serviceNode");
+    var rightPane = dom.byId('rightPane');
     var titleNode = dom.byId('titleNode');
     var dataNode = dom.byId('dataNode');
     var closeButton = dom.byId('closeRP');
@@ -304,7 +309,7 @@ function(
 
         if(oldIE){
           for(;i<j;i++){
-            if(movers[i] === rp)
+            if(movers[i] === rightPane)
               fx.animateProperty({node:movers[i], duration:300, properties:{marginRight:0}}).play();
             else fx.animateProperty({node:movers[i], duration:300, properties:{marginRight:285}}).play();
           }
@@ -324,7 +329,7 @@ function(
 
         if(oldIE){
           for(;i<j;i++){
-          if(movers[i] === rp)
+          if(movers[i] === rightPane)
             fx.animateProperty({node:movers[i], duration:250, properties:{marginRight:-285}}).play();
           else fx.animateProperty({node:movers[i], duration:250, properties:{marginRight:0}}).play();
           }
@@ -348,6 +353,12 @@ function(
     function resetDataHeight (){
       dataNode.style.height = DOC.documentElement.offsetHeight - 134 + "px"
     }
+
+
+
+
+    CheckLayer("https://darcgis.water.ca.gov/arcgis/rest/services/GGI/GIC_Boundaries/MapServer",serviceNode)
+
 
 
     resetDataHeight();

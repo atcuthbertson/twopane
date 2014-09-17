@@ -93,6 +93,17 @@ body{
   padding:10px 25px;
 }
 
+.serviceWrapper{
+  margin-top:20px;
+  font-size:16px;
+}
+
+.serviceWrapper > input{
+  margin-right:8px;
+  vertical-align: bottom;
+}
+
+
 
 
 .paneHeading{
@@ -113,9 +124,7 @@ body{
   font-size:15px;
 }
 
-#serviceNode >div{
-  margin-left:20px;
-}
+
 
 .dijitInputField.dijitInputContainer.dijitReset{ 
   padding-left: 5px;
