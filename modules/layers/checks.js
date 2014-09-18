@@ -1,10 +1,13 @@
 define([
+  "dojo/on",
   "esri/layers/ArcGISDynamicMapServiceLayer",
   "esri/layers/ImageParameters",
 
   "modules/info.js"
   ],
 function(
+  on,
+
   ArcGISDynamicMapServiceLayer,
   ImageParameters,
 
@@ -46,41 +49,45 @@ function(
 
     service.on("load",function(e){
       var layer = e.layer;
+      console.log(layer);
       layerTitle = url.match(nameReg)[1];
       layerContent = layer.description;
 
-      var container = makeNodes(layer.layerInfos);
+      var container = DOC.createElement('div');
+      layer.layerInfos.forEach(function(layerInfo){
+        var check = makeNode(layerInfo,container);
+        on(check,"change")
+      });
+
       node.appendChild(container);
+      populate(layerTitle,layerContent);
     });
 
     info.register(url);
 
 
-    function makeNodes(layerInfos){
-      var container = DOC.createElement('div');
 
-      for(var i=0, len=layerInfos.length; i < len; i++){
-        var layer = layerInfos[i];
-        var id = Math.random();
+//add in spinner and opacity slider. And legend. And Handlers.
+    function makeNode(layerInfo,container){
+      var id = Math.random();
 
-        var wrapper = DOC.createElement('div');
-        wrapper.className = serviceWrapper;
+      var wrapper = DOC.createElement('div');
+      wrapper.className = serviceWrapper;
 
-        var check = DOC.createElement('input'); 
-        check.type = "checkbox";
-        check.id = id;
+      var check = DOC.createElement('input'); 
+      check.type = "checkbox";
+      check.id = id;
 
-        var label = DOC.createElement('label');
-        label.setAttribute('for',id);
-        label.innerText = makeSpaced(layer.name);
+      var label = DOC.createElement('label');
+      label.setAttribute('for',id);
+      label.innerText = makeSpaced(layerInfo.name);
 
-        wrapper.appendChild(check);
-        wrapper.appendChild(label);
+      wrapper.appendChild(check);
+      wrapper.appendChild(label);
 
-        container.appendChild(wrapper);
-      }
+      container.appendChild(wrapper);
 
-      return container;
+      return check;
     }
 
     function updateLayerVisibility (service,pane) {

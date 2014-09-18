@@ -120,9 +120,6 @@ function(
 
 
 
-
-
-
     // Create the map. The first argument is either an HTML element (usually a div) or, as in this case,
     // the id of an HTML element as a string. See https://developers.arcgis.com/en/javascript/jsapi/map-amd.html#map1
     // for the full list of options that can be passed in the second argument.
@@ -139,9 +136,6 @@ function(
 
 
     
-	
-
-
 
 
     map.on("load", function(){
@@ -297,7 +291,7 @@ function(
       }
 
       function arrowLeft(){
-        arro.style.marginLeft = "-25px";
+        arro.style.marginLeft = "-23px";
         arro.textContent = "\u25C0";
       }
 
@@ -357,7 +351,7 @@ function(
 
 
 
-    CheckLayer("https://darcgis.water.ca.gov/arcgis/rest/services/GGI/GIC_Boundaries/MapServer",serviceNode)
+    CheckLayer("https://darcgis.water.ca.gov/arcgis/rest/services/GGI/GIC_Boundaries/MapServer",serviceNode,populateRightPane)
 
 
 
@@ -389,6 +383,3 @@ function(
 
   });
 });
-
-	
-	  
