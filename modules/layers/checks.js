@@ -1,5 +1,6 @@
 define([
   "dojo/on",
+
   "esri/layers/ArcGISDynamicMapServiceLayer",
   "esri/layers/ImageParameters",
 
@@ -37,25 +38,27 @@ function(
   function makeSpaced(name){
     return name.replace(/_/g," ")
   }
-window.ag = ArcGISDynamicMapServiceLayer;
-window.imgP = imageParameters;
 
 
-  return function(url, node, populate){
+  return function(url, node, map, populate){
 
     var layerTitle;
     var layerContent;
+
+    var visibleLayers = {};
+
     var service = new ArcGISDynamicMapServiceLayer(url, {"imageParameters": imageParameters});
     service.suspend();
 
     service.on("load",function(e){
       var layer = e.layer;
-      window.s = service;
       layerTitle = url.match(nameReg)[1];
       layerContent = layer.description;
 
       var container = DOC.createElement('div');
       layer.layerInfos.forEach(function(layerInfo){
+        visibleLayers[layerInfo.id] = false;
+
         var check = makeNode(layerInfo,container);
         on(check,"change",function(){toggleLayer(service,layerInfo.id)})
       });
@@ -63,6 +66,8 @@ window.imgP = imageParameters;
       node.appendChild(container);
       populate(layerTitle,layerContent);
     });
+
+    map.addLayer(service);
 
     info.register(url);
 
@@ -91,32 +96,24 @@ window.imgP = imageParameters;
     }
 
     function toggleLayer(service,id){
-      service.resume();
+      visibleLayers[id] = !visibleLayers[id];
 
-      service.setVisibleLayers([id])
-    }
-
-    function updateLayerVisibility (service,pane) {
-      var inputs = query("input[type='checkbox']",pane);
-      var inputCount = inputs.length;
-      var visibleLayerIds = [-1]
-      //in this application no layer is always on
-      for (var i = 0; i < inputCount; i++) {
-        if (inputs[i].checked) {
-          visibleLayerIds.push(inputs[i].value);
+      var layerArray = [-1];
+      for(var layer in visibleLayers){
+        if(visibleLayers[layer]){
+          layerArray.push(layer);
         }
       }
-      if(visibleLayerIds.length === 1){
+
+      if(layerArray.length === 1){
         service.suspend();
         info.deactivate(service.url);
-        activeUrls[service.url] = 0;
       }else{
         service.resume();
         info.activate(service.url);
-        activeUrls[service.url] = 1;
       }
-      service.setVisibleLayers(visibleLayerIds);
 
+      service.setVisibleLayers(layerArray);
     }
 
       function getDownloads(id){
