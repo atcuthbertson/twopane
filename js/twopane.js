@@ -6,6 +6,7 @@ require([
   "esri/map",
   "esri/geometry/Extent",
   "esri/SpatialReference",
+  "esri/layers/ArcGISDynamicMapServiceLayer",
 
   "esri/dijit/BasemapToggle",
   "esri/dijit/HomeButton",
@@ -37,6 +38,7 @@ function(
   Map,
   Extent,
   SpatialReference,
+  ArcGISDynamicMapServiceLayer,
 
   BasemapToggle,
   HomeButton,
@@ -145,6 +147,9 @@ function(
       on(dom.byId("basemapNode"),"mousedown",basemapToggle);
 
       info.init(map);
+
+      CheckLayer("https://darcgis.water.ca.gov/arcgis/rest/services/GGI/GIC_Boundaries/MapServer",serviceNode,populateRightPane)
+
     });
 
 
@@ -351,7 +356,6 @@ function(
 
 
 
-    CheckLayer("https://darcgis.water.ca.gov/arcgis/rest/services/GGI/GIC_Boundaries/MapServer",serviceNode,populateRightPane)
 
 
 

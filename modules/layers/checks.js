@@ -27,17 +27,18 @@ function(
   //This will differ per layer type but is managed internally. The function is eventually called with
   //to set the title and content nodes (currently as innerHTML, but might make more sense as append)
 
-  var imageParameters = new ImageParameters({layerIds:[-1],layerOption:ImageParameters.LAYER_OPTION_SHOW});
   var activeUrls = {};
   var nameReg = /([^\/]*)\/MapServer/;
   var serviceWrapper = 'serviceWrapper';
+  var imageParameters = new ImageParameters({layerIds:[-1],layerOption:ImageParameters.LAYER_OPTION_SHOW});
 
   var DOC = document;
 
   function makeSpaced(name){
     return name.replace(/_/g," ")
   }
-
+window.ag = ArcGISDynamicMapServiceLayer;
+window.imgP = imageParameters;
 
 
   return function(url, node, populate){
@@ -49,14 +50,14 @@ function(
 
     service.on("load",function(e){
       var layer = e.layer;
-      console.log(layer);
+      window.s = service;
       layerTitle = url.match(nameReg)[1];
       layerContent = layer.description;
 
       var container = DOC.createElement('div');
       layer.layerInfos.forEach(function(layerInfo){
         var check = makeNode(layerInfo,container);
-        on(check,"change")
+        on(check,"change",function(){toggleLayer(service,layerInfo.id)})
       });
 
       node.appendChild(container);
@@ -66,8 +67,7 @@ function(
     info.register(url);
 
 
-
-//add in spinner and opacity slider. And legend. And Handlers.
+//add in spinner and opacity slider. And legend.
     function makeNode(layerInfo,container){
       var id = Math.random();
 
@@ -88,6 +88,12 @@ function(
       container.appendChild(wrapper);
 
       return check;
+    }
+
+    function toggleLayer(service,id){
+      service.resume();
+
+      service.setVisibleLayers([id])
     }
 
     function updateLayerVisibility (service,pane) {
