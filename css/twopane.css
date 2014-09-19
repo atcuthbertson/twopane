@@ -99,8 +99,20 @@ body{
 }
 
 .serviceWrapper > input{
-  margin-right:8px;
   vertical-align: bottom;
+  cursor:pointer;
+  margin:0 0 3px 0;
+}
+.serviceWrapper > label{
+  padding-left:8px;
+}
+
+.serviceWrapper > .dijitSliderH{
+  margin:8px 0 0 19px;
+}
+
+.dijitSliderBar{
+  height:2px;
 }
 
 

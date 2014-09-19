@@ -4,7 +4,6 @@ define([
   "dijit/form/HorizontalSlider",
 
   "esri/layers/ArcGISDynamicMapServiceLayer",
-  "esri/layers/ImageParameters",
 
   "modules/info.js"
   ],
@@ -14,7 +13,6 @@ function(
   Slider,
 
   ArcGISDynamicMapServiceLayer,
-  ImageParameters,
 
   info
 ){
@@ -114,7 +112,7 @@ function(
         minimum:0,
         maximum:1,
         intermediateChanges: true,
-        style:"width:100px",
+        style:"width:120px;",
         onChange:function(value){
           services[layerId].setOpacity(value);
         }
