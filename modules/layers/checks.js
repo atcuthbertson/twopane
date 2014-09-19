@@ -64,6 +64,11 @@ function(
         makeService(url,services);
       }
 
+      /*Add services in reverse order to make overlap more intuitive (top overlaps bottom)*/
+      for(i= layerInfos.length-1;i>-1; i--){
+        map.addLayer(services[i])
+      }
+
 
       var container = DOC.createElement('div');
 
@@ -84,7 +89,6 @@ function(
       var service = new ArcGISDynamicMapServiceLayer(url);
       service.suspend();
       services.push(service);
-      map.addLayer(service);
       return service;
     }
 
