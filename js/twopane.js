@@ -74,7 +74,6 @@ function(
     var oldIE =(DOC.all&&!W.atob)?true:false;
 
 
-
     var staticServices = {};
     var servicesById = {};
 
@@ -83,6 +82,23 @@ function(
 
     if(oldIE) fx = require("dojo/_base/fx", function(fx){return fx});
 
+
+    //Layout the application based on screen dimensions
+    function setNodeDimensions (){
+      var elem = DOC.documentElement;
+      var width = elem.offsetWidth;
+      var height = elem.offsetHeight;
+
+      var left = leftPane.offsetWidth;
+      var right = rightPane.offsetWidth;
+
+      mapPane.style.width = width - left - right + "px";
+      mapPane.style.left = left + "px";
+      dataNode.style.height = height - 134 + "px"
+    }
+
+
+    setNodeDimensions();
 
     // Choose your initial extent. The easiest way to find this is to pan around the map, checking the
     // current extent with 'map.extent' in the Javascript console (F12 to open it)
@@ -254,14 +270,7 @@ function(
 
 
 
-
-    function resetDataHeight (){
-      dataNode.style.height = DOC.documentElement.offsetHeight - 134 + "px"
-    }
-
-
-    resetDataHeight();
-    on(W,"resize",resetDataHeight);
+    on(W,"resize",setNodeDimensions);
     on(closeButton,"mousedown", closeToggle);
     populateRightPane("","Read information about selected layers here")
     dom.byId("mainContainer").style.visibility="visible";

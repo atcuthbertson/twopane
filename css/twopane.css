@@ -64,7 +64,7 @@ body{
   left:0;
   z-index: 1;
   height:100%;
-  width:22%;
+  width:360px;
   overflow:hidden;
   box-shadow: 0 0 2px 0 #8596b0;
   background-color:#fafafa;
@@ -94,7 +94,7 @@ body{
 }
 
 .serviceWrapper{
-  margin-top:20px;
+  margin:20px 0 0 10px;
   font-size:16px;
 }
 
@@ -168,11 +168,9 @@ label:hover,.serviceRadio,.layerCheck{
 
 #centerPane{
   height: 100%;
-  width: 78%;
   margin: 0;
   padding:0;
   position:absolute;
-  left:22%;
 }
 
 .geocoderWrapper{
