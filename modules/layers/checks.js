@@ -48,7 +48,10 @@ function(
 
     var services = [];
 
-    var firstService = makeService(url);
+    var firstService = makeService(url,services);
+
+    info.register(url);
+
 
     firstService.on("load",function(e){
       var layer = e.layer;
@@ -58,7 +61,7 @@ function(
       layerContent = layer.description;
 
       for(var i=1; i<layerInfos.length; i++){
-        makeService(url);
+        makeService(url,services);
       }
 
 
@@ -67,18 +70,17 @@ function(
       layerInfos.forEach(function(layerInfo,i){
         services[i].setVisibleLayers([i]);
 
-        var check = makeNode(layerInfo,i,container);
-        on(check,"change",function(){toggleLayer(i)})
+        var check = makeNode(layerInfo, i, container, services);
+        on(check,"change",function(){toggleLayer(i,services)})
       });
 
       node.appendChild(container);
       populate(layerTitle,layerContent);
     });
+  }  
 
-    info.register(url);
 
-
-    function makeService(url){
+    function makeService(url,services){
       var service = new ArcGISDynamicMapServiceLayer(url);
       service.suspend();
       services.push(service);
@@ -86,15 +88,16 @@ function(
       return service;
     }
 
-//add in spinner and opacity slider. And legend.
-    function makeNode(layerInfo,layerId,container){
+
+//add in spinner and legend.
+    function makeNode(layerInfo, layerId, container, services){
       var id = Math.random();
 
       var wrapper = DOC.createElement('div');
       wrapper.className = serviceWrapper;
 
-      var check = DOC.createElement('input'); 
-      check.type = "checkbox";
+      var check = DOC.createElement('input');
+       check.type = "checkbox";
       check.id = id;
 
       var label = DOC.createElement('label');
@@ -124,9 +127,15 @@ function(
       return check;
     }
 
-    function toggleLayer(id){
-      if(services[id].suspended) services[id].resume();
-      else services[id].suspend();
+    function toggleLayer(id,services){
+      var service = services[id];
+      if(service.suspended){
+        service.resume();
+        info.activate(service.url,id);
+      }else{
+        service.suspend();
+        info.deactivate(service.url,id);
+      }
     }
 
 
@@ -147,5 +156,5 @@ function(
       service:service,
       getDownloads:getDownloads
     }*/
-  }
+
 });

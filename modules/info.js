@@ -36,7 +36,7 @@ function(
     , wasDouble = 0
     , notMap = 0
 
-    , activeUrls = {}
+    , activeLayers = {}
     , identifyTasks = {}
 
     , titleFn
@@ -168,13 +168,13 @@ function(
 
     forEach(tabs.getChildren(),function(v){tabs.removeChild(v)});
 
-    for(var taskUrl in identifyTasks){
-      var service = activeUrls[taskUrl];
-      if(!service) continue;
+    for(var url in identifyTasks){
+      var layers = activeLayers[url];
+      if(!layers.length) continue;
 
       noneShowing = 0;
-      identifyParameters.layerIds = service.visibleLayers;
-      identifyTasks[taskUrl].execute(identifyParameters,processIdentify(taskUrl))
+      identifyParameters.layerIds = layers;
+      identifyTasks[url].execute(identifyParameters,processIdentify)
     }
 
     if(noneShowing){
@@ -186,7 +186,7 @@ function(
 
 
   function processIdentify (results){
-    if(!results.length) return;
+    if(!results.length) return setNoData();
 
     forEach(results,function(result){
       var tab = new ContentPane(makePane(result))
@@ -211,12 +211,13 @@ function(
 
 
   function setTitle(result){
-    return result.layerName;
+    return makeSpaced(result.layerName);
   }
 
 
   function setContent(result){
-    var attributes = result.features.attributes;
+
+    var attributes = result.feature.attributes;
     var list = "<ul>";
     for (var key in attributes){
       if(attributes.hasOwnProperty(key)
@@ -271,18 +272,22 @@ function(
 
 
 
-  function activate(url,service){
-    activeUrls[url] = service;
+  function activate(url,id){
+    activeLayers[url].push(id);
   }
 
 
-  function deactivate(url){
-    activeUrls[url] = null;
+  function deactivate(url,id){
+    var arr = activeLayers[url];
+    for(var i=0; i<arr.length; i++){
+      if(arr[i] === id) return arr.splice(i,1)
+    }
   }
 
 
-  function register(url,task){
-    identifyTasks[url] = task;
+  function register(url){
+    identifyTasks[url] = new IdentifyTask(url);
+    activeLayers[url] = [];
   }
 
 
