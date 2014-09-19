@@ -1,6 +1,8 @@
 define([
   "dojo/on",
 
+  "dijit/form/HorizontalSlider",
+
   "esri/layers/ArcGISDynamicMapServiceLayer",
   "esri/layers/ImageParameters",
 
@@ -8,6 +10,8 @@ define([
   ],
 function(
   on,
+
+  Slider,
 
   ArcGISDynamicMapServiceLayer,
   ImageParameters,
@@ -31,7 +35,6 @@ function(
   var activeUrls = {};
   var nameReg = /([^\/]*)\/MapServer/;
   var serviceWrapper = 'serviceWrapper';
-  var imageParameters = new ImageParameters({layerIds:[-1],layerOption:ImageParameters.LAYER_OPTION_SHOW});
 
   var DOC = document;
 
@@ -45,35 +48,48 @@ function(
     var layerTitle;
     var layerContent;
 
-    var visibleLayers = {};
+    var services = [];
 
-    var service = new ArcGISDynamicMapServiceLayer(url, {"imageParameters": imageParameters});
-    service.suspend();
+    var firstService = makeService(url);
 
-    service.on("load",function(e){
+    firstService.on("load",function(e){
       var layer = e.layer;
+      var layerInfos = layer.layerInfos;
+
       layerTitle = url.match(nameReg)[1];
       layerContent = layer.description;
 
-      var container = DOC.createElement('div');
-      layer.layerInfos.forEach(function(layerInfo){
-        visibleLayers[layerInfo.id] = false;
+      for(var i=1; i<layerInfos.length; i++){
+        makeService(url);
+      }
 
-        var check = makeNode(layerInfo,container);
-        on(check,"change",function(){toggleLayer(service,layerInfo.id)})
+
+      var container = DOC.createElement('div');
+
+      layerInfos.forEach(function(layerInfo,i){
+        services[i].setVisibleLayers([i]);
+
+        var check = makeNode(layerInfo,i,container);
+        on(check,"change",function(){toggleLayer(i)})
       });
 
       node.appendChild(container);
       populate(layerTitle,layerContent);
     });
 
-    map.addLayer(service);
-
     info.register(url);
 
 
+    function makeService(url){
+      var service = new ArcGISDynamicMapServiceLayer(url);
+      service.suspend();
+      services.push(service);
+      map.addLayer(service);
+      return service;
+    }
+
 //add in spinner and opacity slider. And legend.
-    function makeNode(layerInfo,container){
+    function makeNode(layerInfo,layerId,container){
       var id = Math.random();
 
       var wrapper = DOC.createElement('div');
@@ -87,34 +103,34 @@ function(
       label.setAttribute('for',id);
       label.innerText = makeSpaced(layerInfo.name);
 
+      var sliderNode = DOC.createElement('div')
+
       wrapper.appendChild(check);
       wrapper.appendChild(label);
+      wrapper.appendChild(sliderNode);
+
+      var slider = new Slider({
+        value:1,
+        minimum:0,
+        maximum:1,
+        intermediateChanges: true,
+        style:"width:100px",
+        onChange:function(value){
+          services[layerId].setOpacity(value);
+        }
+        }, sliderNode
+      ).startup();
 
       container.appendChild(wrapper);
 
       return check;
     }
 
-    function toggleLayer(service,id){
-      visibleLayers[id] = !visibleLayers[id];
-
-      var layerArray = [-1];
-      for(var layer in visibleLayers){
-        if(visibleLayers[layer]){
-          layerArray.push(layer);
-        }
-      }
-
-      if(layerArray.length === 1){
-        service.suspend();
-        info.deactivate(service.url);
-      }else{
-        service.resume();
-        info.activate(service.url);
-      }
-
-      service.setVisibleLayers(layerArray);
+    function toggleLayer(id){
+      if(services[id].suspended) services[id].resume();
+      else services[id].suspend();
     }
+
 
       function getDownloads(id){
       var service = servicesById[id];
@@ -129,9 +145,9 @@ function(
       return "downloads/" + name.split(" ").join("_") + ".zip"
     }
 
-    return {
+  /*  return {
       service:service,
       getDownloads:getDownloads
-    }
+    }*/
   }
 });
