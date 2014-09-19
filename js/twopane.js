@@ -5,31 +5,19 @@
 require([
   "esri/map",
   "esri/geometry/Extent",
-  "esri/SpatialReference",
-
-  "dijit/registry",
 
   "esri/dijit/BasemapToggle",
   "esri/dijit/HomeButton",
   "esri/dijit/Scalebar",
 
-  "esri/geometry/Point",
-  "esri/symbols/SimpleMarkerSymbol",
-  "esri/symbols/SimpleLineSymbol",
-
-  "esri/graphic",
-  "esri/geometry/webMercatorUtils",
-
   "dojo/on",
   "dojo/dom",
   "dojo/dom-class",
   "dojo/query",
-  "dojo/_base/Color",
   "dojo/ready",
 
-  "modules/geocode.js",
   "modules/info.js",
-
+  "modules/searchbox.js",
   "modules/layers/checks.js",
 
   "require"
@@ -38,31 +26,19 @@ require([
 function(
   Map,
   Extent,
-  SpatialReference,
-
-  registry,
 
   BasemapToggle,
   HomeButton,
   Scalebar,
 
-  Point,
-  MarkerSymbol,
-  LineSymbol,
-
-  Graphic,
-  wmUtils,
-
   on,
   dom,
   domClass,
   query,
-  Color,
   ready,
 
-  geocode,
   info,
-
+  Searchbox,
   CheckLayer,
 
   require
@@ -123,7 +99,6 @@ function(
 	
 
 
-
     // Create the map. The first argument is either an HTML element (usually a div) or, as in this case,
     // the id of an HTML element as a string. See https://developers.arcgis.com/en/javascript/jsapi/map-amd.html#map1
     // for the full list of options that can be passed in the second argument.
@@ -141,7 +116,6 @@ function(
 
     
 
-
     map.on("load", function(){
       map.disableDoubleClickZoom();
 
@@ -152,86 +126,17 @@ function(
     });
 
 
-    CheckLayer("https://darcgis.water.ca.gov/arcgis/rest/services/GGI/GIC_Boundaries/MapServer",serviceNode,map,populateRightPane);
 
 
-
-    //initialize and hook up geocoder
-    (function(){
-
-      var symbol = new MarkerSymbol(
-        MarkerSymbol.STYLE_CIRCLE
-        , 10
-        , new LineSymbol(LineSymbol.STYLE_SOLID, new Color("#44474d"), 1)
-        , new Color("#041222")
-        );
-      var lastGraphic = null;
-
-
-      var wrapper = DOC.createElement('div');
-      var geocoder = DOC.createElement('input');
-
-
-      wrapper.className = 'geocoderWrapper';
-      geocoder.className = 'geocoder';
-      geocoder.autofocus = 'autofocus';
-
-      wrapper.appendChild(geocoder);
-      mapPane.appendChild(wrapper);
-
-      geocoder.tabIndex = "1";
-
-      on(geocoder,"keyup",function(e){
-        if(e.keyCode === 13){
-          clearLastGeocode();
-          geocode(geocoder.value,parseGeocoder)
-        }
-      });
-
-
-      function parseGeocoder(data){
-        var dataObj = JSON.parse(data);
-        var topResult = dataObj.results[0];
-        if(topResult){
-          var location = topResult.geometry.location;
-          var address = topResult.formatted_address;
-
-          reflectLocationChoice(address)
-          showLocation(location)
-        }
-      }
-
-
-      function reflectLocationChoice(address){
-        return geocoder.value = address;
-      }
-
-
-      function showLocation(location){
-        var loc = wmUtils.lngLatToXY(location.lng,location.lat);
-        var pnt = new Point(loc, new SpatialReference(102100));
-
-        lastGraphic = new Graphic(pnt,symbol)
-
-        map.graphics.add(lastGraphic);
-        map.centerAndZoom(pnt,12);
-      }
-
-
-      function clearLastGeocode(){
-        if(lastGraphic){
-          map.graphics.remove(lastGraphic);
-          lastGraphic = null;
-        }
-      }
-
-    })();
+    //Layer composed of simple checkboxes
+    CheckLayer("https://darcgis.water.ca.gov/arcgis/rest/services/cadre/Boundaries_Map/MapServer",serviceNode,map,populateRightPane);
 
 
 
 
+    //Geocoder
+    Searchbox(map);
 
-    // Add dijits to the application
 
 
 
@@ -282,6 +187,8 @@ function(
     }, "homeButton");
 
     home.startup();
+
+
 
 
     //toggling right pane
@@ -348,15 +255,9 @@ function(
 
 
 
-
     function resetDataHeight (){
       dataNode.style.height = DOC.documentElement.offsetHeight - 134 + "px"
     }
-
-
-
-
-
 
 
     resetDataHeight();
