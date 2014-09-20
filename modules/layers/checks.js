@@ -5,7 +5,8 @@ define([
 
   "esri/layers/ArcGISDynamicMapServiceLayer",
 
-  "modules/info.js"
+  "modules/info.js",
+  "modules/spinner.js"
   ],
 function(
   on,
@@ -14,17 +15,12 @@ function(
 
   ArcGISDynamicMapServiceLayer,
 
-  info
+  info,
+  spinner
 ){
-
-
-  //Need to add to the DOM. Onload, list layers from service and add them to the provided node.
-  // Make inputs / checkbox / whatever and attach handlers. May call populate based on what is checked
-
   //need to do something about legends
 
   //need to provide an array of zip files for active layers
-
 
   //need to rework the populate function such that only the proper things are added to the right pane
   //This will differ per layer type but is managed internally. The function is eventually called with
@@ -76,7 +72,10 @@ function(
         services[i].setVisibleLayers([i]);
 
         var check = makeNode(layerInfo, i, container, services);
-        on(check,"change",function(){toggleLayer(i,services)})
+        on(check,"change",function(){
+          toggleLayer(i,services);
+          if(!services[i].suspended)spinner(check,services[i]);
+        })
       });
 
       node.appendChild(container);
