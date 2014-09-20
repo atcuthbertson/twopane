@@ -15,7 +15,7 @@ define([],function(){
   return function (check,service){
       var img = document.createElement('img')
       img.className = "loadingImg";
-      img.src = "../images/loading.gif";
+      img.src = "images/loading.gif";
       check.parentNode.insertBefore(img,check)
 
       var handle = service.on('update-end',function(){
