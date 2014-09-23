@@ -93,13 +93,12 @@ function(
       populate(layerTitle,layerContent);
 
       var next = queued.shift();
-
       if(next) next();
       else busy = 0;
     }
 
     firstService.on("load",function(e){
-      if(active) processLayer(e);
+      if(!busy||active) processLayer(e);
       else queued.push(function(){processLayer(e)});
     });
   }
