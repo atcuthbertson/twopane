@@ -65,7 +65,7 @@ body{
   z-index: 1;
   height:100%;
   width:360px;
-  overflow:hidden;
+  overflow-x:hidden;
   box-shadow: 0 0 2px 0 #8596b0;
   background-color:#fafafa;
   background: -webkit-linear-gradient(0deg, #ecfafd 10%, #fafcff 90%); /* Chrome 10+, Saf5.1+ */
@@ -90,7 +90,7 @@ body{
 #serviceNode{
   font-size:15px;
   overflow-x:hidden;
-  padding:10px 25px;
+  padding:10px 5px 10px 25px
 }
 
 .serviceWrapper{
