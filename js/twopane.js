@@ -144,7 +144,7 @@ function(
 
     //Layer composed of simple checkboxes
     CheckLayer("https://darcgis.water.ca.gov/arcgis/rest/services/cadre/Boundaries_Map/MapServer",serviceNode,map,populateRightPane);
-
+    CheckLayer("https://darcgis.water.ca.gov/arcgis/rest/services/GGI/GIC_Boundaries/MapServer",serviceNode,map,populateRightPane);
 
 
 

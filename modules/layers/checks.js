@@ -32,12 +32,22 @@ function(
 
   var DOC = document;
 
+  var queued = [];
+  var busy = 0;
+  var active = 0;
+
   function makeSpaced(name){
     return name.replace(/_/g," ")
   }
 
 
   return function(url, node, map, populate){
+
+    var active = 0;
+    if(!busy){
+      active = 1;
+      busy = 1;
+    }
 
     var layerTitle;
     var layerContent;
@@ -48,25 +58,26 @@ function(
 
     info.register(url);
 
-
-    firstService.on("load",function(e){
+    function processLayer(e){
       var layer = e.layer;
       var layerInfos = layer.layerInfos;
 
       layerTitle = makeSpaced(url.match(nameReg)[1]);
       layerContent = layer.description;
 
+      var container = DOC.createElement('div');
+      var title = DOC.createElement('h3');
+      title.innerText = layerTitle;
+      container.appendChild(title);
+
       for(var i=1; i<layerInfos.length; i++){
         makeService(url,services);
       }
 
-      /*Add services in reverse order to make overlap more intuitive (top overlaps bottom)*/
-      for(i= layerInfos.length-1;i>-1; i--){
-        map.addLayer(services[i])
+      for(i=0; i<services.length; i++){
+        map.addLayer(services[i],1);
       }
 
-
-      var container = DOC.createElement('div');
 
       layerInfos.forEach(function(layerInfo,i){
         services[i].setVisibleLayers([i]);
@@ -77,11 +88,21 @@ function(
           if(!services[i].suspended)spinner(check,services[i]);
         })
       });
-
       node.appendChild(container);
+
       populate(layerTitle,layerContent);
+
+      var next = queued.shift();
+
+      if(next) next();
+      else busy = 0;
+    }
+
+    firstService.on("load",function(e){
+      if(active) processLayer(e);
+      else queued.push(function(){processLayer(e)});
     });
-  }  
+  }
 
 
     function makeService(url,services){
@@ -92,7 +113,8 @@ function(
     }
 
 
-//add in spinner and legend.
+
+    //TODO add legend.
     function makeNode(layerInfo, layerId, container, services){
       var id = Math.random();
 
@@ -131,8 +153,11 @@ function(
     }
 
     function toggleLayer(id,services){
+      console.log(arguments)
       var service = services[id];
+      console.log(service.suspended)
       if(service.suspended){
+        console.log('resuming')
         service.resume();
         info.activate(service.url,id);
       }else{
