@@ -53,7 +53,7 @@ function(
       var layer = e.layer;
       var layerInfos = layer.layerInfos;
 
-      layerTitle = url.match(nameReg)[1];
+      layerTitle = makeSpaced(url.match(nameReg)[1]);
       layerContent = layer.description;
 
       for(var i=1; i<layerInfos.length; i++){
