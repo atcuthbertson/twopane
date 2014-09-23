@@ -88,11 +88,9 @@ function(
       var elem = DOC.documentElement;
       var width = elem.offsetWidth;
       var height = elem.offsetHeight;
-
       var left = leftPane.offsetWidth;
-      var right = rightPane.offsetWidth;
 
-      mapPane.style.width = width - left - right + "px";
+      mapPane.style.width = width - left + "px";
       mapPane.style.left = left + "px";
       dataNode.style.height = height - 134 + "px"
     }
