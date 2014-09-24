@@ -119,7 +119,7 @@ function(
         basemap : "topo",
   	    extent:initialExtent,
         minZoom:6,
-  	    maxZoom:12
+  	    maxZoom:16
       });
 
 
@@ -273,7 +273,7 @@ function(
 
 
 
-
+ /*
     //make way for layer metadata
     clearRightPane();
 
@@ -282,7 +282,7 @@ function(
     CheckLayer("https://darcgis.water.ca.gov/arcgis/rest/services/GGI/GIC_Boundaries/MapServer",serviceNode,map,populateRightPane);
 
 
-
+*/
 
     //This needs to be repurposed to pull in the download module.. then step through
     //visible layers and ask them to provide download links, then hand these in a flattened array
