@@ -66,9 +66,9 @@ function(
       layerContent = layer.description;
 
       var container = DOC.createElement('div');
-      var title = DOC.createElement('h3');
+    /*  var title = DOC.createElement('h3');
       title.innerText = layerTitle;
-      container.appendChild(title);
+      container.appendChild(title);*/
 
       for(var i=1; i<layerInfos.length; i++){
         makeService(url,services);
