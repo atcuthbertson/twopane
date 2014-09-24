@@ -91,7 +91,7 @@ function(
 
       mapPane.style.width = width - left + "px";
       mapPane.style.left = left + "px";
-      dataNode.style.height = height - 134 + "px"
+      dataNode.style.height = height - 80 + "px"
     }
 
 
