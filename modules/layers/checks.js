@@ -152,11 +152,8 @@ function(
     }
 
     function toggleLayer(id,services){
-      console.log(arguments)
       var service = services[id];
-      console.log(service.suspended)
       if(service.suspended){
-        console.log('resuming')
         service.resume();
         info.activate(service.url,id);
       }else{

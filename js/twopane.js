@@ -64,7 +64,6 @@ function(
     var mapPane = dom.byId("centerPane");
     var serviceNode = dom.byId("serviceNode");
     var rightPane = dom.byId('rightPane');
-    var titleNode = dom.byId('titleNode');
     var dataNode = dom.byId('dataNode');
     var closeButton = dom.byId('closeRP');
 
@@ -289,8 +288,7 @@ function(
 
     //Provide to the layers to add to the right pane
     function populateRightPane(title,data){
-      titleNode.innerHTML = title;
-      dataNode.innerHTML = data;
+      
     }
 
   });
