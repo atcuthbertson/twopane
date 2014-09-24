@@ -141,12 +141,6 @@ function(
 
 
 
-    //Layer composed of simple checkboxes
-    CheckLayer("https://darcgis.water.ca.gov/arcgis/rest/services/cadre/Boundaries_Map/MapServer",serviceNode,map,populateRightPane);
-    CheckLayer("https://darcgis.water.ca.gov/arcgis/rest/services/GGI/GIC_Boundaries/MapServer",serviceNode,map,populateRightPane);
-
-
-
     //Geocoder
     Searchbox(map);
 
@@ -269,12 +263,24 @@ function(
 
     on(W,"resize",setNodeDimensions);
     on(closeButton,"mousedown", closeToggle);
-    populateRightPane("","Read information about selected layers here")
+    populateRightPane("Read information about selected layers here")
     dom.byId("mainContainer").style.visibility="visible";
 
     W.setTimeout(function(){
       on.emit(closeButton, "mousedown",{bubbles:true,cancelable:true})
     },300);
+
+
+
+
+
+    //make way for layer metadata
+    clearRightPane();
+
+    //Layer composed of simple checkboxes
+    CheckLayer("https://darcgis.water.ca.gov/arcgis/rest/services/cadre/Boundaries_Map/MapServer",serviceNode,map,populateRightPane);
+    CheckLayer("https://darcgis.water.ca.gov/arcgis/rest/services/GGI/GIC_Boundaries/MapServer",serviceNode,map,populateRightPane);
+
 
 
 
@@ -288,7 +294,24 @@ function(
 
     //Provide to the layers to add to the right pane
     function populateRightPane(title,data){
-      
+
+      if(title){
+        var titleNode = DOC.createElement('h3');
+        titleNode.className = 'datatitle';
+        titleNode.innerHTML = title;
+        dataNode.appendChild(titleNode);
+      }
+
+      if(data){
+        var contentDiv = DOC.createElement('div');
+        contentDiv.innerHTML = data;
+        dataNode.appendChild(contentDiv);
+      }
+    }
+
+
+    function clearRightPane(){
+      dataNode.innerHTML = '';
     }
 
   });

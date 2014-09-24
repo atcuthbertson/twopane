@@ -12,6 +12,10 @@ body{
   color:#020911;
 }
 
+h3, b{
+  color:#121921;
+}
+
 
 
 
@@ -84,7 +88,7 @@ body{
 }
 #leftPaneHeader >a{
   text-decoration:none;
-  color:#020911;
+  color:#121921;
 }
 
 #serviceNode{
@@ -300,13 +304,14 @@ label:hover,.serviceRadio,.layerCheck{
 
 .datatitle{
   width:100%;
-  margin-top:20px;
-  padding:0 0 10px 27px;
+  margin-top:25px;
+  margin-bottom:10px;
+  padding-bottom:5px;
   border-bottom:2px dashed #dadedf;
 }
 
+
 #dataNode{
-  margin-top:5px;
   margin-left:27px;
   word-wrap:break-word;
   overflow-y:scroll;
