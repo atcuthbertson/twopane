@@ -288,9 +288,22 @@ function(
     //visible layers and ask them to provide download links, then hand these in a flattened array
     //to the download module
     on(dom.byId("downloadLink"),"click",downloadZips)
+
+
     function downloadZips(){
       makeDownloads(getDataZips())
     }
+
+
+    function getDataZips(){
+      return ["wackydata.zip","zanydata.zip"]
+    }
+
+
+    function makeDownloads(zips){
+      console.log(zips);
+    }
+
 
     //Provide to the layers to add to the right pane
     function populateRightPane(title,data){
