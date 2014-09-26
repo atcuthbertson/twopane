@@ -152,7 +152,7 @@ function(
       var t = "topo";
       var s = "satellite";
       var g = "gray";
-      var src = "http://js.arcgis.com/3.10/js/esri/dijit/images/basemaps/"
+      var src = "//js.arcgis.com/3.10/js/esri/dijit/images/basemaps/"
       var basemapNode = DOC.createElement('div');
       var basemapPic = DOC.createElement('img');
       var labelWrapper = DOC.createElement('div');
