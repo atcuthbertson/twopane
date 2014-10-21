@@ -1,5 +1,8 @@
-define([],function(){
-  return function(){
+define(["modules/downloadMultiple.js"],function(downloadMultiple){
+  return function(path/*, guaranteedDownloads*/){
+    var downloads = {};
+
+
 
     function getDownloads(id){
       var service = servicesById[id];
@@ -10,12 +13,32 @@ define([],function(){
       return zips
     }
 
-    function makeDownload(name){
-      return "downloads/" + name.split(" ").join("_") + ".zip"
+    function getFullPath(name){
+      return "path/" + name + ".zip";
+    }
+
+    function download(){
+      var dlFiles = [];
+      for(var name in downloads){
+        if(downloads.hasOwnProperty(name) && downloads[name]){
+          dlFiles.push(getFullPath(name))
+        }
+      }
+      downloadMultiple(dlFiles);
+    }
+
+    function add(name){
+      downloads[name] = 1;
+    }
+
+    function remove(name){
+      downloads[name] = 0;
     }
 
     return {
-      download:function(){}
+      download:download,
+      add:add,
+      remove:remove
     }
   }
 })

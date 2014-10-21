@@ -56,7 +56,7 @@ function(
     var serviceDescription;
 
     var services = [];
-    var layerNames = [];
+    var fullNames = [];
 
     var firstService = makeService(url,services);
 
@@ -89,7 +89,7 @@ function(
           map.addLayer(services[i],1);
         }
       }
-      console.log(layerNames);
+
       node.appendChild(container);
 
       populate(serviceName,serviceDescription);
@@ -103,7 +103,7 @@ function(
 
     function buildCheck(layerInfo, i, container){
       services[i].setVisibleLayers([i]);
-      layerNames[i] = makeUnderscored(layerInfo.name);
+      fullNames[i] = serviceName + "/" + makeUnderscored(layerInfo.name);
       var check = makeCheck(layerInfo, i, container, services);
       on(check,"change",function(){
         toggleLayer(i,services);
@@ -134,10 +134,11 @@ function(
       if(service.suspended){
         service.resume();
         info.activate(service.url,id);
-        //downloader.add
+        downloader.add(fullNames[id]);
       }else{
         service.suspend();
         info.deactivate(service.url,id);
+        downloader.remove(fullNames[id]);
       }
     }
 
