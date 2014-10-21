@@ -303,6 +303,8 @@ function(
     //Assumes Service_Name_Layer_Name.zip format
     var downloader = GetDownloads("./downloads");
 
+    on(dom.byId("downloadLink"),"click",downloader.download)
+
 
     //PUT YOUR SERVICE HERE, REPLACE THE GIC URL BELOW AND UNCOMMENT THE FUNCTION CALL
     //Layer composed of simple checkboxes
@@ -312,27 +314,6 @@ function(
                 populateRightPane,
                 downloader
               );
-
-
-    //This needs to be repurposed to pull in the download module.. then step through
-    //visible layers and ask them to provide download links, then hand these in a flattened array
-    //to the download module
-    on(dom.byId("downloadLink"),"click",downloader.download)
-
-
-    function downloadZips(){
-      makeDownloads(getDataZips())
-    }
-
-
-    function getDataZips(){
-      return ["wackydata.zip","zanydata.zip"]
-    }
-
-
-    function makeDownloads(zips){
-      console.log(zips);
-    }
 
   });
 });

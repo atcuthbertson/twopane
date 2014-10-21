@@ -103,12 +103,26 @@ function(
 
     function buildCheck(layerInfo, i, container){
       services[i].setVisibleLayers([i]);
-      fullNames[i] = serviceName + "/" + makeUnderscored(layerInfo.name);
+      fullNames[i] = makeUnderscored(serviceName + "/" + layerInfo.name);
       var check = makeCheck(layerInfo, i, container, services);
       on(check,"change",function(){
         toggleLayer(i,services);
         if(!services[i].suspended)spinner(check,services[i]);
       })
+    }
+
+
+    function toggleLayer(id){
+      var service = services[id];
+      if(service.suspended){
+        service.resume();
+        info.activate(service.url,id);
+        downloader.add(fullNames[id]);
+      }else{
+        service.suspend();
+        info.deactivate(service.url,id);
+        downloader.remove(fullNames[id]);
+      }
     }
 
 
@@ -129,18 +143,7 @@ function(
 
 //todo add legend
 
-    function toggleLayer(id,services){
-      var service = services[id];
-      if(service.suspended){
-        service.resume();
-        info.activate(service.url,id);
-        downloader.add(fullNames[id]);
-      }else{
-        service.suspend();
-        info.deactivate(service.url,id);
-        downloader.remove(fullNames[id]);
-      }
-    }
+
 
 
 
