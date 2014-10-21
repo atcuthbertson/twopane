@@ -1,20 +1,18 @@
 define([
   "dojo/on",
 
-  "dijit/form/HorizontalSlider",
-
   "esri/layers/ArcGISDynamicMapServiceLayer",
 
+  "modules/makeCheck.js",
   "modules/info.js",
   "modules/spinner.js"
   ],
 function(
   on,
 
-  Slider,
-
   ArcGISDynamicMapServiceLayer,
 
+  makeCheck,
   info,
   spinner
 ){
@@ -28,7 +26,6 @@ function(
 
   var activeUrls = {};
   var nameReg = /([^\/]*)\/MapServer/;
-  var serviceWrapper = 'serviceWrapper';
 
   var DOC = document;
 
@@ -64,6 +61,8 @@ function(
       var layer = e.layer;
       var layerInfos = layer.layerInfos;
 
+      console.log(layer,layerInfos)
+
       layerTitle = makeSpaced(url.match(nameReg)[1]);
       layerContent = layer.description;
 
@@ -84,7 +83,7 @@ function(
       layerInfos.forEach(function(layerInfo,i){
         services[i].setVisibleLayers([i]);
 
-        var check = makeNode(layerInfo, i, container, services);
+        var check = makeCheck(layerInfo, i, container, services);
         on(check,"change",function(){
           toggleLayer(i,services);
           if(!services[i].suspended)spinner(check,services[i]);
@@ -114,45 +113,7 @@ function(
       return service;
     }
 
-
-
-    //TODO add legend.
-    function makeNode(layerInfo, layerId, container, services){
-      var id = Math.random();
-
-      var wrapper = DOC.createElement('div');
-      wrapper.className = serviceWrapper;
-
-      var check = DOC.createElement('input');
-       check.type = "checkbox";
-      check.id = id;
-
-      var label = DOC.createElement('label');
-      label.setAttribute('for',id);
-      label.innerText = makeSpaced(layerInfo.name);
-
-      var sliderNode = DOC.createElement('div')
-
-      wrapper.appendChild(check);
-      wrapper.appendChild(label);
-      wrapper.appendChild(sliderNode);
-
-      var slider = new Slider({
-        value:1,
-        minimum:0,
-        maximum:1,
-        intermediateChanges: true,
-        style:"width:120px;",
-        onChange:function(value){
-          services[layerId].setOpacity(value);
-        }
-        }, sliderNode
-      ).startup();
-
-      container.appendChild(wrapper);
-
-      return check;
-    }
+//todo add legend
 
     function toggleLayer(id,services){
       var service = services[id];
