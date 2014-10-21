@@ -327,7 +327,6 @@ label:hover,.serviceRadio,.layerCheck{
 #downloadNode{
   display:block;
   width:240px;
-  margin:0 auto;
   padding:5px 8px;
   border-radius:6px;
 
@@ -339,6 +338,7 @@ label:hover,.serviceRadio,.layerCheck{
   text-decoration:none;
 }
 .noActiveDownloads{
+  margin:0 auto;
   background-color:#d8e2ea;
   box-shadow:0 1px 1px 0 #5a6069;
 }
