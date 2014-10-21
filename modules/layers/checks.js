@@ -115,11 +115,11 @@ function(
       if(service.suspended){
         service.resume();
         info.activate(service.url,id);
-        downloader.add(fullNames[id]);
+        if(downloader) downloader.add(fullNames[id]);
       }else{
         service.suspend();
         info.deactivate(service.url,id);
-        downloader.remove(fullNames[id]);
+        if(downloader) downloader.remove(fullNames[id]);
       }
     }
 
