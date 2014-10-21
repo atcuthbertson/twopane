@@ -299,7 +299,8 @@ function(
     },300);
 
 
-
+    //Place your downloads in the downloads folder, provide the path below
+    //Assumes Service_Name_Layer_Name.zip format
     var downloader = GetDownloads("./downloads");
 
 

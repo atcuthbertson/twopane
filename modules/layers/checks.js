@@ -52,10 +52,11 @@ function(
       busy = 1;
     }
 
-    var layerTitle;
-    var layerContent;
+    var serviceName;
+    var serviceDescription;
 
     var services = [];
+    var layerNames = [];
 
     var firstService = makeService(url,services);
 
@@ -67,47 +68,49 @@ function(
 
       console.log(layer,layerInfos)
 
-      layerTitle = makeSpaced(url.match(nameReg)[1]);
-      layerContent = layer.description;
+      serviceName = makeSpaced(url.match(nameReg)[1]);
+      serviceDescription = layer.description;
 
       var container = DOC.createElement('div');
       var title = DOC.createElement('h3');
-      title.innerText = layerTitle;
+      title.innerText = serviceName;
       container.appendChild(title);
 
       if(paramFilter){
         paramFilter(url,services,container);
       }else{
         /*One map layer for each service layer, for independent transparencies*/
-        for(var i=1; i<layerInfos.length; i++){
-          makeService(url,services);
+        for(var i=0; i<layerInfos.length; i++){
+          if(i>0) makeService(url,services);
+          buildCheck(layerInfos[i],i,container,services);
         }
 
         for(i=0; i<services.length; i++){
           map.addLayer(services[i],1);
         }
-
-
-        layerInfos.forEach(function(layerInfo,i){
-          services[i].setVisibleLayers([i]);
-
-          var check = makeCheck(layerInfo, i, container, services);
-          on(check,"change",function(){
-            toggleLayer(i,services);
-            if(!services[i].suspended)spinner(check,services[i]);
-          })
-
-        });
       }
-
+      console.log(layerNames);
       node.appendChild(container);
 
-      populate(layerTitle,layerContent);
+      populate(serviceName,serviceDescription);
 
+      //preserve ordering
       var next = queued.shift();
       if(next) next();
       else busy = 0;
     }
+
+
+    function buildCheck(layerInfo, i, container){
+      services[i].setVisibleLayers([i]);
+      layerNames[i] = makeUnderscored(layerInfo.name);
+      var check = makeCheck(layerInfo, i, container, services);
+      on(check,"change",function(){
+        toggleLayer(i,services);
+        if(!services[i].suspended)spinner(check,services[i]);
+      })
+    }
+
 
     firstService.on("load",function(e){
       if(!busy||active) processLayer(e);
@@ -128,11 +131,10 @@ function(
 
     function toggleLayer(id,services){
       var service = services[id];
-      console.log(service)
       if(service.suspended){
         service.resume();
         info.activate(service.url,id);
-    //    downloader.add
+        //downloader.add
       }else{
         service.suspend();
         info.deactivate(service.url,id);
@@ -140,18 +142,6 @@ function(
     }
 
 
-      function getDownloads(id){
-      var service = servicesById[id];
-      var zips = ["downloads/_readme.txt"];
-      for(var i =1, len = service.visibleLayers.length;i<len;i++){
-        zips.push(makeDownload(service.layerInfos[service.visibleLayers[i]].name))
-      }
-      return zips
-    }
-
-    function makeDownload(name){
-      return "downloads/" + name.split(" ").join("_") + ".zip"
-    }
 
   /*  return {
       service:service,
