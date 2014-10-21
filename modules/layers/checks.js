@@ -66,8 +66,6 @@ function(
       var layer = e.layer;
       var layerInfos = layer.layerInfos;
 
-      console.log(layer,layerInfos)
-
       serviceName = makeSpaced(url.match(nameReg)[1]);
       serviceDescription = layer.description;
 

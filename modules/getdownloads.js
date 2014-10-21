@@ -14,7 +14,7 @@ define(["modules/downloadMultiple.js"],function(downloadMultiple){
     }
 
     function getFullPath(name){
-      return "path/" + name + ".zip";
+      return path + "/" + name + ".zip";
     }
 
     function download(){
