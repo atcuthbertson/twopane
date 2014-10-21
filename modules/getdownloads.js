@@ -1,8 +1,13 @@
-define(["modules/downloadMultiple.js"],function(downloadMultiple){
-  return function(path/*, guaranteedDownloads*/){
+define([
+  "dojo/dom-class",
+  "modules/downloadMultiple.js"],
+function(
+  domClass,
+  downloadMultiple
+){
+  return function(path, node/*, guaranteedDownloads*/){
     var downloads = {};
-
-
+    var dlCount = 0;
 
     function getDownloads(id){
       var service = servicesById[id];
@@ -29,10 +34,20 @@ define(["modules/downloadMultiple.js"],function(downloadMultiple){
 
     function add(name){
       downloads[name] = 1;
+      if(dlCount === 0){
+        domClass.add(node,"downloadable")
+        node.textContent = "Download";
+      }
+      dlCount++;
     }
 
     function remove(name){
       downloads[name] = 0;
+      dlCount--;
+      if(dlCount === 0){
+        domClass.remove(node,"downloadable");
+        node.textContent = "Select a Layer";
+      }
     }
 
     return {

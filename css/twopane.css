@@ -315,7 +315,7 @@ label:hover,.serviceRadio,.layerCheck{
   overflow-y:scroll;
 }
 
-#downloadNode{
+#downloadCon{
   border-top:2px dashed #dadedf;
   width:100%;
   height:30px;
@@ -324,13 +324,11 @@ label:hover,.serviceRadio,.layerCheck{
   text-align:center;
 }
 
-#downloadLink{
+#downloadNode{
   display:block;
   width:240px;
   margin:0 auto;
   padding:5px 8px;
-  background-color:#d4e4ff;
-  box-shadow:0 1px 1px 0 #5a6069;
   border-radius:6px;
 
   color:white;
@@ -339,15 +337,22 @@ label:hover,.serviceRadio,.layerCheck{
   font-style:italic;
   text-shadow:1px 1px 0 #5a6069;
   text-decoration:none;
-
+}
+.noActiveDownloads{
+  background-color:#d8e2ea;
+  box-shadow:0 1px 1px 0 #5a6069;
+}
+.downloadable{
+  background-color:#d4e4ff;
+  box-shadow:0 1px 1px 0 #5a6069;
   cursor:pointer;
 }
 
-#downloadLink:hover{
+.downloadable:hover{
   background-color:#688FED;
 }
 
-#downloadLink:active{
+.downloadable:active{
   margin-top:1px;
   background-color:#F2BFEB;
 }

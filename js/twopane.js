@@ -67,6 +67,7 @@ function(
     var serviceNode = dom.byId("serviceNode");
     var rightPane = dom.byId('rightPane');
     var dataNode = dom.byId('dataNode');
+    var downloadNode = dom.byId("downloadNode");
     var closeButton = dom.byId('closeRP');
 
     var closeToggle;
@@ -303,9 +304,9 @@ function(
     //Assumes Service_Name_Layer_Name.zip format
     //Be certain the zip files are in place and properly named, or the app will throw errors.
     //Otherwise, don't include the downloader
-    var downloader = GetDownloads("./downloads");
+    var downloader = GetDownloads("./downloads", downloadNode);
 
-    on(dom.byId("downloadLink"),"click",downloader.download)
+    on(downloadNode,"click",downloader.download)
 
 
     //PUT YOUR SERVICE HERE, REPLACE THE GIC URL BELOW AND UNCOMMENT THE FUNCTION CALL
