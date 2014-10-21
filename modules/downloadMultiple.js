@@ -1,8 +1,8 @@
-  function makeDownloads(arr){
-    if(arr.length>1)
-      forEach(arr,makeDownload)
-  }
+define([],function(){
 
+  var DOC = document;
+
+  /* Iframe hack to download multiple files at once without server-side code */
   function makeDownload(url){
     var ifr = DOC.createElement('iframe');
     ifr.style.display="none";
@@ -23,3 +23,15 @@
     
     DOC.body.appendChild(ifr);
   }
+
+  function forEach(arr, fn){
+    for(var i=0, len = arr.length; i < len; i++){
+      fn(arr[i])
+    }
+  }
+
+  return function(paths){
+    forEach(paths,makeDownload)
+  }
+
+});
