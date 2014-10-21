@@ -17,6 +17,7 @@ require([
   "dojo/ready",
 
   "modules/info.js",
+  "modules/getdownloads.js",
   "modules/searchbox.js",
   "modules/layers/checks.js",
 
@@ -38,6 +39,7 @@ function(
   ready,
 
   info,
+  GetDownloads,
   Searchbox,
   CheckLayer,
 
@@ -298,17 +300,23 @@ function(
 
 
 
+    var downloader = GetDownloads("./downloads");
 
 
     //PUT YOUR SERVICE HERE, REPLACE THE GIC URL BELOW AND UNCOMMENT THE FUNCTION CALL
     //Layer composed of simple checkboxes
-    CheckLayer("https://darcgis.water.ca.gov/arcgis/rest/services/GGI/GIC_Boundaries/MapServer",serviceNode,map,populateRightPane);
+    CheckLayer("https://darcgis.water.ca.gov/arcgis/rest/services/GGI/GIC_Boundaries/MapServer",
+                serviceNode,
+                populateRightPane,
+                downloader,
+                map
+              );
 
 
     //This needs to be repurposed to pull in the download module.. then step through
     //visible layers and ask them to provide download links, then hand these in a flattened array
     //to the download module
-    on(dom.byId("downloadLink"),"click",downloadZips)
+    on(dom.byId("downloadLink"),"click",downloader.download)
 
 
     function downloadZips(){

@@ -37,8 +37,12 @@ function(
     return name.replace(/_/g," ")
   }
 
+  function makeUnderscored(name){
+    return name.replace(/ /g,"_")
+  }
 
-  return function(url, node, map, populate){
+
+  return function(url, node, populate, downloader, map){
 
     populate.noLayers = 0;
 
@@ -71,6 +75,7 @@ function(
       title.innerText = layerTitle;
       container.appendChild(title);
 
+      /*One map layer for each service layer, for independent transparencies*/
       for(var i=1; i<layerInfos.length; i++){
         makeService(url,services);
       }
@@ -88,7 +93,10 @@ function(
           toggleLayer(i,services);
           if(!services[i].suspended)spinner(check,services[i]);
         })
+
       });
+
+
       node.appendChild(container);
 
       populate(layerTitle,layerContent);
@@ -117,9 +125,11 @@ function(
 
     function toggleLayer(id,services){
       var service = services[id];
+      console.log(service)
       if(service.suspended){
         service.resume();
         info.activate(service.url,id);
+    //    downloader.add
       }else{
         service.suspend();
         info.deactivate(service.url,id);
