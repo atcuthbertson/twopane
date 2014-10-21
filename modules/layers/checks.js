@@ -42,7 +42,7 @@ function(
   }
 
 
-  return function(url, node, populate, downloader, map){
+  return function(url, map, node, populate, downloader, paramFilter){
 
     populate.noLayers = 0;
 
@@ -75,27 +75,30 @@ function(
       title.innerText = layerTitle;
       container.appendChild(title);
 
-      /*One map layer for each service layer, for independent transparencies*/
-      for(var i=1; i<layerInfos.length; i++){
-        makeService(url,services);
+      if(paramFilter){
+        paramFilter(url,services,container);
+      }else{
+        /*One map layer for each service layer, for independent transparencies*/
+        for(var i=1; i<layerInfos.length; i++){
+          makeService(url,services);
+        }
+
+        for(i=0; i<services.length; i++){
+          map.addLayer(services[i],1);
+        }
+
+
+        layerInfos.forEach(function(layerInfo,i){
+          services[i].setVisibleLayers([i]);
+
+          var check = makeCheck(layerInfo, i, container, services);
+          on(check,"change",function(){
+            toggleLayer(i,services);
+            if(!services[i].suspended)spinner(check,services[i]);
+          })
+
+        });
       }
-
-      for(i=0; i<services.length; i++){
-        map.addLayer(services[i],1);
-      }
-
-
-      layerInfos.forEach(function(layerInfo,i){
-        services[i].setVisibleLayers([i]);
-
-        var check = makeCheck(layerInfo, i, container, services);
-        on(check,"change",function(){
-          toggleLayer(i,services);
-          if(!services[i].suspended)spinner(check,services[i]);
-        })
-
-      });
-
 
       node.appendChild(container);
 

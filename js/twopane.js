@@ -306,10 +306,10 @@ function(
     //PUT YOUR SERVICE HERE, REPLACE THE GIC URL BELOW AND UNCOMMENT THE FUNCTION CALL
     //Layer composed of simple checkboxes
     CheckLayer("https://darcgis.water.ca.gov/arcgis/rest/services/GGI/GIC_Boundaries/MapServer",
+                map,
                 serviceNode,
                 populateRightPane,
-                downloader,
-                map
+                downloader
               );
 
 
