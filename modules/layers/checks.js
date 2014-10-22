@@ -42,7 +42,15 @@ function(
   }
 
 
-  return function(url, map, node, populate, downloader, paramFilter){
+  return function(url, map, node, options){
+
+    var populate = options.populate || function(){};
+    var excluded = options.excluded || [];
+    var downloader = options.downloader || null;
+    var excludeDownload = options.excludeDownload || null;
+    var paramFilter = options.paramFilter || null;
+
+    if(downloader && excludeDownload) downloader.exclude(excludeDownload);
 
     populate.noLayers = 0;
 
@@ -53,6 +61,7 @@ function(
     }
 
     var serviceName;
+    var serviceUnderscored;
     var serviceDescription;
 
     var services = [];
@@ -67,6 +76,7 @@ function(
       var layerInfos = layer.layerInfos;
 
       serviceName = makeSpaced(url.match(nameReg)[1]);
+      serviceUnderscored = makeUnderscored(serviceName);
       serviceDescription = layer.description;
 
       var container = DOC.createElement('div');
@@ -100,8 +110,11 @@ function(
 
 
     function buildCheck(layerInfo, i, container){
+      var underscoredName = makeUnderscored(layerInfo.name);
+      if(excluded.indexOf(underscoredName) !== -1) return;
+
       services[i].setVisibleLayers([i]);
-      fullNames[i] = makeUnderscored(serviceName + "/" + layerInfo.name);
+      fullNames[i] =  serviceUnderscored + "/" + underscoredName;
       var check = makeCheck(layerInfo, i, container, services);
       on(check,"change",function(){
         toggleLayer(i,services);
