@@ -9,6 +9,7 @@ function(
     var downloads = {};
     var dlCount = 0;
     var excluded = {};
+    var excludedCount = 0;
 
 
     function getFullPath(name){
@@ -28,7 +29,15 @@ function(
 
 
     function add(name){
-      if(excluded[name]) return;
+      if(excluded[name]){
+        excludedCount++;
+        if(dlCount === 0){
+          domClass.add(node,"noDownloadAvailable")
+          node.textContent = "Unavailable";
+        }
+        return;
+      }
+
       downloads[name] = 1;
       if(dlCount === 0){
         domClass.add(node,"downloadable")
@@ -39,12 +48,26 @@ function(
 
 
     function remove(name){
-      if(excluded[name]) return;
+      if(excluded[name]){
+        excludedCount--;
+        if(dlCount === 0){
+          domClass.remove(node,"noDownloadAvailable")
+          node.textContent = "Select a Layer";
+        }
+        return;
+      }
+      
       downloads[name] = 0;
       dlCount--;
       if(dlCount === 0){
         domClass.remove(node,"downloadable");
-        node.textContent = "Select a Layer";
+        if(excludedCount === 0){
+          domClass.remove(node,"noDownloadAvailable")
+          node.textContent = "Select a Layer";
+        }else{
+          domClass.add(node,"noDownloadAvailable")
+          node.textContent = "Unavailable";
+        }
       }
     }
 

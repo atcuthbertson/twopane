@@ -337,14 +337,19 @@ label:hover,.serviceRadio,.layerCheck{
   text-shadow:1px 1px 0 #5a6069;
   text-decoration:none;
 }
+
 .noActiveDownloads{
   margin:0 auto;
   background-color:#d8e2ea;
   box-shadow:0 1px 1px 0 #5a6069;
 }
+
+.noDownloadAvailable{
+  background-color:#ffc4c4;
+}
+
 .downloadable{
   background-color:#d4e4ff;
-  box-shadow:0 1px 1px 0 #5a6069;
   cursor:pointer;
 }
 
