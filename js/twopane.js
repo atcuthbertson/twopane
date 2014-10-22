@@ -314,8 +314,12 @@ function(
     CheckLayer("https://darcgis.water.ca.gov/arcgis/rest/services/GGI/GIC_Boundaries/MapServer",
                 map,
                 serviceNode,
-                populateRightPane,
-                downloader
+                {
+                  populate:populateRightPane,
+                  exclude:["B118_GW_Basins"],
+                  downloader:downloader,
+                  excludeDownload:["Groundwater_Management_Plan"]
+                }
               );
 
   });
