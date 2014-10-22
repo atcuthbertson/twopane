@@ -45,12 +45,11 @@ function(
   return function(url, map, node, options){
 
     var populate = options.populate || function(){};
-    var excluded = options.excluded || [];
+    var exclude = options.exclude || [];
     var downloader = options.downloader || null;
     var excludeDownload = options.excludeDownload || null;
     var paramFilter = options.paramFilter || null;
 
-    if(downloader && excludeDownload) downloader.exclude(excludeDownload);
 
     populate.noLayers = 0;
 
@@ -78,6 +77,13 @@ function(
       serviceName = makeSpaced(url.match(nameReg)[1]);
       serviceUnderscored = makeUnderscored(serviceName);
       serviceDescription = layer.description;
+
+      if(downloader && excludeDownload){
+        for(var i=0; i<excludeDownload.length; i++){
+          excludeDownload[i] = serviceUnderscored + "/" + excludeDownload[i];
+        }
+        downloader.exclude(excludeDownload);
+      }
 
       var container = DOC.createElement('div');
       var title = DOC.createElement('h3');
@@ -111,7 +117,7 @@ function(
 
     function buildCheck(layerInfo, i, container){
       var underscoredName = makeUnderscored(layerInfo.name);
-      if(excluded.indexOf(underscoredName) !== -1) return;
+      if(exclude.indexOf(underscoredName) !== -1) return;
 
       services[i].setVisibleLayers([i]);
       fullNames[i] =  serviceUnderscored + "/" + underscoredName;

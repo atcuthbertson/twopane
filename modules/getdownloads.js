@@ -8,19 +8,13 @@ function(
   return function(path, node/*, guaranteedDownloads*/){
     var downloads = {};
     var dlCount = 0;
+    var excluded = {};
 
-    function getDownloads(id){
-      var service = servicesById[id];
-      var zips = ["downloads/_readme.txt"];
-      for(var i =1, len = service.visibleLayers.length;i<len;i++){
-        zips.push(makeDownload(service.layerInfos[service.visibleLayers[i]].name))
-      }
-      return zips
-    }
 
     function getFullPath(name){
       return path + "/" + name + ".zip";
     }
+
 
     function download(){
       var dlFiles = [];
@@ -32,7 +26,9 @@ function(
       downloadMultiple(dlFiles);
     }
 
+
     function add(name){
+      if(excluded[name]) return;
       downloads[name] = 1;
       if(dlCount === 0){
         domClass.add(node,"downloadable")
@@ -41,7 +37,9 @@ function(
       dlCount++;
     }
 
+
     function remove(name){
+      if(excluded[name]) return;
       downloads[name] = 0;
       dlCount--;
       if(dlCount === 0){
@@ -50,10 +48,19 @@ function(
       }
     }
 
+
+    function exclude(exclusions){
+      for(var i=0; i<exclusions.length;i++){
+        excluded[exclusions[i]] = 1;
+      }
+    }
+
+
     return {
       download:download,
       add:add,
-      remove:remove
+      remove:remove,
+      exclude:exclude
     }
   }
 })

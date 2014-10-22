@@ -18,7 +18,7 @@ function(
       wrapper.className = 'serviceWrapper';
 
       var check = DOC.createElement('input');
-       check.type = "checkbox";
+      check.type = "checkbox";
       check.id = id;
 
       var label = DOC.createElement('label');
