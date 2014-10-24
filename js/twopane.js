@@ -19,8 +19,9 @@ require([
   "modules/info.js",
   "modules/getdownloads.js",
   "modules/searchbox.js",
+  "modules/makePanes.js",
   "modules/layers/checks.js",
-
+   
   "require"
   ], 
 
@@ -41,6 +42,7 @@ function(
   info,
   GetDownloads,
   Searchbox,
+  makePanes,
   CheckLayer,
 
   require
@@ -308,10 +310,12 @@ function(
 
     on(downloadNode,"click",downloader.download)
 
-
+    var serviceContainers = [];
     //PUT YOUR SERVICE HERE, REPLACE THE GIC URL BELOW AND UNCOMMENT THE FUNCTION CALL
     //Layer composed of simple checkboxes
-    var first = CheckLayer("https://gis.water.ca.gov/arcgis/rest/services/Public/GIC_Boundaries/MapServer",
+    
+    serviceContainers.push(
+        CheckLayer("https://gis.water.ca.gov/arcgis/rest/services/Public/GIC_Boundaries/MapServer",
                 map,
                 serviceNode,
                 {
@@ -320,8 +324,11 @@ function(
                   downloader:downloader,
                   excludeDownload:["Groundwater_Management_Plan"]
                 }
-              );
-    var second = CheckLayer("https://gis.water.ca.gov/arcgis/rest/services/Public/GIC_Boundaries/MapServer",
+              )
+        );
+
+    serviceContainers.push(
+      CheckLayer("https://gis.water.ca.gov/arcgis/rest/services/Public/GIC_Boundaries/MapServer",
                 map,
                 serviceNode,
                 {
@@ -329,9 +336,9 @@ function(
                   downloader:downloader,
                   excludeDownload:["Groundwater_Management_Plan"]
                 }
-              );
-
-    console.log(first,second);
+              )
+      );
+    makePanes(serviceContainers,['first','second']);
    
   });
 });

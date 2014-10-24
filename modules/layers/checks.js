@@ -58,6 +58,7 @@ function(
       active = 1;
       busy = 1;
     }
+
     var container = DOC.createElement('div');
     var serviceName;
     var serviceUnderscored;
