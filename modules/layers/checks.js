@@ -58,7 +58,7 @@ function(
       active = 1;
       busy = 1;
     }
-
+    var container = DOC.createElement('div');
     var serviceName;
     var serviceUnderscored;
     var serviceDescription;
@@ -73,19 +73,19 @@ function(
     function processLayer(e){
       var layer = e.layer;
       var layerInfos = layer.layerInfos;
+      var i;
 
       serviceName = makeSpaced(url.match(nameReg)[1]);
       serviceUnderscored = makeUnderscored(serviceName);
       serviceDescription = layer.description;
 
       if(downloader && excludeDownload){
-        for(var i=0; i<excludeDownload.length; i++){
+        for(i=0; i<excludeDownload.length; i++){
           excludeDownload[i] = serviceUnderscored + "/" + excludeDownload[i];
         }
         downloader.exclude(excludeDownload);
       }
 
-      var container = DOC.createElement('div');
       var title = DOC.createElement('h3');
       title.innerText = serviceName;
       container.appendChild(title);
@@ -94,7 +94,7 @@ function(
         paramFilter(url,services,container);
       }else{
         /*One map layer for each service layer, for independent transparencies*/
-        for(var i=0; i<layerInfos.length; i++){
+        for(i=0; i<layerInfos.length; i++){
           if(i>0) makeService(url,services);
           buildCheck(layerInfos[i],i,container,services);
         }
@@ -148,6 +148,9 @@ function(
       else queued.push(function(){processLayer(e)});
     });
 
+    return container; 
+ 
+
   }
 
 
@@ -157,16 +160,5 @@ function(
       services.push(service);
       return service;
     }
-
-//todo add legend
-
-
-
-
-
-  /*  return {
-      service:service,
-      getDownloads:getDownloads
-    }*/
 
 });

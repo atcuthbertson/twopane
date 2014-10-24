@@ -311,7 +311,7 @@ function(
 
     //PUT YOUR SERVICE HERE, REPLACE THE GIC URL BELOW AND UNCOMMENT THE FUNCTION CALL
     //Layer composed of simple checkboxes
-    CheckLayer("https://gis.water.ca.gov/arcgis/rest/services/Public/GIC_Boundaries/MapServer",
+    var first = CheckLayer("https://gis.water.ca.gov/arcgis/rest/services/Public/GIC_Boundaries/MapServer",
                 map,
                 serviceNode,
                 {
@@ -321,6 +321,17 @@ function(
                   excludeDownload:["Groundwater_Management_Plan"]
                 }
               );
+    var second = CheckLayer("https://gis.water.ca.gov/arcgis/rest/services/Public/GIC_Boundaries/MapServer",
+                map,
+                serviceNode,
+                {
+                  populate:populateRightPane,
+                  downloader:downloader,
+                  excludeDownload:["Groundwater_Management_Plan"]
+                }
+              );
 
+    console.log(first,second);
+   
   });
 });
