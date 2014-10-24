@@ -103,26 +103,26 @@ function(
     // Choose your initial extent. The easiest way to find this is to pan around the map, checking the
     // current extent with 'map.extent' in the Javascript console (F12 to open it)
     var initialExtent = new Extent({
-	    "xmin" : -13300000,
+      "xmin" : -13300000,
       "ymin" : 3500000,
       "xmax" : -12800000,
       "ymax" : 5500000, 
-	    "spatialReference":{
+      "spatialReference":{
         "wkid" : 102100
       }
     });
 
-	
+  
 
 
     // Create the map. The first argument is either an HTML element (usually a div) or, as in this case,
     // the id of an HTML element as a string. See https://developers.arcgis.com/en/javascript/jsapi/map-amd.html#map1
     // for the full list of options that can be passed in the second argument.
-  	var map = new Map(mapPane, {
+    var map = new Map(mapPane, {
         basemap : "topo",
-  	    extent:initialExtent,
+        extent:initialExtent,
         minZoom:6,
-  	    maxZoom:16
+        maxZoom:16
       });
 
 
@@ -311,7 +311,7 @@ function(
 
     //PUT YOUR SERVICE HERE, REPLACE THE GIC URL BELOW AND UNCOMMENT THE FUNCTION CALL
     //Layer composed of simple checkboxes
-    CheckLayer("https://darcgis.water.ca.gov/arcgis/rest/services/GGI/GIC_Boundaries/MapServer",
+    CheckLayer("https://gis.water.ca.gov/arcgis/rest/services/Public/GIC_Boundaries/MapServer",
                 map,
                 serviceNode,
                 {
