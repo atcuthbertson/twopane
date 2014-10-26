@@ -338,7 +338,7 @@ function(
                 }
               )
       );
-    makePanes(serviceContainers,['first','second']);
+    makePanes(serviceNode, serviceContainers, ['first','second']);
    
   });
 });
