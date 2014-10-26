@@ -8,8 +8,9 @@ define(["dojo/on"],function(on){
       var button = document.createElement('div');
       button.className = "paneHandle";
       button.textContent = names[i];
-      container.appendChild(button);
-       
+      container.appendChild(button); 
     }
+
+    serviceNode.insertBefore(container,serviceNode.firstChild);
   }
 });
