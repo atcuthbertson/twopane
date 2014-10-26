@@ -101,13 +101,14 @@ h3, b{
 .paneHandles{
   overflow:auto;
   margin-bottom:10px; 
+  margin-left:-20px;
 }
 
 .paneHandle{
-  width:25%;
+  box-sizing:border-box;
   background-color:#d4e4ff;
   float:left;
-  padding:10px 6px;
+  padding:10px 0;
   border-left:1px solid #dadedf;
   text-align:center;
   cursor:pointer;

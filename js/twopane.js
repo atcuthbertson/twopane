@@ -348,7 +348,7 @@ serviceContainers.push(
                 }
               )
       );
-    serviceContainers.push(
+    /*serviceContainers.push(
       CheckLayer("https://gis.water.ca.gov/arcgis/rest/services/Public/GIC_Boundaries/MapServer",
                 map,
                 serviceNode,
@@ -358,8 +358,8 @@ serviceContainers.push(
                   excludeDownload:["Groundwater_Management_Plan"]
                 }
               )
-      );
-    makePanes(serviceNode, serviceContainers, ['first layer','second one','third layer', 'quadruped']);
+      );*/
+    makePanes(serviceNode, serviceContainers, ['first layer','second one','third layer'/*, 'quadruped'*/]);
    
   });
 });
