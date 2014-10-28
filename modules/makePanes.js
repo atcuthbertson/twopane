@@ -14,7 +14,12 @@ define(["dojo/on"],function(on){
       button.className = "paneHandle";
       button.textContent = names[i];
       button.style.width = width;
-      if(i === 3 && nodeLength > 4) button.style.borderLeft = "none"
+      if(i === 3 && nodeLength > 4){
+        button.style.borderLeft = "none"
+        if(nodeLength === 5){
+          button.style.marginLeft = +width.slice(0,-1)/2 + '%';
+        }
+      }
       container.appendChild(button); 
     }
 
