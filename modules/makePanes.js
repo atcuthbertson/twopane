@@ -1,19 +1,20 @@
 define(["dojo/on"],function(on){
   return function(serviceNode, nodes, names){
-    var width = nodes.length > 4
-              ? 100/(Math.ceil(nodes.length / 2)) + '%'
+    var nodeLength = nodes.length;
+    var width = nodeLength > 4
+              ? 100/(Math.ceil(nodeLength / 2)) + '%'
               : 100/nodes.length + '%'
               ;
 
     var container = document.createElement('div');
     container.className = "paneHandles";
      
-    for (var i = 0, l = nodes.length; i < l; i++) {
-      var node = nodes[i];
+    for (var i = 0; i < nodeLength; i++) {
       var button = document.createElement('div');
       button.className = "paneHandle";
       button.textContent = names[i];
       button.style.width = width;
+      if(i === 3 && nodeLength > 4) button.style.borderLeft = "none"
       container.appendChild(button); 
     }
 

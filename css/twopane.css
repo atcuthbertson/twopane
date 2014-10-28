@@ -110,6 +110,7 @@ h3, b{
   float:left;
   padding:10px 0;
   border-left:1px solid #dadedf;
+  border-bottom:1px solid #dadedf;
   text-align:center;
   cursor:pointer;
 }
@@ -118,7 +119,7 @@ h3, b{
   background-color:#688fed;
 }
 .paneHandle:first-child{
-  border:none;
+  border-left:none;
 }
 .serviceWrapper{
   margin:10px 0 25px 10px;
