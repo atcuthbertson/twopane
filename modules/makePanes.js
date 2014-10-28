@@ -17,12 +17,21 @@ define(["dojo/on"],function(on){
       if(i === 3 && nodeLength > 4){
         button.style.borderLeft = "none"
         if(nodeLength === 5){
-          button.style.marginLeft = +width.slice(0,-1)/2 + '%';
+         centerRow(button, width); 
         }
       }
+      if(i===5 && nodeLength === 7){
+        centerRow(button,width); 
+      }
+
       container.appendChild(button); 
     }
 
     serviceNode.insertBefore(container,serviceNode.firstChild);
   }
+
+  function centerRow(node,width){
+    node.style.marginLeft = +width.slice(0,-1)/2 + '%';
+  }
+
 });
