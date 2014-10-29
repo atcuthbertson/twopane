@@ -115,7 +115,7 @@ h3, b{
   cursor:pointer;
 }
 
-.paneHandle:hover{
+.paneHandle:hover,.selectedButton{
   background-color:#688fed;
 }
 .paneHandle:first-child{

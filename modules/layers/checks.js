@@ -42,7 +42,7 @@ function(
   }
 
 
-  return function(url, map, node, options){
+  return function(url, map, options){
 
     var populate = options.populate || function(){};
     var exclude = options.exclude || [];
@@ -104,8 +104,6 @@ function(
           map.addLayer(services[i],1);
         }
       }
-
-      node.appendChild(container);
 
       populate(serviceName,serviceDescription);
 

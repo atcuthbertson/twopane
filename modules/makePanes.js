@@ -1,10 +1,28 @@
-define(["dojo/on"],function(on){
+define(["dojo/on","dojo/dom-class"],function(on, domClass){
   return function(serviceNode, nodes, names){
     var nodeLength = nodes.length;
     var width = nodeLength > 4
               ? 100/(Math.ceil(nodeLength / 2)) + '%'
               : 100/nodes.length + '%'
               ;
+
+    var attachButton = function(){
+      var lastNode = null;
+      var lastButton = null;
+      return function(node){
+        return function(button){
+          if(lastNode){
+            serviceNode.removeChild(lastNode);
+            domClass.remove(lastButton,"selectedButton");
+          }
+          domClass.add(this,"selectedButton");
+          serviceNode.appendChild(node);
+
+          lastNode = node;
+          lastButton = this;
+        }
+      }
+    }();
 
     var container = document.createElement('div');
     container.className = "paneHandles";
@@ -25,6 +43,8 @@ define(["dojo/on"],function(on){
       }
 
       container.appendChild(button); 
+
+      on(button, "click", attachButton(nodes[i]));
     }
 
     serviceNode.insertBefore(container,serviceNode.firstChild);
@@ -33,5 +53,6 @@ define(["dojo/on"],function(on){
   function centerRow(node,width){
     node.style.marginLeft = +width.slice(0,-1)/2 + '%';
   }
-
+ 
+  
 });

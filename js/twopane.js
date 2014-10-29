@@ -315,73 +315,74 @@ function(
     //Layer composed of simple checkboxes
     
     serviceContainers.push(
-        CheckLayer("https://gis.water.ca.gov/arcgis/rest/services/Public/GIC_Boundaries/MapServer",
-                map,
-                serviceNode,
-                {
-                  populate:populateRightPane,
-                  exclude:["B118_GW_Basins"],
-                  downloader:downloader,
-                  excludeDownload:["Groundwater_Management_Plan"]
-                }
-              )
-        );
-serviceContainers.push(
       CheckLayer("https://gis.water.ca.gov/arcgis/rest/services/Public/GIC_Boundaries/MapServer",
-                map,
-                serviceNode,
-                {
-                  populate:populateRightPane,
-                  downloader:downloader,
-                  excludeDownload:["Groundwater_Management_Plan"]
-                }
-              )
-      );
-serviceContainers.push(
-      CheckLayer("https://gis.water.ca.gov/arcgis/rest/services/Public/GIC_Boundaries/MapServer",
-                map,
-                serviceNode,
-                {
-                  populate:populateRightPane,
-                  downloader:downloader,
-                  excludeDownload:["Groundwater_Management_Plan"]
-                }
-              )
-      );
+        map,
+        {
+          populate:populateRightPane,
+          exclude:["B118_GW_Basins"],
+          downloader:downloader,
+          excludeDownload:["Groundwater_Management_Plan"]
+        }
+      )
+    );
+    
     serviceContainers.push(
       CheckLayer("https://gis.water.ca.gov/arcgis/rest/services/Public/GIC_Boundaries/MapServer",
-                map,
-                serviceNode,
-                {
-                  populate:populateRightPane,
-                  downloader:downloader,
-                  excludeDownload:["Groundwater_Management_Plan"]
-                }
-              )
-      );
-serviceContainers.push(
+        map,
+        {
+          populate:populateRightPane,
+          downloader:downloader,
+          excludeDownload:["Groundwater_Management_Plan"]
+        }
+      )
+    );
+    
+    serviceContainers.push(
       CheckLayer("https://gis.water.ca.gov/arcgis/rest/services/Public/GIC_Boundaries/MapServer",
-                map,
-                serviceNode,
-                {
-                  populate:populateRightPane,
-                  downloader:downloader,
-                  excludeDownload:["Groundwater_Management_Plan"]
-                }
-              )
-      );serviceContainers.push(
+        map,
+        {
+          populate:populateRightPane,
+          downloader:downloader,
+          excludeDownload:["Groundwater_Management_Plan"]
+        }
+      )
+    );
+    
+    serviceContainers.push(
       CheckLayer("https://gis.water.ca.gov/arcgis/rest/services/Public/GIC_Boundaries/MapServer",
-                map,
-                serviceNode,
-                {
-                  populate:populateRightPane,
-                  downloader:downloader,
-                  excludeDownload:["Groundwater_Management_Plan"]
-                }
-              )
-      );
+        map,
+        {
+          populate:populateRightPane,
+          downloader:downloader,
+          excludeDownload:["Groundwater_Management_Plan"]
+        }
+      )
+    );
+
+    serviceContainers.push(
+      CheckLayer("https://gis.water.ca.gov/arcgis/rest/services/Public/GIC_Boundaries/MapServer",
+        map,
+        {
+          populate:populateRightPane,
+          downloader:downloader,
+          excludeDownload:["Groundwater_Management_Plan"]
+        }
+      )
+    );
+    
+    serviceContainers.push(
+      CheckLayer("https://gis.water.ca.gov/arcgis/rest/services/Public/GIC_Boundaries/MapServer",
+        map,
+        {
+          populate:populateRightPane,
+          downloader:downloader,
+          excludeDownload:["Groundwater_Management_Plan"]
+        }
+      )
+    );
+          
 
     makePanes(serviceNode, serviceContainers, ['first layer','second one','third layer', 'quadruped', 'fivefivefive', 'sixsixsixsix']);
-   
+
   });
-});
+  });
