@@ -79,10 +79,7 @@ function(
 
 
     var staticServices = {};
-    var servicesById = {};
-
-    var serviceDescriptions = {};
-    
+ 
 
     if(oldIE) fx = require("dojo/_base/fx", function(fx){return fx});
 
