@@ -113,11 +113,18 @@ h3, b{
   border-bottom:1px solid #dadedf;
   text-align:center;
   cursor:pointer;
+
+  transition: background-color 0.075s;
 }
 
 .paneHandle:hover,.selectedButton{
   background-color:#688fed;
 }
+
+.paneHandle:active{
+  background-color:#F2BFEB;
+}
+
 .paneHandle:first-child{
   border-left:none;
 }

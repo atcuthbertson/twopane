@@ -38,16 +38,18 @@ define(["dojo/on","dojo/dom-class"],function(on, domClass){
          centerRow(button, width); 
         }
       }
-      if(i===5 && nodeLength === 7){
+      if(i === 5 && nodeLength === 7){
         centerRow(button,width); 
       }
 
       container.appendChild(button); 
 
       on(button, "click", attachButton(nodes[i]));
+      if(i === 0) on.emit(button, "click",{bubbles:false,cancelable:false});
     }
 
     serviceNode.insertBefore(container,serviceNode.firstChild);
+
   }
 
   function centerRow(node,width){
