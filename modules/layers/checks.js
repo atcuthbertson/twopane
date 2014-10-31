@@ -20,9 +20,6 @@ function(
 
   //need to provide an array of zip files for active layers
 
-  //need to rework the populate function such that only the proper things are added to the right pane
-  //This will differ per layer type but is managed internally. The function is eventually called with
-  //to set the title and content nodes (currently as innerHTML, but might make more sense as append)
 
   var activeUrls = {};
   var nameReg = /([^\/]*)\/MapServer/;
@@ -44,14 +41,13 @@ function(
 
   return function(url, map, options){
 
-    var populate = options.populate || function(){};
     var exclude = options.exclude || [];
     var downloader = options.downloader || null;
     var excludeDownload = options.excludeDownload || [];
     var paramFilter = options.paramFilter || null;
+    
+    var service = {}; 
 
-
-    populate.noLayers = 0;
 
     var active = 0;
     if(!busy){
@@ -110,8 +106,10 @@ function(
           map.addLayer(services[i],1);
         }
       }
-
-      populate(serviceName,serviceDescription);
+      
+      service.node = container;
+      service.name = serviceName;
+      service.description = serviceDescription; 
 
       //preserve ordering
       var next = queued.shift();
@@ -153,7 +151,7 @@ function(
       else queued.push(function(){processLayer(e)});
     });
 
-    return container; 
+    return service; 
  
 
   }
