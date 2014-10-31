@@ -353,14 +353,13 @@ label:hover,.serviceRadio,.layerCheck{
   padding-top:18px;
   margin-bottom:10px;
   text-align:center;
+  display:none;
 }
 
 #downloadNode{
-  display:block;
   width:240px;
   padding:5px 8px;
   border-radius:6px;
-
   color:white;
   font-size:24px;
   font-weight:bolder;
@@ -369,7 +368,12 @@ label:hover,.serviceRadio,.layerCheck{
   text-decoration:none;
 }
 
+.hiddenDownload{
+  display:none;
+}
+
 .noActiveDownloads{
+  display:block;
   margin:0 auto;
   background-color:#d8e2ea;
   box-shadow:0 1px 1px 0 #5a6069;

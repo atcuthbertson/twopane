@@ -10,7 +10,8 @@ function(
     var dlCount = 0;
     var excluded = {};
     var excludedCount = 0;
-
+    
+    node.parentNode.style.display = "block"; 
 
     function getFullPath(name){
       return path + "/" + name + ".zip";

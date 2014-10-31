@@ -272,6 +272,7 @@ function(
     W.setTimeout(function(){
       on.emit(closeButton, "mousedown",{bubbles:true,cancelable:true})
       if(populateRightPane.noLayers) populateRightPane("Read information about selected layers here")
+      setNodeDimensions();
     },300);
 
 
@@ -286,7 +287,7 @@ function(
     var serviceContainers = [];
     //PUT YOUR SERVICE HERE, REPLACE THE GIC URL BELOW AND UNCOMMENT THE FUNCTION CALL
     //Layer composed of simple checkboxes
-    
+   function populateRightPane(){} 
     serviceContainers.push(
       CheckLayer("https://gis.water.ca.gov/arcgis/rest/services/Public/GIC_Boundaries/MapServer",
         map,
