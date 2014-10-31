@@ -47,7 +47,7 @@ function(
     var populate = options.populate || function(){};
     var exclude = options.exclude || [];
     var downloader = options.downloader || null;
-    var excludeDownload = options.excludeDownload || null;
+    var excludeDownload = options.excludeDownload || [];
     var paramFilter = options.paramFilter || null;
 
 
@@ -80,9 +80,15 @@ function(
       serviceUnderscored = makeUnderscored(serviceName);
       serviceDescription = layer.description;
 
-      if(downloader && excludeDownload){
-        for(i=0; i<excludeDownload.length; i++){
-          excludeDownload[i] = serviceUnderscored + "/" + excludeDownload[i];
+      if(downloader && excludeDownload.length){
+        if(excludeDownload[0] === "*"){
+          for (i = 0; i < layerInfos.length; i++) {
+            excludeDownload[i] =  serviceUnderscored + "/" + makeUnderscored(layerInfos[i].name);
+          }
+        }else{
+          for(i=0; i<excludeDownload.length; i++){
+            excludeDownload[i] = serviceUnderscored + "/" + excludeDownload[i];
+          }
         }
         downloader.exclude(excludeDownload);
       }
