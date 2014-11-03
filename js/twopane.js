@@ -289,35 +289,30 @@ function(
 
     populate.init(dataNode); 
 
+    makePanes(serviceNode, populate);
 
-    var services = [];
-    //PUT YOUR SERVICE HERE, REPLACE THE GIC URL BELOW AND UNCOMMENT THE FUNCTION CALL
     //Layer composed of simple checkboxes
-
-    services.push(
-      CheckLayer("https://gis.water.ca.gov/arcgis/rest/services/Public/GIC_Boundaries/MapServer",
-        map,
-        {
-          exclude:["B118_GW_Basins"],
-          downloader:downloader,
-          excludeDownload:["Groundwater_Management_Plan"]
-        }
-      )
+    CheckLayer("https://gis.water.ca.gov/arcgis/rest/services/Public/GIC_Boundaries/MapServer",
+      map,
+      {
+        tabName:"Boundaries",
+        exclude:["B118_GW_Basins"],
+        downloader:downloader,
+        excludeDownload:["Groundwater_Management_Plan"]
+      }
     );
     
-    services.push(
-      CheckLayer("https://gis.water.ca.gov/arcgis/rest/services/Public/Subsidence/MapServer",
-        map,
-        {
-          downloader:downloader,
-          excludeDownload:["*"]
-        }
-      )
+    CheckLayer("https://gis.water.ca.gov/arcgis/rest/services/Public/Subsidence/MapServer",
+      map,
+      {
+        downloader:downloader,
+        excludeDownload:["*"]
+      }
     );
      
           
 
-    makePanes(serviceNode, populate, services, ['Boundaries','Subsidence']);
+
 
   });
   });
