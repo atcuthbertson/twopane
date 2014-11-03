@@ -273,7 +273,7 @@ function(
 
     W.setTimeout(function(){
       on.emit(closeButton, "mousedown",{bubbles:true,cancelable:true})
-      if(populateRightPane.noLayers) populateRightPane("Read information about selected layers here")
+      //if(populateRightPane.noLayers) populateRightPane("Read information about selected layers here")
       setNodeDimensions();
     },300);
 

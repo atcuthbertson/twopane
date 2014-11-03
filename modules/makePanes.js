@@ -15,10 +15,12 @@ define(["dojo/on","dojo/dom-class"],function(on, domClass){
             serviceNode.removeChild(lastNode);
             domClass.remove(lastButton,"selectedButton");
           }
+          console.log(service);
           domClass.add(this,"selectedButton");
-          serviceNode.appendChild(node);
+          serviceNode.appendChild(service.node);
+          populate(service.name, service.description); 
 
-          lastNode = node;
+          lastNode = service.node;
           lastButton = this;
         }
       }
