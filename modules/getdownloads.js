@@ -51,7 +51,7 @@ function(
     function remove(name){
       if(excluded[name]){
         excludedCount--;
-        if(dlCount === 0){
+        if(dlCount === 0 && excludedCount === 0){
           domClass.remove(node,"noDownloadAvailable")
           node.textContent = "Select a Layer";
         }
