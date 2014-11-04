@@ -1,10 +1,16 @@
 define(["dojo/on","dojo/dom-class"],function(on, domClass){
-  return function(serviceNode, populate, services, names){
+  return function(serviceNode, populate){
+
+
     var len = services.length;
     var width = len > 4
               ? 100/(Math.ceil(len / 2)) + '%'
               : 100/len + '%'
               ;
+
+    var container = document.createElement('div');
+    container.className = "paneHandles";
+    serviceNode.insertBefore(container,serviceNode.firstChild);
 
     var attachButton = function(){
       var lastNode = null;
@@ -15,7 +21,6 @@ define(["dojo/on","dojo/dom-class"],function(on, domClass){
             serviceNode.removeChild(lastNode);
             domClass.remove(lastButton,"selectedButton");
           }
-          console.log(service);
           domClass.add(this,"selectedButton");
           serviceNode.appendChild(service.node);
           populate(service.name, service.description); 
@@ -26,13 +31,11 @@ define(["dojo/on","dojo/dom-class"],function(on, domClass){
       }
     }();
 
-    var container = document.createElement('div');
-    container.className = "paneHandles";
      
-    for (var i = 0; i < len; i++) {
+    function hookService(service){
       var button = document.createElement('div');
       button.className = "paneHandle";
-      button.textContent = names[i];
+      button.textContent = service.tabName;
       button.style.width = width;
       if(i === 3 && len > 4){
         button.style.borderLeft = "none"
@@ -50,7 +53,13 @@ define(["dojo/on","dojo/dom-class"],function(on, domClass){
       if(i === 0) on.emit(button, "click",{bubbles:false,cancelable:false});
     }
 
-    serviceNode.insertBefore(container,serviceNode.firstChild);
+
+
+
+    return function(service){
+      if(!service.tabName) service.tabName = service.name;
+      hookService(service);
+    }
 
   }
 

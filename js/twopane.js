@@ -289,7 +289,8 @@ function(
 
     populate.init(dataNode); 
 
-    makePanes(serviceNode, populate);
+    //Hooks services to UI features.
+    //makePanes(serviceNode, populate);
 
     //Layer composed of simple checkboxes
     CheckLayer("https://gis.water.ca.gov/arcgis/rest/services/Public/GIC_Boundaries/MapServer",

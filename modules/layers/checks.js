@@ -3,6 +3,7 @@ define([
 
   "esri/layers/ArcGISDynamicMapServiceLayer",
 
+  "modules/layerQueue.js",
   "modules/makeCheck.js",
   "modules/info.js",
   "modules/spinner.js"
@@ -12,6 +13,7 @@ function(
 
   ArcGISDynamicMapServiceLayer,
 
+  layerQueue,
   makeCheck,
   info,
   spinner
@@ -65,7 +67,10 @@ function(
 
     var firstService = makeService(url,services);
 
+    layerQueue.push(firstService, processLayer)
+
     info.register(url);
+
 
     function processLayer(e){
       var layer = e.layer;
@@ -109,12 +114,8 @@ function(
       
       service.node = container;
       service.name = serviceName;
-      service.description = serviceDescription; 
-
-      //preserve ordering
-      var next = queued.shift();
-      if(next) next();
-      else busy = 0;
+      service.description = serviceDescription;
+      
     }
 
 
@@ -146,13 +147,8 @@ function(
     }
 
 
-    firstService.on("load",function(e){
-      if(!busy||active) processLayer(e);
-      else queued.push(function(){processLayer(e)});
-    });
-
     return service; 
- 
+
 
   }
 
