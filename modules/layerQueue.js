@@ -1,5 +1,7 @@
-define(["dojo/on"],function(on){
+define([],function(){
   var queued = [];
+  var subscribers = [];
+  var firstLoad = 1;
 
 
   function push(service,func){
@@ -7,6 +9,11 @@ define(["dojo/on"],function(on){
 
     service.on("load", function(evt){
       var serviceObj;
+
+      if(firstLoad){
+        firstLoad = 0;
+        broadcast();
+      }
 
       for(var i=0; i<queued.length; i++){
         serviceObj = queued[i];
@@ -30,8 +37,21 @@ define(["dojo/on"],function(on){
   }
 
 
+  function listen(func){
+    subscribers.push(func);
+  }
+
+
+  function broadcast(){
+    for(var i=0; i<subscribers.length; i++){
+      subscribers[i](queued);
+    }
+  }
+
+
   return {
-    push:push
+    push:push,
+    listen:listen
   }
 
 });
