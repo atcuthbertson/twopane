@@ -1,6 +1,8 @@
 define([],function(){
     var node;
-    var lastWrap; 
+    var lastWrap;
+    var DOC = document;
+
     function populate(title, data){
       var wrapper = DOC.createElement('div');
       if(title){
@@ -19,6 +21,7 @@ define([],function(){
       if(lastWrap)node.removeChild(lastWrap);
 
       node.appendChild(wrapper);
+      lastWrap = wrapper;
     }
     
     populate.init = function(container){
