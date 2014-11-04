@@ -41,12 +41,14 @@ function(
   }
 
 
-  return function(url, map, options){
+  return function(url, map, hookService, options){
 
+    var tabName = options.tabName || null;
     var exclude = options.exclude || [];
     var downloader = options.downloader || null;
     var excludeDownload = options.excludeDownload || [];
     var paramFilter = options.paramFilter || null;
+
     
     var service = {}; 
 
@@ -115,6 +117,9 @@ function(
       service.node = container;
       service.name = serviceName;
       service.description = serviceDescription;
+      service.tabName = tabName? tabName : serviceName;
+
+      hookService(service);
       
     }
 

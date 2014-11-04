@@ -290,11 +290,12 @@ function(
     populate.init(dataNode); 
 
     //Hooks services to UI features.
-    //makePanes(serviceNode, populate);
+    var hookService = makePanes(serviceNode, populate);
 
     //Layer composed of simple checkboxes
     CheckLayer("https://gis.water.ca.gov/arcgis/rest/services/Public/GIC_Boundaries/MapServer",
       map,
+      hookService,
       {
         tabName:"Boundaries",
         exclude:["B118_GW_Basins"],
@@ -305,6 +306,7 @@ function(
     
     CheckLayer("https://gis.water.ca.gov/arcgis/rest/services/Public/Subsidence/MapServer",
       map,
+      hookService,
       {
         downloader:downloader,
         excludeDownload:["*"]

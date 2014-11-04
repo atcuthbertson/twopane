@@ -37,7 +37,7 @@ define([],function(){
   }
 
 
-  function listen(func){
+  function subscribe(func){
     subscribers.push(func);
   }
 
@@ -51,7 +51,7 @@ define([],function(){
 
   return {
     push:push,
-    listen:listen
+    subscribe:subscribe
   }
 
 });

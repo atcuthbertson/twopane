@@ -1,16 +1,32 @@
-define(["dojo/on","dojo/dom-class"],function(on, domClass){
+define([
+  "dojo/on",
+  "dojo/dom-class",
+  "modules/layerQueue.js"
+  ],
+  function(
+    on,
+    domClass,
+    layerQueue
+  ){
   return function(serviceNode, populate){
 
-
-    var len = services.length;
-    var width = len > 4
-              ? 100/(Math.ceil(len / 2)) + '%'
-              : 100/len + '%'
-              ;
-
+    var len;
+    var width;
     var container = document.createElement('div');
     container.className = "paneHandles";
     serviceNode.insertBefore(container,serviceNode.firstChild);
+
+
+    layerQueue.subscribe(function(services){
+      len = services.length;
+      width = len > 4 
+              ? 100/(Math.ceil(len / 2)) + '%'
+              : 100/len + '%'
+              ;
+    })
+
+
+
 
     var attachButton = function(){
       var lastNode = null;
@@ -37,29 +53,29 @@ define(["dojo/on","dojo/dom-class"],function(on, domClass){
       button.className = "paneHandle";
       button.textContent = service.tabName;
       button.style.width = width;
-      if(i === 3 && len > 4){
+
+      var curr = container.childNodes.length;
+
+      if(curr === 3 && len > 4){
         button.style.borderLeft = "none"
         if(len === 5){
          centerRow(button, width); 
         }
       }
-      if(i === 5 && len === 7){
+      if(curr === 5 && len === 7){
         centerRow(button,width); 
       }
 
       container.appendChild(button); 
 
-      on(button, "click", attachButton(services[i]));
-      if(i === 0) on.emit(button, "click",{bubbles:false,cancelable:false});
+      on(button, "click", attachButton(service));
+      if(curr === 0) on.emit(button, "click",{bubbles:false,cancelable:false});
     }
 
 
 
 
-    return function(service){
-      if(!service.tabName) service.tabName = service.name;
-      hookService(service);
-    }
+    return hookService;
 
   }
 
