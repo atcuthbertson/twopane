@@ -51,14 +51,8 @@ function(
     var downloader = options.downloader || null;
     var excludeDownload = options.excludeDownload || [];
 
-    
-    var service = {}; 
-
-
-    var container = DOC.createElement('div');
-    var serviceName;
-    var serviceUnderscored;
-    var serviceDescription;
+    var serviceName = makeSpaced(url.match(nameReg)[1]);
+    var serviceUnderscored = makeUnderscored(serviceName);
 
     var services = [];
     var checks = [];
@@ -70,16 +64,16 @@ function(
     info.register(url);
 
 
+    var container = DOC.createElement('div');
+    var title = DOC.createElement('h3');
+    title.innerText = serviceName;
+    container.appendChild(title);
+
+
     function processLayer(e){
       var layer = e.layer;
       var layerInfos = layer.layerInfos;
       var layerCount = layerInfos.length;
-      var i;
-
-
-      serviceName = makeSpaced(url.match(nameReg)[1]);
-      serviceUnderscored = makeUnderscored(serviceName);
-      serviceDescription = layer.description;
 
 
       excludeDownloads(layerInfos);
@@ -92,22 +86,19 @@ function(
       })
 
 
-      var title = DOC.createElement('h3');
-      title.innerText = serviceName;
-      container.appendChild(title);
-
-
       /*One map layer for each service layer, for independent transparencies*/
-      for(i=0; i<layerCount; i++){
+      for(var i=0; i<layerCount; i++){
         if(i>0) makeService(url,services);
         map.addLayer(services[i]);
         buildCheck(layerInfos[i],i,container,services);
       }
-
       
+
+      var service = {};
+
       service.node = container;
       service.name = serviceName;
-      service.description = serviceDescription;
+      service.description = layer.description;
       service.tabName = tabName? tabName : serviceName;
 
       hookService(service);
