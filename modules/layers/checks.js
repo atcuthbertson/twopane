@@ -62,6 +62,7 @@ function(
     var serviceDescription;
 
     var services = [];
+    var checks = [];
     var fullNames = [];
 
 
@@ -136,24 +137,30 @@ function(
 
       services[i].setVisibleLayers([i]);
       fullNames[i] =  serviceUnderscored + "/" + underscoredName;
+
       var check = makeCheck(layerInfo, i, container, services);
+      checks.push(check);
+
       on(check,"change",function(){
         toggleLayer(i, 0);
         if(!services[i].suspended)spinner(check,services[i]);
-      })
+      });
     }
 
 
     function toggleLayer(id, closeAll){
       var service = services[id];
-      if(service.suspended && !closeAll){
-        service.resume();
-        info.activate(service.url,id);
-        if(downloader) downloader.add(fullNames[id]);
+      if(service.suspended){
+        if(!closeAll){
+          service.resume();
+          info.activate(service.url,id);
+          if(downloader) downloader.add(fullNames[id]);
+        }
       }else{
         service.suspend();
         info.deactivate(service.url,id);
         if(downloader) downloader.remove(fullNames[id]);
+        if (closeAll) checks[id].checked = false;
       }
     }
 
