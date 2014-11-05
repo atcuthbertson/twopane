@@ -153,20 +153,21 @@ function(
 
 
 
-    function toggleLayer(id, closeAll){
+    function toggleLayer(service, closeAll){
       if(service.suspended){
         if(!closeAll){
           service.resume();
-          info.activate(service.url,id);
-          if(downloader) downloader.add(fullNames[id]);
+          info.activate(service);
+          if(downloader) downloader.add(service.fullName);
         }
       }else{
         service.suspend();
-        info.deactivate(service.url,id);
-        if(downloader) downloader.remove(fullNames[id]);
-        if (closeAll) checks[id].checked = false;
+        info.deactivate(service);
+        if(downloader) downloader.remove(service.fullName);
+       // if (closeAll) checks[id].checked = false;
       }
     }
+
 
     function excludeDownloads(layerInfos){
       if(downloader && excludeDownload.length){

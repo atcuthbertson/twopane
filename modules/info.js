@@ -272,15 +272,15 @@ function(
 
 
 
-  function activate(url,id){
-    activeLayers[url].push(id);
+  function activate(service){
+    activeLayers[service.url].push(service);
   }
 
 
-  function deactivate(url,id){
-    var arr = activeLayers[url];
+  function deactivate(service){
+    var arr = activeLayers[service.url];
     for(var i=0; i<arr.length; i++){
-      if(arr[i] === id) return arr.splice(i,1)
+      if(arr[i] === service) return arr.splice(i,1)
     }
   }
 
