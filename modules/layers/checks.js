@@ -6,7 +6,8 @@ define([
   "modules/layerQueue.js",
   "modules/makeCheck.js",
   "modules/info.js",
-  "modules/spinner.js"
+  "modules/spinner.js",
+  "modules/clearAllLayers.js"
   ],
 function(
   on,
@@ -16,21 +17,16 @@ function(
   layerQueue,
   makeCheck,
   info,
-  spinner
+  spinner,
+  clearAllLayers
 ){
   //need to do something about legends
 
   //need to provide an array of zip files for active layers
 
-
-  var activeUrls = {};
+  var DOC = document;
   var nameReg = /([^\/]*)\/MapServer/;
 
-  var DOC = document;
-
-  var queued = [];
-  var busy = 0;
-  var active = 0;
 
   function makeSpaced(name){
     return name.replace(/_/g," ")
@@ -38,6 +34,13 @@ function(
 
   function makeUnderscored(name){
     return name.replace(/ /g,"_")
+  }
+
+  function makeService(url,services){
+    var service = new ArcGISDynamicMapServiceLayer(url);
+    service.suspend();
+    services.push(service);
+    return service;
   }
 
 
@@ -53,12 +56,6 @@ function(
     var service = {}; 
 
 
-    var active = 0;
-    if(!busy){
-      active = 1;
-      busy = 1;
-    }
-
     var container = DOC.createElement('div');
     var serviceName;
     var serviceUnderscored;
@@ -67,25 +64,26 @@ function(
     var services = [];
     var fullNames = [];
 
+
     var firstService = makeService(url,services);
-
     layerQueue.push(firstService, processLayer)
-
     info.register(url);
 
 
     function processLayer(e){
       var layer = e.layer;
       var layerInfos = layer.layerInfos;
+      var layerCount = layerInfos.length;
       var i;
 
       serviceName = makeSpaced(url.match(nameReg)[1]);
       serviceUnderscored = makeUnderscored(serviceName);
       serviceDescription = layer.description;
 
+
       if(downloader && excludeDownload.length){
         if(excludeDownload[0] === "*"){
-          for (i = 0; i < layerInfos.length; i++) {
+          for (i = 0; i < layerCount; i++) {
             excludeDownload[i] =  serviceUnderscored + "/" + makeUnderscored(layerInfos[i].name);
           }
         }else{
@@ -96,6 +94,14 @@ function(
         downloader.exclude(excludeDownload);
       }
 
+
+      clearAllLayers.register(function(){
+        for(var i=0; i< layerCount; i++){
+          toggleLayer(i, 1);
+        }
+      })
+
+
       var title = DOC.createElement('h3');
       title.innerText = serviceName;
       container.appendChild(title);
@@ -104,7 +110,7 @@ function(
         paramFilter(url,services,container);
       }else{
         /*One map layer for each service layer, for independent transparencies*/
-        for(i=0; i<layerInfos.length; i++){
+        for(i=0; i<layerCount; i++){
           if(i>0) makeService(url,services);
           buildCheck(layerInfos[i],i,container,services);
         }
@@ -132,7 +138,7 @@ function(
       fullNames[i] =  serviceUnderscored + "/" + underscoredName;
       var check = makeCheck(layerInfo, i, container, services);
       on(check,"change",function(){
-        toggleLayer(i);
+        toggleLayer(i, 0);
         if(!services[i].suspended)spinner(check,services[i]);
       })
     }
@@ -152,17 +158,6 @@ function(
     }
 
 
-    return service; 
-
 
   }
-
-
-    function makeService(url,services){
-      var service = new ArcGISDynamicMapServiceLayer(url);
-      service.suspend();
-      services.push(service);
-      return service;
-    }
-
 });
