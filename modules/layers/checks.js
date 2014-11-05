@@ -50,7 +50,6 @@ function(
     var exclude = options.exclude || [];
     var downloader = options.downloader || null;
     var excludeDownload = options.excludeDownload || [];
-    var paramFilter = options.paramFilter || null;
 
     
     var service = {}; 
@@ -77,24 +76,14 @@ function(
       var layerCount = layerInfos.length;
       var i;
 
+
       serviceName = makeSpaced(url.match(nameReg)[1]);
       serviceUnderscored = makeUnderscored(serviceName);
       serviceDescription = layer.description;
 
 
-      if(downloader && excludeDownload.length){
-        if(excludeDownload[0] === "*"){
-          for (i = 0; i < layerCount; i++) {
-            excludeDownload[i] =  serviceUnderscored + "/" + makeUnderscored(layerInfos[i].name);
-          }
-        }else{
-          for(i=0; i<excludeDownload.length; i++){
-            excludeDownload[i] = serviceUnderscored + "/" + excludeDownload[i];
-          }
-        }
-        downloader.exclude(excludeDownload);
-      }
-
+      excludeDownloads(layerInfos);
+    
 
       clearAllLayers.register(function(){
         for(var i=0; i< layerCount; i++){
@@ -107,19 +96,14 @@ function(
       title.innerText = serviceName;
       container.appendChild(title);
 
-      if(paramFilter){
-        paramFilter(url,services,container);
-      }else{
-        /*One map layer for each service layer, for independent transparencies*/
-        for(i=0; i<layerCount; i++){
-          if(i>0) makeService(url,services);
-          buildCheck(layerInfos[i],i,container,services);
-        }
 
-        for(i=0; i<services.length; i++){
-          map.addLayer(services[i],1);
-        }
+      /*One map layer for each service layer, for independent transparencies*/
+      for(i=0; i<layerCount; i++){
+        if(i>0) makeService(url,services);
+        map.addLayer(services[i]);
+        buildCheck(layerInfos[i],i,container,services);
       }
+
       
       service.node = container;
       service.name = serviceName;
@@ -136,20 +120,22 @@ function(
       var spacedName = makeSpaced(layerInfo.name);
       if(exclude.indexOf(underscoredName) !== -1) return;
 
+      var resolveService = getServiceResolver(id)
+
       services[id].setVisibleLayers([id]);
       fullNames[id] =  serviceUnderscored + "/" + underscoredName;
 
-      var check = makeCheck(container, spacedName, getLayerResolver(id));
+      var check = makeCheck(container, spacedName, resolveService);
       checks.push(check);
 
       on(check,"change",function(){
         toggleLayer(id, 0);
-        if(!services[id].suspended)spinner(check,services[i]);
+        if(!services[id].suspended)spinner(check,services[id]);
       });
 
     }
 
-    function getLayerResolver(id){
+    function getServiceResolver(id){
       //dynamicStuffhere
       var resolvedServices = services;
       return function(){
@@ -171,6 +157,21 @@ function(
         info.deactivate(service.url,id);
         if(downloader) downloader.remove(fullNames[id]);
         if (closeAll) checks[id].checked = false;
+      }
+    }
+
+    function excludeDownloads(layerInfos){
+      if(downloader && excludeDownload.length){
+        if(excludeDownload[0] === "*"){
+          for (var i = 0; i < layerInfos.length; i++) {
+            excludeDownload[i] =  serviceUnderscored + "/" + makeUnderscored(layerInfos[i].name);
+          }
+        }else{
+          for(var i = 0; i<excludeDownload.length; i++){
+            excludeDownload[i] = serviceUnderscored + "/" + makeUnderscored(excludeDownload[i]);
+          }
+        }
+        downloader.exclude(excludeDownload);
       }
     }
 
