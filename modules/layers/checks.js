@@ -36,10 +36,9 @@ function(
     return name.replace(/ /g,"_")
   }
 
-  function makeService(url,services){
+  function makeService(url){
     var service = new ArcGISDynamicMapServiceLayer(url);
     service.suspend();
-    services.push(service);
     return service;
   }
 
@@ -54,12 +53,8 @@ function(
     var serviceName = makeSpaced(url.match(nameReg)[1]);
     var serviceUnderscored = makeUnderscored(serviceName);
 
-    var services = [];
-    var checks = [];
-    var fullNames = [];
 
-
-    var firstService = makeService(url,services);
+    var firstService = makeService(url);
     layerQueue.push(firstService, processLayer)
     info.register(url);
 
@@ -68,6 +63,31 @@ function(
     var title = DOC.createElement('h3');
     title.innerText = serviceName;
     container.appendChild(title);
+
+
+    var layerResolver = function(){
+      var checks = {};
+
+      function resolve(check){
+        return checks[check.id].fn();
+      }
+
+      function register(check,service,fn){
+        var id = check.id;
+        if(checks[id]){
+          checks[id].services.push(service);
+        }else{
+          checks[id] = {fn:fn,services:[service]}
+        }
+      }
+
+
+      return {
+        resolve:resolve,
+        register:register
+      }
+
+    }();
 
 
     function processLayer(e){
@@ -88,55 +108,52 @@ function(
 
       /*One map layer for each service layer, for independent transparencies*/
       for(var i=0; i<layerCount; i++){
-        if(i>0) makeService(url,services);
-        map.addLayer(services[i]);
-        buildCheck(layerInfos[i],i,container,services);
+        var service;
+        if(i>0) service = makeService(url);
+        else service = firstService;
+
+        buildCheck(layerInfos[i],i);
+        map.addLayer(service);
       }
-      
 
-      var service = {};
 
-      service.node = container;
-      service.name = serviceName;
-      service.description = layer.description;
-      service.tabName = tabName? tabName : serviceName;
+      var serviceProps = {};
 
-      hookService(service);
+      serviceProps.node = container;
+      serviceProps.name = serviceName;
+      serviceProps.description = layer.description;
+      serviceProps.tabName = tabName? tabName : serviceName;
+
+      hookService(serviceProps);
       
     }
 
 
-    function buildCheck(layerInfo, id, container){
+
+
+    function buildCheck(service, id, layerInfo){
       var underscoredName = makeUnderscored(layerInfo.name);
       var spacedName = makeSpaced(layerInfo.name);
       if(exclude.indexOf(underscoredName) !== -1) return;
 
-      var resolveService = getServiceResolver(id)
+      var resolveLayer = getLayerResolver(service)
 
-      services[id].setVisibleLayers([id]);
-      fullNames[id] =  serviceUnderscored + "/" + underscoredName;
+      service.setVisibleLayers([id]);
+      service.fullName =  serviceUnderscored + "/" + underscoredName;
 
       var check = makeCheck(container, spacedName, resolveService);
       checks.push(check);
 
       on(check,"change",function(){
-        toggleLayer(id, 0);
-        if(!services[id].suspended)spinner(check,services[id]);
+        toggleLayer(service, 0);
+        if(!service.suspended)spinner(check,service);
       });
 
     }
 
-    function getServiceResolver(id){
-      //dynamicStuffhere
-      var resolvedServices = services;
-      return function(){
-        return resolvedServices[id];
-      }
-    }
 
 
     function toggleLayer(id, closeAll){
-      var service = services[id];
       if(service.suspended){
         if(!closeAll){
           service.resume();
