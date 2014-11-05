@@ -21,6 +21,7 @@ require([
   "modules/searchbox.js",
   "modules/makePanes.js",
   "modules/populate.js",
+  "modules/clearAllLayers.js",
   "modules/layers/checks.js",
    
   "require"
@@ -45,6 +46,7 @@ function(
   Searchbox,
   makePanes,
   populate,
+  clearAllLayers,
   CheckLayer,
 
   require
@@ -69,6 +71,7 @@ function(
 
     var mapPane = dom.byId("centerPane");
     var serviceNode = dom.byId("serviceNode");
+    var clearAll = dom.byId("clearAll");
     var rightPane = dom.byId('rightPane');
     var dataNode = dom.byId('dataNode');
     var downloadNode = dom.byId("downloadNode");
@@ -202,12 +205,6 @@ function(
 
 
 
-    //clear all layers
-
-
-
-
-
     //toggling right pane
     closeToggle = function(){
       var showing = 0;
@@ -296,6 +293,9 @@ function(
     //initialize the populate module with a node where information will be placed 
     populate.init(dataNode);
 
+
+    //clear all layers
+    clearAllLayers.init(clearAll);
 
     //Hooks services to UI features.
     var hookService = makePanes(serviceNode, populate);
