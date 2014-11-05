@@ -131,20 +131,30 @@ function(
     }
 
 
-    function buildCheck(layerInfo, i, container){
+    function buildCheck(layerInfo, id, container){
       var underscoredName = makeUnderscored(layerInfo.name);
+      var spacedName = makeSpaced(layerInfo.name);
       if(exclude.indexOf(underscoredName) !== -1) return;
 
-      services[i].setVisibleLayers([i]);
-      fullNames[i] =  serviceUnderscored + "/" + underscoredName;
+      services[id].setVisibleLayers([id]);
+      fullNames[id] =  serviceUnderscored + "/" + underscoredName;
 
-      var check = makeCheck(layerInfo, i, container, services);
+      var check = makeCheck(container, spacedName, getLayerResolver(id));
       checks.push(check);
 
       on(check,"change",function(){
-        toggleLayer(i, 0);
-        if(!services[i].suspended)spinner(check,services[i]);
+        toggleLayer(id, 0);
+        if(!services[id].suspended)spinner(check,services[i]);
       });
+
+    }
+
+    function getLayerResolver(id){
+      //dynamicStuffhere
+      var resolvedServices = services;
+      return function(){
+        return resolvedServices[id];
+      }
     }
 
 

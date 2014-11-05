@@ -7,11 +7,7 @@ function(
 
     var DOC = document;
 
-    function makeSpaced(name){
-      return name.replace(/_/g," ")
-    }
-
-    return function(layerInfo, layerId, container, services){
+    return function(container, name, resolveLayer){
       var id = Math.random();
 
       var wrapper = DOC.createElement('div');
@@ -23,7 +19,7 @@ function(
 
       var label = DOC.createElement('label');
       label.setAttribute('for',id);
-      label.innerText = makeSpaced(layerInfo.name);
+      label.innerText = name;
 
       var sliderNode = DOC.createElement('div')
 
@@ -38,7 +34,7 @@ function(
         intermediateChanges: true,
         style:"width:120px;",
         onChange:function(value){
-          services[layerId].setOpacity(value);
+          resolveLayer().setOpacity(value);
         }
         }, sliderNode
       ).startup();
