@@ -63,7 +63,6 @@ h3, b{
 
 
 
-
 #leftPane{
   position:absolute;
   left:0;
@@ -98,6 +97,14 @@ h3, b{
   padding:10px 5px 10px 25px
 }
 
+#clearAll{
+  font-size: 12px;
+  float:right;
+  margin:0 15px -3px 0;
+  padding:3px;
+  border-radius:3px;
+}
+
 .paneHandles{
   overflow:auto;
   margin-bottom:10px; 
@@ -106,23 +113,13 @@ h3, b{
 
 .paneHandle{
   box-sizing:border-box;
-  background-color:#d4e4ff;
   float:left;
   padding:10px 0;
   border-left:1px solid #dadedf;
   border-bottom:1px solid #dadedf;
   text-align:center;
-  cursor:pointer;
 
   transition: background-color 0.075s;
-}
-
-.paneHandle:hover,.selectedButton{
-  background-color:#688fed;
-}
-
-.paneHandle:active{
-  background-color:#F2BFEB;
 }
 
 .paneHandle:first-child{
@@ -383,18 +380,9 @@ label:hover,.serviceRadio,.layerCheck{
   background-color:#ffc4c4;
 }
 
-.downloadable{
-  background-color:#d4e4ff;
-  cursor:pointer;
-}
-
-.downloadable:hover{
-  background-color:#688FED;
-}
 
 .downloadable:active{
   margin-top:1px;
-  background-color:#F2BFEB;
 }
 
 .noDownload{
@@ -420,11 +408,26 @@ label:hover,.serviceRadio,.layerCheck{
 }
 
 #arro:hover{
-  color:#688FED;
+  color:#688fed;
 }
 
 #arro:active{
-  color:#d4e4ff;
+  color:#f2bfeb;
+}
+
+
+
+#clearAll, .paneHandle, .downloadable{
+  background-color:#d4e4ff;
+  cursor:pointer;
+}
+
+#clearAll:hover, .paneHandle:hover, .downloadable:hover, .selectedButton{
+  background-color:#688fed;
+}
+
+#clearAll:active, .paneHandle:active, .downloadable:active{
+  background-color:#f2bfeb;
 }
 
 
