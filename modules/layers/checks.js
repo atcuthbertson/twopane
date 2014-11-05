@@ -132,15 +132,15 @@ function(
       fullNames[i] =  serviceUnderscored + "/" + underscoredName;
       var check = makeCheck(layerInfo, i, container, services);
       on(check,"change",function(){
-        toggleLayer(i,services);
+        toggleLayer(i);
         if(!services[i].suspended)spinner(check,services[i]);
       })
     }
 
 
-    function toggleLayer(id){
+    function toggleLayer(id, closeAll){
       var service = services[id];
-      if(service.suspended){
+      if(service.suspended && !closeAll){
         service.resume();
         info.activate(service.url,id);
         if(downloader) downloader.add(fullNames[id]);

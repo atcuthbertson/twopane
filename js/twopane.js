@@ -202,6 +202,12 @@ function(
 
 
 
+    //clear all layers
+
+
+
+
+
     //toggling right pane
     closeToggle = function(){
       var showing = 0;
@@ -287,10 +293,13 @@ function(
     on(downloadNode,"click",downloader.download)
 
 
-    populate.init(dataNode); 
+    //initialize the populate module with a node where information will be placed 
+    populate.init(dataNode);
+
 
     //Hooks services to UI features.
     var hookService = makePanes(serviceNode, populate);
+
 
     //Layer composed of simple checkboxes
     CheckLayer("https://gis.water.ca.gov/arcgis/rest/services/Public/GIC_Boundaries/MapServer",
