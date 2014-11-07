@@ -72,31 +72,33 @@ function(
         if(checks[id]){
           checks[id].services.push(service);
         }else{
-          checks[id] = {fn:fn,services:[service]}
+          checks[id] = {fn:fn,check:check,services:[service]}
         }
       }
 
-      function resolveAll(){
-        var resolvedLayers = [];
+      function getRegistered(){
+        var registered = [];
         for(var id in checks){
-          resolvedLayers.push(checks[id].fn(checks[id].services)); 
+          registered.push(checks[id]); 
         }
-        return resolvedLayers;
+        return registered;
       }
 
 
       return {
         resolve:resolve,
         register:register,
-        resolveAll:resolveAll
+        getRegistered:getRegistered
       }
 
     }();
 
     clearAllLayers.register(function(){
-      var layers = layerResolver.resolveAll();
-      for(var i=0; i< layers.length; i++){
-        toggleLayer(layers[i], 1);
+      var layerObjects = layerResolver.getRegistered();
+      for(var i=0; i< layerObjects.length; i++){
+        var layerObj = layerObjects[i]
+        if(layerObj.check.checked) layerObj.check.checked = false;
+        toggleLayer(layerResolver.resolve(layerObj.check), 1);
       }
     });
 
@@ -169,7 +171,6 @@ function(
         service.suspend();
         info.deactivate(service);
         if(downloader) downloader.remove(service.fullName);
-       // if (closeAll) checks[id].checked = false;
       }
     }
 
