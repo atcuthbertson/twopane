@@ -24,7 +24,6 @@ function(
 
   //need to provide an array of zip files for active layers
 
-  var DOC = document;
   var nameReg = /([^\/]*)\/MapServer/;
 
 
@@ -50,7 +49,7 @@ function(
     var downloader = options.downloader || null;
     var excludeDownload = options.excludeDownload || [];
 
-    var serviceName = makeSpaced(url.match(nameReg)[1]);
+    var serviceName = options.name||makeSpaced(url.match(nameReg)[1]);
     var serviceUnderscored = makeUnderscored(serviceName);
 
 

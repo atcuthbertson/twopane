@@ -22,7 +22,7 @@ require([
   "modules/makePanes.js",
   "modules/populate.js",
   "modules/clearAllLayers.js",
-  "modules/layers/sim.js",
+  "modules/layers/simpleCheck.js",
    
   "require"
   ], 
