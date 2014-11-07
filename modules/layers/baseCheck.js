@@ -76,14 +76,29 @@ function(
         }
       }
 
+      function resolveAll(){
+        var resolvedLayers = [];
+        for(var id in checks){
+          resolvedLayers.push(checks[id].fn(checks[id].services)); 
+        }
+        return resolvedLayers;
+      }
+
 
       return {
         resolve:resolve,
-        register:register
+        register:register,
+        resolveAll:resolveAll
       }
 
     }();
 
+    clearAllLayers.register(function(){
+      var layers = layerResolver.resolveAll();
+      for(var i=0; i< layers.length; i++){
+        toggleLayer(layers[i], 1);
+      }
+    });
 
     function processLayer(e){
       var layer = e.layer;
@@ -92,13 +107,7 @@ function(
 
 
       excludeDownloads(layerInfos);
-    
-
-      clearAllLayers.register(function(){
-        for(var i=0; i< layerCount; i++){
-          toggleLayer(i, 1);
-        }
-      })
+     
 
 
       /*One map layer for each service layer, for independent transparencies*/
