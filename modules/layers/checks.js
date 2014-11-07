@@ -69,7 +69,8 @@ function(
       var checks = {};
 
       function resolve(check){
-        return checks[check.id].fn();
+        var obj = checks[check.id];
+        return obj.fn(obj.services);
       }
 
       function register(check,service,fn){
@@ -112,7 +113,7 @@ function(
         if(i>0) service = makeService(url);
         else service = firstService;
 
-        buildCheck(layerInfos[i],i);
+        buildCheck(service, i, layerInfos[i]);
         map.addLayer(service);
       }
 
@@ -136,21 +137,24 @@ function(
       var spacedName = makeSpaced(layerInfo.name);
       if(exclude.indexOf(underscoredName) !== -1) return;
 
-      var resolveLayer = getLayerResolver(service)
-
       service.setVisibleLayers([id]);
       service.fullName =  serviceUnderscored + "/" + underscoredName;
 
-      var check = makeCheck(container, spacedName, resolveService);
-      checks.push(check);
+      var check = makeCheck(container, spacedName, layerResolver.resolve);
 
-      on(check,"change",function(){
-        toggleLayer(service, 0);
-        if(!service.suspended)spinner(check,service);
+      layerResolver.register(check, service, function(services){
+        return services[0]; 
       });
 
+      on(check,"change",checkResolver);
     }
+    
 
+    function checkResolver(){
+      var layer = layerResolver.resolve(this);
+      toggleLayer(layer, 0); 
+      if(!layer.suspended)spinner(this,layer);
+    }
 
 
     function toggleLayer(service, closeAll){
@@ -170,13 +174,14 @@ function(
 
 
     function excludeDownloads(layerInfos){
+      var i;
       if(downloader && excludeDownload.length){
         if(excludeDownload[0] === "*"){
-          for (var i = 0; i < layerInfos.length; i++) {
+          for (i = 0; i < layerInfos.length; i++) {
             excludeDownload[i] =  serviceUnderscored + "/" + makeUnderscored(layerInfos[i].name);
           }
         }else{
-          for(var i = 0; i<excludeDownload.length; i++){
+          for(i = 0; i<excludeDownload.length; i++){
             excludeDownload[i] = serviceUnderscored + "/" + makeUnderscored(excludeDownload[i]);
           }
         }

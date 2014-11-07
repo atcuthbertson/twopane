@@ -34,7 +34,7 @@ function(
         intermediateChanges: true,
         style:"width:120px;",
         onChange:function(value){
-          resolveLayer().setOpacity(value);
+          resolveLayer(check).setOpacity(value);
         }
         }, sliderNode
       ).startup();
