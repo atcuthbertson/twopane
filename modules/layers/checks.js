@@ -114,7 +114,7 @@ function(
         else service = firstService;
 
         buildCheck(service, i, layerInfos[i]);
-        map.addLayer(service);
+        map.addLayer(service, 1);
       }
 
 
