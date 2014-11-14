@@ -148,6 +148,24 @@ h3, b{
   clear:both;
 }
 
+.radioForm{
+  clear:both;
+  padding-bottom:15px;
+}
+
+.radioInput{
+  margin:0 10px 4px 10px;
+}
+
+.divisionHeader{
+  font-size:17px;
+  padding:0;
+  margin:0;
+  margin-bottom:5px;
+}
+
+
+
 .dijitSliderBar{
   height:2px;
 }
