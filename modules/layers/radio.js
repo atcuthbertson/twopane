@@ -13,7 +13,13 @@ define(["modules/layers/baseCheck.js"],function(baseCheck){
   var nameReg = /([^\/]*)\/MapServer/;
 
   return function(urls, map, hookService, options){
-    
+
+    var container = buildDOM(urls);
+    return baseCheck(urls[0], container, resolver, map, hookService, options);
+  }
+
+
+  function buildDOM(urls){
     var form = document.createElement('form'); 
     var container = document.createElement('div');
     var dataType = document.createElement('h4');
@@ -50,7 +56,6 @@ define(["modules/layers/baseCheck.js"],function(baseCheck){
     showLayers.textContent = showLayers.innerText = 'Show Layers';
     container.appendChild(showLayers);
 
-    return baseCheck(urls[0], container, resolver, map, hookService, options);
+    return container;
   }
-
 });
