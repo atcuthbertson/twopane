@@ -22,6 +22,7 @@ require([
   "modules/makePanes.js",
   "modules/populate.js",
   "modules/clearAllLayers.js",
+  "modules/layers/radio.js",
   "modules/layers/simpleCheck.js",
    
   "require"
@@ -47,6 +48,7 @@ function(
   makePanes,
   populate,
   clearAllLayers,
+  RadioLayer,
   CheckLayer,
 
   require
@@ -302,7 +304,8 @@ function(
 
 
     //Layer composed of simple checkboxes
-    CheckLayer("https://gis.water.ca.gov/arcgis/rest/services/Public/GIC_Boundaries/MapServer",
+    RadioLayer(["https://gis.water.ca.gov/arcgis/rest/services/Public/GIC_Boundaries/MapServer",
+       "https://gis.water.ca.gov/arcgis/rest/services/Public/Subsidence/MapServer"],
       map,
       hookService,
       {
