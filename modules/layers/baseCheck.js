@@ -42,7 +42,7 @@ function(
   }
 
 
-  return function(url, container, resolver, map, hookService, options){
+  return function(urls, container, resolver, map, hookService, options){
 
     var tabName = options.tabName || null;
     var exclude = options.exclude || [];
@@ -118,7 +118,8 @@ function(
         if(i>0) service = makeService(url);
         else service = firstService;
 
-        buildCheck(service, i, layerInfos[i]);
+        var check = buildCheck(service, i, layerInfos[i]);
+        layerResolver.register(check, service, resolver);
         map.addLayer(service, 1);
       }
 
@@ -146,10 +147,8 @@ function(
       service.fullName =  serviceUnderscored + "/" + underscoredName;
 
       var check = makeCheck(container, spacedName, layerResolver.resolve);
-
-      layerResolver.register(check, service, resolver);
-
       on(check,"change",checkResolver);
+      return check;
     }
     
 
