@@ -115,9 +115,9 @@ function(
 
 
 
-    function processLayer(serviceObject){
-      var firstSerivce = serviceObject.service;
-      var layer = serviceObject.evt.layer;
+    function processLayer(serviceObj){
+      var firstService = serviceObj.service;
+      var layer = serviceObj.evt.layer;
 
       var layerInfos = layer.layerInfos;
       var layerCount = layerInfos.length;
@@ -128,7 +128,7 @@ function(
       /*One map layer for each service layer, for independent transparencies*/
       for(var i=0; i<layerCount; i++){
         var service;
-        if(i>0) service = makeService(url);
+        if(i>0) service = makeService(layer.url);
         else service = firstService;
 
         var check = buildCheck(service, i, layerInfos[i]);
@@ -136,13 +136,16 @@ function(
         map.addLayer(service, 1);
       }
 
+      if(serviceObj.needsUI){
+        var serviceProps = {};
 
-      var serviceProps = {};
+        serviceProps.node = container;
+        serviceProps.name = serviceName;
+        serviceProps.description = layer.description;
+        serviceProps.tabName = tabName? tabName : serviceName;
 
-      serviceProps.node = container;
-      serviceProps.name = serviceName;
-      serviceProps.description = layer.description;
-      serviceProps.tabName = tabName? tabName : serviceName;
+        hookService(serviceProps);
+      }
 
       //TODO how does hooking change with radio?
       //quite a bit, especially if we are allowing different right pane stuff
@@ -151,7 +154,7 @@ function(
       //hookservice needs to be redone anyway wrt performance (new nodes every time) and
       // flexibility (add only visible checks)
       
-      hookService(serviceProps);
+
       
     }
 

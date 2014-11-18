@@ -4,8 +4,8 @@ define([],function(){
   var firstLoad = 1;
 
 
-  function push(service,func){
-    queued.push({service:service,func:func,evt:null});
+  function push(service,func,needsUI){
+    queued.push({service:service,func:func,needsUI:needsUI,evt:null});
 
     service.on("load", function(evt){
       var serviceObj;
@@ -43,9 +43,27 @@ define([],function(){
 
 
   function broadcast(){
-    for(var i=0; i<subscribers.length; i++){
-      subscribers[i](queued);
+    var uiQueued = filter(queued,function(service){
+      return service.needsUI
+    });
+
+    forEach(subscribers,function(subFn,i){
+      subFn(uiQueued);
+    });
+  }
+
+  function forEach(arr,fn){
+    for(var i=0, len=arr.length; i < len; i++){
+      fn(arr[i],i);
     }
+  }
+
+  function filter(arr,fn){
+    var out = [];
+    forEach(arr,function(v,i){
+      if(fn(v)) out.push(v);
+    })
+    return out;
   }
 
 
