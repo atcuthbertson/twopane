@@ -59,7 +59,7 @@ function(
     var downloader = options.downloader || null;
     var excludeDownload = options.excludeDownload || [];
 
-    var serviceName = options.name||makeSpaced(urls[0].match(nameReg)[1]);
+    var serviceName = makeSpaced(urls[0].match(nameReg)[1]);
     var serviceUnderscored = makeUnderscored(serviceName);
 
 
@@ -85,6 +85,7 @@ function(
 
         service.setVisibleLayers([id]);
         service.fullName =  serviceUnderscored + "/" + underscoredName;
+        service.serviceName = serviceUnderscored;
 
         if(checks[id]){
           return checks[id];

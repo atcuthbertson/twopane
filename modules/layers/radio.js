@@ -1,26 +1,50 @@
 
-define(["modules/layers/baseCheck.js"],function(baseCheck){
+define(["modules/layers/baseCheck.js", "dojo/on"],function(baseCheck,on){
 
-  function resolver(services){
-    return services[0];
-  }
 
   function makeSpaced(name){
     return name.replace(/_/g," ")
   }
 
+  function makeUnderscored(name){
+    return name.replace(/ /g,"_")
+  }
+
+  function forEach(arr,fn){
+    for(var i=0, len=arr.length; i < len; i++){
+      fn(arr[i],i);
+    }
+  }
 
   var nameReg = /([^\/]*)\/MapServer/;
 
+
   return function(urls, map, hookService, options){
 
-    var container = buildDOM(urls);
+    var selected = {name:""};
+
+
+    var container = buildDOM(urls, selected);
+
+
+
+
+    function resolver(services){
+      console.log(services);
+      for(var i=0; i<services.length; i++){
+        console.log(selected.name,"!",services[i].serviceName,"!")
+        if(selected.name === services[i].serviceName){
+          return services[i];
+        }
+      }
+    }
+
     return baseCheck(urls, container, resolver, map, hookService, options);
   }
 
 
-  function buildDOM(urls){
-    var form = document.createElement('form'); 
+  function buildDOM(urls,selected){
+    var form = document.createElement('form');
     var container = document.createElement('div');
     var dataType = document.createElement('h4');
     var radioName = Math.random();
@@ -30,8 +54,10 @@ define(["modules/layers/baseCheck.js"],function(baseCheck){
     dataType.className = 'divisionHeader';
     form.appendChild(dataType);
      
-    for(var i=0; i <urls.length; i++){   
-      var serviceName = makeSpaced(urls[i].match(nameReg)[1]);
+    forEach(urls, function(url, i){
+      var serviceName = makeSpaced(url.match(nameReg)[1]);
+      var serviceUnderscored = makeUnderscored(serviceName);
+
       var wrap = document.createElement('div');
       var inp = document.createElement('input');
       var label = document.createElement('label');
@@ -41,14 +67,24 @@ define(["modules/layers/baseCheck.js"],function(baseCheck){
       inp.className = 'radioInput';
       inp.type = 'radio';
       inp.name = radioName;
-      if(i===0) inp.checked = "checked";
       label.setAttribute('for',inpId);
       label.textContent = label.innerText = serviceName;
+
+      if(i===0){
+        inp.checked = "checked";
+        selected.name = serviceUnderscored;
+      }
+
       
       wrap.appendChild(inp);
       wrap.appendChild(label); 
       form.appendChild(wrap);
-    }     
+
+      on(inp, "change", function(){
+        selected.name = serviceUnderscored;
+      });
+
+    });     
     container.appendChild(form);
 
     var showLayers = document.createElement('h4');
