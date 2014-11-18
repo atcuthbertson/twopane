@@ -29,6 +29,11 @@ function(
 
   var nameReg = /([^\/]*)\/MapServer/;
 
+  function forEach(arr,fn){
+    for(var i=0, len=arr.length; i < len; i++){
+      fn(arr[i],i);
+    }
+  }
 
   function makeSpaced(name){
     return name.replace(/_/g," ")
@@ -48,29 +53,21 @@ function(
   return function(urls, container, resolver, map, hookService, options){
 
     if(typeof urls !== "object") urls = [urls];
-    var firstUrl = urls[0]
 
     var tabName = options.tabName || null;
     var exclude = options.exclude || [];
     var downloader = options.downloader || null;
     var excludeDownload = options.excludeDownload || [];
 
-    var serviceName = options.name||makeSpaced(firstUrl.match(nameReg)[1]);
+    var serviceName = options.name||makeSpaced(urls[0].match(nameReg)[1]);
     var serviceUnderscored = makeUnderscored(serviceName);
-
-
-    var firstService = makeService(firstUrl);
-    //TODO queue every url
-    //pass in a flag for check building
-    layerQueue.push(firstService, processLayer);
-
 
 
 
     clearAllLayers.register(function(){
       var layerObjects = resolveLayers.getRegistered();
       for(var i=0; i< layerObjects.length; i++){
-        var layerObj = layerObjects[i]
+        var layerObj = layerObjects[i];
         if(layerObj.check.checked) layerObj.check.checked = false;
         toggleLayer(resolveLayers.resolve(layerObj.check), 1);
       }
@@ -78,8 +75,50 @@ function(
 
 
 
-    function processLayer(e){
-      var layer = e.layer;
+    var buildCheck = function(){
+      var checks = [];
+      return function(service, id, layerInfo){
+
+        var underscoredName = makeUnderscored(layerInfo.name);
+        var spacedName = makeSpaced(layerInfo.name);
+        if(exclude.indexOf(underscoredName) !== -1) return;
+
+        service.setVisibleLayers([id]);
+        service.fullName =  serviceUnderscored + "/" + underscoredName;
+
+        if(checks[id]){
+          return checks[id];
+        }else{
+          var check = makeCheck(container, spacedName, resolveLayers.resolve);
+          checks[id] = check;
+          on(check,"change",checkResolver);
+          return check;
+        }
+      }
+    }();
+    
+
+
+    function checkResolver(){
+      var layer = resolveLayers.resolve(this);
+      toggleLayer(layer, 0); 
+      if(!layer.suspended)spinner(this,layer);
+    }
+
+
+
+    forEach(urls,function(url,i){
+      var firstService = makeService(url);
+      if(i===0) layerQueue.push(firstService, processLayer, 1);
+      else layerQueue.push(firstService, processLayer, 0);
+    });
+
+
+
+    function processLayer(serviceObject){
+      var firstSerivce = serviceObject.service;
+      var layer = serviceObject.evt.layer;
+
       var layerInfos = layer.layerInfos;
       var layerCount = layerInfos.length;
 
@@ -118,28 +157,6 @@ function(
 
 
 
-
-    function buildCheck(service, id, layerInfo){
-      var underscoredName = makeUnderscored(layerInfo.name);
-      var spacedName = makeSpaced(layerInfo.name);
-      if(exclude.indexOf(underscoredName) !== -1) return;
-
-      service.setVisibleLayers([id]);
-      service.fullName =  serviceUnderscored + "/" + underscoredName;
-
-      var check = makeCheck(container, spacedName, resolveLayers.resolve);
-      on(check,"change",checkResolver);
-      return check;
-    }
-    
-
-    function checkResolver(){
-      var layer = resolveLayers.resolve(this);
-      toggleLayer(layer, 0); 
-      if(!layer.suspended)spinner(this,layer);
-    }
-
-
     function toggleLayer(service, closeAll){
       if(service.suspended){
         if(!closeAll){
@@ -153,6 +170,7 @@ function(
         if(downloader) downloader.remove(service.fullName);
       }
     }
+
 
 
     function excludeDownloads(layerInfos){

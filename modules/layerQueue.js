@@ -31,7 +31,7 @@ define([],function(){
   function runNextIfLoaded(serviceObj){
     if(serviceObj === queued[0] && serviceObj.service.loaded){
       queued.shift();
-      serviceObj.func(serviceObj.evt);
+      serviceObj.func(serviceObj);
       if(queued.length) runNextIfLoaded(queued[0]);
     }
   }
