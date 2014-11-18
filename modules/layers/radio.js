@@ -2,7 +2,7 @@
 define(["modules/layers/baseCheck.js"],function(baseCheck){
 
   function resolver(services){
-    return services[0]; 
+    return services[0];
   }
 
   function makeSpaced(name){
@@ -15,7 +15,7 @@ define(["modules/layers/baseCheck.js"],function(baseCheck){
   return function(urls, map, hookService, options){
 
     var container = buildDOM(urls);
-    return baseCheck(urls[0], container, resolver, map, hookService, options);
+    return baseCheck(urls, container, resolver, map, hookService, options);
   }
 
 

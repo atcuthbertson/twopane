@@ -7,7 +7,8 @@ define([
   "modules/makeCheck.js",
   "modules/info.js",
   "modules/spinner.js",
-  "modules/clearAllLayers.js"
+  "modules/clearAllLayers.js",
+  "modules/resolveLayers.js"
   ],
 function(
   on,
@@ -18,7 +19,9 @@ function(
   makeCheck,
   info,
   spinner,
-  clearAllLayers
+  clearAllLayers,
+  resolveLayers
+
 ){
   //need to do something about legends
 
@@ -44,74 +47,45 @@ function(
 
   return function(urls, container, resolver, map, hookService, options){
 
+    if(typeof urls !== "object") urls = [urls];
+    var firstUrl = urls[0]
+
     var tabName = options.tabName || null;
     var exclude = options.exclude || [];
     var downloader = options.downloader || null;
     var excludeDownload = options.excludeDownload || [];
 
-    var serviceName = options.name||makeSpaced(url.match(nameReg)[1]);
+    var serviceName = options.name||makeSpaced(firstUrl.match(nameReg)[1]);
     var serviceUnderscored = makeUnderscored(serviceName);
 
 
-    var firstService = makeService(url);
-    layerQueue.push(firstService, processLayer)
-    info.register(url);
+    var firstService = makeService(firstUrl);
+    //TODO queue every url
+    //pass in a flag for check building
+    layerQueue.push(firstService, processLayer);
 
 
 
-    var layerResolver = function(){
-      var checks = {};
-
-      function resolve(check){
-        var obj = checks[check.id];
-        return obj.fn(obj.services);
-      }
-
-      function register(check,service,fn){
-        var id = check.id;
-        if(checks[id]){
-          checks[id].services.push(service);
-        }else{
-          checks[id] = {fn:fn,check:check,services:[service]}
-        }
-      }
-
-      function getRegistered(){
-        var registered = [];
-        for(var id in checks){
-          registered.push(checks[id]); 
-        }
-        return registered;
-      }
-
-
-      return {
-        resolve:resolve,
-        register:register,
-        getRegistered:getRegistered
-      }
-
-    }();
 
     clearAllLayers.register(function(){
-      var layerObjects = layerResolver.getRegistered();
+      var layerObjects = resolveLayers.getRegistered();
       for(var i=0; i< layerObjects.length; i++){
         var layerObj = layerObjects[i]
         if(layerObj.check.checked) layerObj.check.checked = false;
-        toggleLayer(layerResolver.resolve(layerObj.check), 1);
+        toggleLayer(resolveLayers.resolve(layerObj.check), 1);
       }
     });
+
+
 
     function processLayer(e){
       var layer = e.layer;
       var layerInfos = layer.layerInfos;
       var layerCount = layerInfos.length;
 
-
+      info.register(layer.url);
       excludeDownloads(layerInfos);
      
-
-
       /*One map layer for each service layer, for independent transparencies*/
       for(var i=0; i<layerCount; i++){
         var service;
@@ -119,7 +93,7 @@ function(
         else service = firstService;
 
         var check = buildCheck(service, i, layerInfos[i]);
-        layerResolver.register(check, service, resolver);
+        resolveLayers.register(check, service, resolver);
         map.addLayer(service, 1);
       }
 
@@ -131,6 +105,13 @@ function(
       serviceProps.description = layer.description;
       serviceProps.tabName = tabName? tabName : serviceName;
 
+      //TODO how does hooking change with radio?
+      //quite a bit, especially if we are allowing different right pane stuff
+      //per radio. Means we will need to only hook the service after all are processed...
+      //or allow some sort of resolving to occur.
+      //hookservice needs to be redone anyway wrt performance (new nodes every time) and
+      // flexibility (add only visible checks)
+      
       hookService(serviceProps);
       
     }
@@ -146,14 +127,14 @@ function(
       service.setVisibleLayers([id]);
       service.fullName =  serviceUnderscored + "/" + underscoredName;
 
-      var check = makeCheck(container, spacedName, layerResolver.resolve);
+      var check = makeCheck(container, spacedName, resolveLayers.resolve);
       on(check,"change",checkResolver);
       return check;
     }
     
 
     function checkResolver(){
-      var layer = layerResolver.resolve(this);
+      var layer = resolveLayers.resolve(this);
       toggleLayer(layer, 0); 
       if(!layer.suspended)spinner(this,layer);
     }
