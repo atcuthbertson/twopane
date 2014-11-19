@@ -32,8 +32,7 @@ define(["modules/layers/baseCheck.js", "dojo/on"],function(baseCheck,on){
     function resolver(services){
       console.log(services);
       for(var i=0; i<services.length; i++){
-        console.log(selected.name,"!",services[i].serviceName,"!")
-        if(selected.name === services[i].serviceName){
+        if(selected.name === services[i].service){
           return services[i];
         }
       }

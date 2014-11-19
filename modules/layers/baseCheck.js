@@ -59,9 +59,6 @@ function(
     var downloader = options.downloader || null;
     var excludeDownload = options.excludeDownload || [];
 
-    var serviceName = makeSpaced(urls[0].match(nameReg)[1]);
-    var serviceUnderscored = makeUnderscored(serviceName);
-
 
 
     clearAllLayers.register(function(){
@@ -77,7 +74,7 @@ function(
 
     var buildCheck = function(){
       var checks = [];
-      return function(service, id, layerInfo){
+      return function(serviceUnderscored, service, id, layerInfo){
 
         var underscoredName = makeUnderscored(layerInfo.name);
         var spacedName = makeSpaced(layerInfo.name);
@@ -85,7 +82,7 @@ function(
 
         service.setVisibleLayers([id]);
         service.fullName =  serviceUnderscored + "/" + underscoredName;
-        service.serviceName = serviceUnderscored;
+        service.service = serviceUnderscored;
 
         if(checks[id]){
           return checks[id];
@@ -120,19 +117,23 @@ function(
       var firstService = serviceObj.service;
       var layer = serviceObj.evt.layer;
 
+      var url = layer.url
       var layerInfos = layer.layerInfos;
       var layerCount = layerInfos.length;
 
-      info.register(layer.url);
-      excludeDownloads(layerInfos);
+      var serviceName = makeSpaced(url.match(nameReg)[1]);
+      var serviceUnderscored = makeUnderscored(serviceName);
+
+      info.register(url);
+      excludeDownloads(serviceUnderscored, layerInfos);
      
       /*One map layer for each service layer, for independent transparencies*/
       for(var i=0; i<layerCount; i++){
         var service;
-        if(i>0) service = makeService(layer.url);
+        if(i>0) service = makeService(url);
         else service = firstService;
 
-        var check = buildCheck(service, i, layerInfos[i]);
+        var check = buildCheck(serviceUnderscored, service, i, layerInfos[i]);
         resolveLayers.register(check, service, resolver);
         map.addLayer(service, 1);
       }
@@ -177,7 +178,7 @@ function(
 
 
 
-    function excludeDownloads(layerInfos){
+    function excludeDownloads(serviceUnderscored, layerInfos){
       var i;
       if(downloader && excludeDownload.length){
         if(excludeDownload[0] === "*"){
