@@ -99,7 +99,7 @@ function(
 
     function checkResolver(){
       var layer = resolveLayers.resolve(this);
-      toggleLayer(layer, 0); 
+      toggleLayer(layer, 0);
       if(!layer.suspended)spinner(this,layer);
     }
 

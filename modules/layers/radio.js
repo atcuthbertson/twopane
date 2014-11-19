@@ -40,7 +40,14 @@ define(["modules/layers/baseCheck.js", "dojo/on"],function(baseCheck,on){
 
     return baseCheck(urls, container, resolver, map, hookService, options);
   }
+//TODO likely need to wrap the input on change and provide it in a closure to baseCheck, where it can then
+//operate on checks/services. Need this interface to be sensible, already the above call shows signs of bloat
+// This of clearing up how the resolver functions or allowing it to be triggered reflexively
+// ultimately, clicking on a new radio needs to resolve every active check, turn off all these layers
+// then replace them with the new active layers.
 
+//Note parameters will need to fit in here as well, so plan for their inclusion. (mapping from DOM state to
+//object state still works, just leads to a more complicated resolver)
 
   function buildDOM(urls,selected){
     var form = document.createElement('form');
