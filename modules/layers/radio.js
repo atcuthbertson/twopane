@@ -26,11 +26,12 @@ function(
   var nameReg = /([^\/]*)\/MapServer/;
 
 
+
   return function(urls, map, hookService, options){
 
     var resolver = ResolveLayers(resolvingFn);
     var selected = {name:""};
-    var container = buildDOM(urls, resolver, selected);
+    var container = buildDOM(urls, resolver, selected, options);
 
 
     function resolvingFn(services){
@@ -42,16 +43,11 @@ function(
     }
 
 
-
     return baseCheck(urls, container, resolver, map, hookService, options);
   }
-//TODO likely need to wrap the input on change and provide it in a closure to baseCheck, where it can then
-//operate on checks/services. Need this interface to be sensible, already the above call shows signs of bloat
-// This of clearing up how the resolver functions or allowing it to be triggered reflexively
 
-// ultimately, clicking on a new radio (OR ADJUSTING A PARAMETER) 
-//needs to resolve every active check, turn off all these layers
-// then replace them with the new active layers.
+
+
   function changeAll(checkObjs){
     forEach(checkObjs,function(checkObj){
       var check = checkObj.check;
@@ -61,14 +57,14 @@ function(
     });
   }
 
-  function buildDOM(urls, resolver, selected){
+  function buildDOM(urls, resolver, selected, options){
     var form = document.createElement('form');
     var container = document.createElement('div');
     var dataType = document.createElement('h4');
     var radioName = Math.random();
 
     form.className = 'radioForm';
-    dataType.textContent = dataType.innerText = "Select Data Type";
+    dataType.textContent = dataType.innerText = options.radioTitle|| "Select Data Type:";
     dataType.className = 'divisionHeader';
     form.appendChild(dataType);
      
@@ -110,7 +106,7 @@ function(
 
     var showLayers = document.createElement('h4');
     showLayers.className = 'divisionHeader';
-    showLayers.textContent = showLayers.innerText = 'Show Layers';
+    showLayers.textContent = showLayers.innerText = options.checkTitle||'Show Layers';
     container.appendChild(showLayers);
 
     return container;

@@ -309,6 +309,8 @@ function(
       map,
       hookService,
       {
+        radioTitle:"Select Data Type:",
+        checkTitle:"Show Layers:",
         tabName:"Boundaries",
         exclude:["B118_GW_Basins"],
         downloader:downloader,
