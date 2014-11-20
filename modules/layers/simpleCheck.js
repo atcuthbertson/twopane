@@ -1,6 +1,6 @@
-define(["modules/layers/baseCheck.js"],function(baseCheck){
+define(["modules/layers/baseCheck.js","modules/resolveLayers.js"],function(baseCheck, ResolveLayers){
 
-  function resolver(services){
+  function resolvingFn(services){
     return services[0]; 
   }
 
@@ -17,7 +17,9 @@ define(["modules/layers/baseCheck.js"],function(baseCheck){
     var title = document.createElement('h3');
 
     title.textContent = title.innerText = serviceName;
-    container.appendChild(title); 
+    container.appendChild(title);
+
+    var resolver = ResolveLayers(resolvingFn);
 
     return baseCheck(url, container, resolver, map, hookService, options);
   }
