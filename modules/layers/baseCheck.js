@@ -8,7 +8,6 @@ define([
   "modules/info.js",
   "modules/spinner.js",
   "modules/clearAllLayers.js",
-  "modules/resolveLayers.js"
   ],
 function(
   on,
@@ -19,9 +18,7 @@ function(
   makeCheck,
   info,
   spinner,
-  clearAllLayers,
-  resolveLayers
-
+  clearAllLayers
 ){
   //need to do something about legends
 
@@ -62,11 +59,11 @@ function(
 
 
     clearAllLayers.register(function(){
-      var layerObjects = resolveLayers.getRegistered();
+      var layerObjects = resolver.getRegistered();
       for(var i=0; i< layerObjects.length; i++){
         var layerObj = layerObjects[i];
         if(layerObj.check.checked) layerObj.check.checked = false;
-        toggleLayer(resolveLayers.resolve(layerObj.check), 1);
+        toggleLayer(resolver.resolve(layerObj.check), 1);
       }
     });
 
@@ -87,7 +84,7 @@ function(
         if(checks[id]){
           return checks[id];
         }else{
-          var check = makeCheck(container, spacedName, resolveLayers.resolve);
+          var check = makeCheck(container, spacedName, resolver.resolve);
           checks[id] = check;
           on(check,"change",checkResolver);
           return check;
@@ -98,7 +95,7 @@ function(
 
 
     function checkResolver(){
-      var layer = resolveLayers.resolve(this);
+      var layer = resolver.resolve(this);
       toggleLayer(layer, 0);
       if(!layer.suspended)spinner(this,layer);
     }
@@ -134,7 +131,7 @@ function(
         else service = firstService;
 
         var check = buildCheck(serviceUnderscored, service, i, layerInfos[i]);
-        resolveLayers.register(check, service, resolver);
+        resolver.register(check, service);
         map.addLayer(service, 1);
       }
 
