@@ -28,9 +28,10 @@ function(
 
   return function(urls, map, hookService, options){
 
-    var selected = {name:""};
-    var container = buildDOM(urls, selected);
     var resolver = ResolveLayers(resolvingFn);
+    var selected = {name:""};
+    var container = buildDOM(urls, resolver, selected);
+
 
     function resolvingFn(services){
       for(var i=0; i<services.length; i++){
@@ -51,9 +52,16 @@ function(
 // ultimately, clicking on a new radio (OR ADJUSTING A PARAMETER) 
 //needs to resolve every active check, turn off all these layers
 // then replace them with the new active layers.
+  function changeAll(checkObjs){
+    forEach(checkObjs,function(checkObj){
+      var check = checkObj.check;
+      if(check.checked){
+        on.emit(check,"change",{bubbles:true,cancelable:true});
+      }
+    });
+  }
 
-
-  function buildDOM(urls,selected){
+  function buildDOM(urls, resolver, selected){
     var form = document.createElement('form');
     var container = document.createElement('div');
     var dataType = document.createElement('h4');
@@ -91,7 +99,10 @@ function(
       form.appendChild(wrap);
 
       on(inp, "change", function(){
+        var checkObjs = resolver.getRegistered();
+        changeAll(checkObjs);
         selected.name = serviceUnderscored;
+        changeAll(checkObjs);
       });
 
     });     
