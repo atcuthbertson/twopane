@@ -127,11 +127,25 @@ function(
       excludeDownloads(serviceUnderscored, layerInfos);
      
       /*One map layer for each service layer, for independent transparencies*/
+      //Really it needs to go ->
+      //make all services
+      //make LAYER DEPENDENT CHECKS
+      //  meaning pass in fn to make checks
+      //  this is where parameters can come in
+      //  there will also be a layer dependent way to bind services to checks
+      //
+      //  So again.
+      //  Make all services, augment services, call passed function
+      //  This function will decide how many checks to build
+      //  and how to hook them to each service
+      //  (if params exist, for each param, build a mapping from
+      //  param name to service.. then carry this over to the check/resolver)
+      //
       for(var i=0; i<layerCount; i++){
         var service;
         if(i>0) service = makeService(url);
         else service = firstService;
-
+        
         var check = buildCheck(serviceUnderscored, service, i, layerInfos[i]);
         resolver.register(check, service);
         map.addLayer(service, 1);
