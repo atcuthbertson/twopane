@@ -62,8 +62,10 @@ function(
       var layerObjects = resolver.getRegistered();
       for(var i=0; i< layerObjects.length; i++){
         var layerObj = layerObjects[i];
-        if(layerObj.check.checked) layerObj.check.checked = false;
-        toggleLayer(resolver.resolve(layerObj.check), 1);
+        if(layerObj.check.checked){
+          layerObj.check.checked = false;
+          toggleLayer(resolver.resolve(layerObj.check));
+        }
       }
     });
 
@@ -96,7 +98,7 @@ function(
 
     function checkResolver(){
       var layer = resolver.resolve(this);
-      toggleLayer(layer, 0);
+      toggleLayer(layer);
       if(!layer.suspended)spinner(this,layer);
     }
 
@@ -159,13 +161,11 @@ function(
 
 
 
-    function toggleLayer(service, closeAll){
+    function toggleLayer(service){
       if(service.suspended){
-        if(!closeAll){
           service.resume();
           info.activate(service);
           if(downloader) downloader.add(service.fullName);
-        }
       }else{
         service.suspend();
         info.deactivate(service);
