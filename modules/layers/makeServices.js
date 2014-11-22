@@ -33,7 +33,7 @@ function(
   }
 
 
-  return function(url, map, attachUI, options){
+  return function(url, map, resolver, attachUI, options){
 
 
     var exclude = options.exclude || [];
@@ -41,6 +41,17 @@ function(
     var excludeDownload = options.excludeDownload || [];
     
     layerQueue.push(makeService(url), processLayer, 1);
+
+    clearAllLayers.register(function(){
+      var layerObjects = resolver.getRegistered();
+      for(var i=0; i< layerObjects.length; i++){
+        var layerObj = layerObjects[i];
+        if(layerObj.check.checked){
+          layerObj.check.checked = false;
+          toggleLayer(resolver.resolve(layerObj.check));
+        }
+      }
+    });
 
     function processLayer(serviceObj){
       var firstService = serviceObj.service;

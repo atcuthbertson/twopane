@@ -17,7 +17,7 @@ function(
   var nameReg = /([^\/]*)\/MapServer/;
 
 /*
-clearAllLayers.register(function(){
+    clearAllLayers.register(function(){
       var layerObjects = resolver.getRegistered();
       for(var i=0; i< layerObjects.length; i++){
         var layerObj = layerObjects[i];
@@ -27,8 +27,19 @@ clearAllLayers.register(function(){
         }
       }
     });
+*/
 
-
+function toggleLayer(service){
+      if(service.suspended){
+        service.resume();
+        info.activate(service);
+        if(downloader) downloader.add(service.fullName);
+      }else{
+        service.suspend();
+        info.deactivate(service);
+        if(downloader) downloader.remove(service.fullName);
+      }
+    }
 
     var buildCheck = function(){
       var checks = [];
@@ -77,6 +88,7 @@ if(serviceObj.needsUI){
   function attachUI(services){
     console.log(services);
   }
+
   return function(url, map, hookService, options){
     
     var serviceName = makeSpaced(url.match(nameReg)[1]);
