@@ -23,7 +23,7 @@ require([
   "modules/populate.js",
   "modules/clearAllLayers.js",
   "modules/layers/radio.js",
-  "modules/layers/simpleCheck.js",
+  "modules/layers/newSimple.js",
    
   "require"
   ], 

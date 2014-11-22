@@ -4,7 +4,7 @@ define([
   "esri/layers/ArcGISDynamicMapServiceLayer",
 
   "modules/layerQueue.js",
-  "modules/info.js",
+  "modules/info.js"
   ],
 function(
   on,
@@ -12,7 +12,7 @@ function(
   ArcGISDynamicMapServiceLayer,
 
   layerQueue,
-  info,
+  info
 ){
 
   var nameReg = /([^\/]*)\/MapServer/;
@@ -39,7 +39,8 @@ function(
     var exclude = options.exclude || [];
     var downloader = options.downloader || null;
     var excludeDownload = options.excludeDownload || [];
-
+    
+    layerQueue.push(makeService(url), processLayer, 1);
 
     function processLayer(serviceObj){
       var firstService = serviceObj.service;
