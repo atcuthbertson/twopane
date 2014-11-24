@@ -19,7 +19,7 @@ require([
   "modules/info.js",
   "modules/getdownloads.js",
   "modules/searchbox.js",
-  "modules/makePanes.js",
+  "modules/makeTabs.js",
   "modules/populate.js",
   "modules/clearAllLayers.js",
   "modules/layers/radio.js",
@@ -45,7 +45,7 @@ function(
   info,
   GetDownloads,
   Searchbox,
-  makePanes,
+  makeTabs,
   populate,
   clearAllLayers,
   RadioLayer,
@@ -300,7 +300,7 @@ function(
     clearAllLayers.init(clearAll);
 
     //Hooks services to UI features.
-    var hookService = makePanes(serviceNode, populate);
+    var hookService = makeTabs(serviceNode, populate);
 
 
     //Layer composed of simple checkboxes
