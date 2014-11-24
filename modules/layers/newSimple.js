@@ -1,14 +1,22 @@
 define([
+  "dojo/on",
+
   "modules/layers/makeServices.js",
   "modules/resolveLayers.js",
   "modules/clearAllLayers.js",
-  "modules/toggleLayer.js"
+  "modules/toggleLayer.js",
+  "modules/makeCheck.js",
+  "modules/spinner.js"
   ],
 function(
+  on,
+
   makeServices,
   ResolveLayers,
   clearAllLayers,
-  toggleLayer
+  toggleLayer,
+  makeCheck,
+  spinner
 ){
 
   function resolvingFn(services){
@@ -19,59 +27,51 @@ function(
     return name.replace(/_/g," ")
   }
 
+  function checkResolver(resolver){
+    var layer = resolver.resolve(this);
+    toggleLayer.toggle(layer);
+    if(!layer.suspended)spinner(this,layer);
+  }
+
   var nameReg = /([^\/]*)\/MapServer/;
-      //
+
       //  Make all services, augment services, call passed function
       //  This function will decide how many checks to build
       //  and how to hook them to each service
       //  (if params exist, for each param, build a mapping from
       //  param name to service.. then carry this over to the check/resolver)
-      //
 
 
-    var buildCheck = function(){
-      var checks = [];
-      return function(serviceUnderscored, service, id, layerInfo){
-
-        var underscoredName = makeUnderscored(layerInfo.name);
-        var spacedName = makeSpaced(layerInfo.name);
 
 
-        if(checks[id]){
-          return checks[id];
-        }else{
-          var check = makeCheck(container, spacedName, resolver.resolve);
-          checks[id] = check;
-          on(check,"change",checkResolver);
-          return check;
-        }
-      }
-    }();
+  function makeAttacher(resolver, container, hookService, options){
 
-
-    function checkResolver(){
-      var layer = resolver.resolve(this);
-      toggleLayer.toggle(layer);
-      if(!layer.suspended)spinner(this,layer);
+    function boundResolver(){
+      return checkResolver.call(this,resolver)
     }
 
+    return function (services, serviceObj){
+      for(var i=0; i<services.length; i++){
+        var service = services[i];
+        console.log(service);
+        var spacedName = makeSpaced(service.service);
+        var check = makeCheck(container, spacedName, resolver.resolve);
 
-        var check = buildCheck(serviceUnderscored, service, i, layerInfos[i]);
         resolver.register(check, service);
-if(serviceObj.needsUI){
-        var serviceProps = {};
+        on(check,"change",boundResolver);
+      }
 
-        serviceProps.node = container;
-        serviceProps.name = serviceName;
-        serviceProps.description = layer.description;
-        serviceProps.tabName = tabName? tabName : serviceName;
+      if(serviceObj.needsUI){
+        var serviceProps = {
+          node : container,
+          name : serviceName,
+          description : serviceObj.evt.layer.description,
+          tabName : options.tabName ? options.tabName : serviceName
+        }
 
         hookService(serviceProps);
       }
-
-
-  function attachUI(services){
-    console.log(services);
+    }
   }
 
 
@@ -85,7 +85,9 @@ if(serviceObj.needsUI){
     container.appendChild(title);
      
     var resolver = ResolveLayers(resolvingFn);
-    clearAllLayers.register(resolver);  
+    var attachUI = makeAttacher(resolver, container, serviceName, hookService, options);
+
+    clearAllLayers.register(resolver); 
     toggleLayer.register(options);
 
     makeServices(url, map, attachUI, 1, options);

@@ -1,6 +1,6 @@
 define([
   "dojo/on",
-  "modules/toggleLayer"
+  "modules/toggleLayer.js"
   ],
 function(
   on,

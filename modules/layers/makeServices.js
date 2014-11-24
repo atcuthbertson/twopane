@@ -73,7 +73,7 @@ function(
         map.addLayer(service, 1);
         services.push(service);
       }
-      attachUI(services); 
+      attachUI(services,serviceObj); 
 
     }
 
