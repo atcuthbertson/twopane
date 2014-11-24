@@ -33,14 +33,14 @@ function(
   }
 
 
-  return function(url, map, resolver, attachUI, options){
+  return function(url, map, attachUI, needsUI, options){
 
 
     var exclude = options.exclude || [];
     var downloader = options.downloader || null;
     var excludeDownload = options.excludeDownload || [];
     
-    layerQueue.push(makeService(url), processLayer, 1);
+    layerQueue.push(makeService(url), processLayer, needsUI);
 
 
     function processLayer(serviceObj){

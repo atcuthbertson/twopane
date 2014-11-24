@@ -29,7 +29,6 @@ function(
       //
 
 
-
     var buildCheck = function(){
       var checks = [];
       return function(serviceUnderscored, service, id, layerInfo){
@@ -56,10 +55,6 @@ function(
       if(!layer.suspended)spinner(this,layer);
     }
 
-      var firstService = makeService(url);
-      if(i===0) 
-      else layerQueue.push(firstService, processLayer, 0);
-    });
 
         var check = buildCheck(serviceUnderscored, service, i, layerInfos[i]);
         resolver.register(check, service);
@@ -73,10 +68,12 @@ if(serviceObj.needsUI){
 
         hookService(serviceProps);
       }
-      */
+
+
   function attachUI(services){
     console.log(services);
   }
+
 
   return function(url, map, hookService, options){
     
@@ -91,7 +88,7 @@ if(serviceObj.needsUI){
     clearAllLayers.register(resolver);  
     toggleLayer.register(options);
 
-    makeServices(url, map, attachUI, options);
+    makeServices(url, map, attachUI, 1, options);
   }
 
 });
