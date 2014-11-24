@@ -1,12 +1,14 @@
 define([
   "modules/layers/makeServices.js",
   "modules/resolveLayers.js",
-  "modules/clearAllLayers.js"
+  "modules/clearAllLayers.js",
+  "modules/toggleLayer.js"
   ],
 function(
   makeServices,
   ResolveLayers,
-  clearAllLayers
+  clearAllLayers,
+  toggleLayer
 ){
 
   function resolvingFn(services){
@@ -26,17 +28,7 @@ function(
       //  param name to service.. then carry this over to the check/resolver)
       //
 
-function toggleLayer(service){
-      if(service.suspended){
-        service.resume();
-        info.activate(service);
-        if(downloader) downloader.add(service.fullName);
-      }else{
-        service.suspend();
-        info.deactivate(service);
-        if(downloader) downloader.remove(service.fullName);
-      }
-    }
+
 
     var buildCheck = function(){
       var checks = [];
@@ -60,7 +52,7 @@ function toggleLayer(service){
 
     function checkResolver(){
       var layer = resolver.resolve(this);
-      toggleLayer(layer);
+      toggleLayer.toggle(layer);
       if(!layer.suspended)spinner(this,layer);
     }
 
@@ -94,9 +86,10 @@ if(serviceObj.needsUI){
 
     title.textContent = title.innerText = serviceName;
     container.appendChild(title);
-
+     
     var resolver = ResolveLayers(resolvingFn);
     clearAllLayers.register(resolver);  
+    toggleLayer.register(options);
 
     makeServices(url, map, attachUI, options);
   }
