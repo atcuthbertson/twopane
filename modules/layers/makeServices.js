@@ -69,7 +69,9 @@ function(
   
         service.setVisibleLayers([i]);
         service.fullName =  serviceUnderscored + "/" + underscoredName;
-        service.service = serviceUnderscored; 
+        service.serviceName = serviceUnderscored;
+        service.layerName = underscoredName;
+        
         map.addLayer(service, 1);
         services.push(service);
       }

@@ -39,7 +39,7 @@ define([
           }
           domClass.add(this,"selectedButton");
           serviceNode.appendChild(service.node);
-          populate(service.name, service.description); 
+          populate(service.tabName, service.description); 
 
           lastNode = service.node;
           lastButton = this;

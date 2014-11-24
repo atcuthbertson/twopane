@@ -53,8 +53,7 @@ function(
     return function (services, serviceObj){
       for(var i=0; i<services.length; i++){
         var service = services[i];
-        console.log(service);
-        var spacedName = makeSpaced(service.service);
+        var spacedName = makeSpaced(service.layerName);
         var check = makeCheck(container, spacedName, resolver.resolve);
 
         resolver.register(check, service);
@@ -64,9 +63,8 @@ function(
       if(serviceObj.needsUI){
         var serviceProps = {
           node : container,
-          name : serviceName,
           description : serviceObj.evt.layer.description,
-          tabName : options.tabName ? options.tabName : serviceName
+          tabName : options.tabName
         }
 
         hookService(serviceProps);
@@ -78,6 +76,8 @@ function(
   return function(url, map, hookService, options){
     
     var serviceName = makeSpaced(url.match(nameReg)[1]);
+    if (!options.tabName) options.tabName = serviceName;
+
     var container = document.createElement('div');
     var title = document.createElement('h3');
 
@@ -85,9 +85,9 @@ function(
     container.appendChild(title);
      
     var resolver = ResolveLayers(resolvingFn);
-    var attachUI = makeAttacher(resolver, container, serviceName, hookService, options);
+    var attachUI = makeAttacher(resolver, container, hookService, options);
 
-    clearAllLayers.register(resolver); 
+    clearAllLayers.register(resolver);
     toggleLayer.register(options);
 
     makeServices(url, map, attachUI, 1, options);

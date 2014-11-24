@@ -326,6 +326,14 @@ function(
         excludeDownload:["*"]
       }
     );
+
+    CheckLayer("https://gis.water.ca.gov/arcgis/rest/services/Public/GIC_Boundaries/MapServer",
+      map,
+      hookService,
+      {
+        downloader:downloader
+      }
+    );
      
           
 
