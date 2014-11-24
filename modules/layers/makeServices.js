@@ -42,16 +42,6 @@ function(
     
     layerQueue.push(makeService(url), processLayer, 1);
 
-    clearAllLayers.register(function(){
-      var layerObjects = resolver.getRegistered();
-      for(var i=0; i< layerObjects.length; i++){
-        var layerObj = layerObjects[i];
-        if(layerObj.check.checked){
-          layerObj.check.checked = false;
-          toggleLayer(resolver.resolve(layerObj.check));
-        }
-      }
-    });
 
     function processLayer(serviceObj){
       var firstService = serviceObj.service;
@@ -69,13 +59,7 @@ function(
       excludeDownloads(serviceUnderscored, layerInfos);
      
       /*One map layer for each service layer, for independent transparencies*/
-      //
-      //  Make all services, augment services, call passed function
-      //  This function will decide how many checks to build
-      //  and how to hook them to each service
-      //  (if params exist, for each param, build a mapping from
-      //  param name to service.. then carry this over to the check/resolver)
-      //
+      
       for(var i=0; i<layerCount; i++){
         var service;
         var underscoredName = makeUnderscored(layerInfos[i].name);
@@ -91,19 +75,6 @@ function(
       }
       attachUI(services); 
 
-    }
-
-
-    function toggleLayer(service){
-      if(service.suspended){
-        service.resume();
-        info.activate(service);
-        if(downloader) downloader.add(service.fullName);
-      }else{
-        service.suspend();
-        info.deactivate(service);
-        if(downloader) downloader.remove(service.fullName);
-      }
     }
 
 
@@ -123,7 +94,6 @@ function(
         downloader.exclude(excludeDownload);
       }
     }
-
 
 
   }

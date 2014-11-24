@@ -1,19 +1,37 @@
-define(["dojo/on"],function(on){
+define([
+  "dojo/on",
+  "modules/toggleLayer"
+  ],
+function(
+  on,
+  toggleLayer
+){
 
-  var clearingFns = [];
+  var resolvers = [];
 
   function init(node){
     on(node, "click", clearAll);
   }
 
+  function clear(resolver){
+    var layerObjects = resolver.getRegistered();
+    for(var i=0; i< layerObjects.length; i++){
+      var layerObj = layerObjects[i];
+      if(layerObj.check.checked){
+        layerObj.check.checked = false;
+        toggleLayer(resolver.resolve(layerObj.check));
+      }
+    }
+  } 
+  
   function clearAll(){
-    for(var i=0; i<clearingFns.length; i++){
-      clearingFns[i]();
+    for(var i=0; i<resolvers.length; i++){
+      clear(resolvers[i]);
     }
   }
 
   function register(func){
-    clearingFns.push(func);
+    resolvers.push(func);
   }
 
   return {

@@ -1,9 +1,12 @@
 define([
   "modules/layers/makeServices.js",
-  "modules/resolveLayers.js"],
+  "modules/resolveLayers.js",
+  "modules/clearAllLayers.js"
+  ],
 function(
   makeServices,
-  ResolveLayers
+  ResolveLayers,
+  clearAllLayers
 ){
 
   function resolvingFn(services){
@@ -15,19 +18,13 @@ function(
   }
 
   var nameReg = /([^\/]*)\/MapServer/;
-
-/*
-    clearAllLayers.register(function(){
-      var layerObjects = resolver.getRegistered();
-      for(var i=0; i< layerObjects.length; i++){
-        var layerObj = layerObjects[i];
-        if(layerObj.check.checked){
-          layerObj.check.checked = false;
-          toggleLayer(resolver.resolve(layerObj.check));
-        }
-      }
-    });
-*/
+      //
+      //  Make all services, augment services, call passed function
+      //  This function will decide how many checks to build
+      //  and how to hook them to each service
+      //  (if params exist, for each param, build a mapping from
+      //  param name to service.. then carry this over to the check/resolver)
+      //
 
 function toggleLayer(service){
       if(service.suspended){
@@ -99,7 +96,8 @@ if(serviceObj.needsUI){
     container.appendChild(title);
 
     var resolver = ResolveLayers(resolvingFn);
-       
+    clearAllLayers.register(resolver);  
+
     makeServices(url, map, attachUI, options);
   }
 
