@@ -82,15 +82,22 @@ function(
     }
   }
 
-
-
-  function changeAll(checkObjs){
-    forEach(checkObjs,function(checkObj){
-      var check = checkObj.check;
-      if(check.checked){
-        on.emit(check,"change",{bubbles:true,cancelable:true});
-      }
-    });
+  function makeChanger(){
+    var opacities = [];
+    return function(checkObjs, resolver){
+      forEach(checkObjs,function(checkObj){
+        var check = checkObj.check;
+        if(check.checked){
+          var service = resolver.resolve(check);
+          if(opacities.length){
+            service.setOpacity(opacities.shift());
+          }else{
+            opacities.push(service.opacity);
+          }
+          on.emit(check,"change",{bubbles:true,cancelable:true});
+        }
+      });
+    }
   }
 
 
@@ -132,11 +139,13 @@ function(
       wrap.appendChild(label); 
       form.appendChild(wrap);
 
+      var changeAll = makeChanger();
+
       on(inp, "change", function(){
         var checkObjs = resolver.getRegistered();
-        changeAll(checkObjs);
+        changeAll(checkObjs, resolver);
         selected.name = serviceUnderscored;
-        changeAll(checkObjs);
+        changeAll(checkObjs, resolver);
       });
 
     });
@@ -150,6 +159,8 @@ function(
 
     return container;
   }
+
+
 
 
 
