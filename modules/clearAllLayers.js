@@ -19,7 +19,7 @@ function(
       var layerObj = layerObjects[i];
       if(layerObj.check.checked){
         layerObj.check.checked = false;
-        toggleLayer(resolver.resolve(layerObj.check));
+        toggleLayer.toggle(resolver.resolve(layerObj.check));
       }
     }
   } 
