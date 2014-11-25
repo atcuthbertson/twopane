@@ -58,7 +58,7 @@ function(
 
     return function (services, serviceObj){
       if(options.keyLayers){
-        services = buildParams(options.keyLayers,services,resolver,container,options);
+        services = buildParams(options.keyLayers, services, resolver, container, options);
       }
 
       for(var i=0; i<services.length; i++){

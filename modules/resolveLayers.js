@@ -28,9 +28,17 @@ define([],function(){
       return registered;
     }
 
+    function wrap(fn){
+      var orig = resolvingFn;
+      resolvingFn = function(services){
+        return orig(fn(services))
+      }
+    }
+
 
     return {
       resolve:resolve,
+      wrap:wrap,
       register:register,
       getRegistered:getRegistered
     }
