@@ -304,12 +304,12 @@ function(
 
 
     //Layer composed of simple checkboxes
-    RadioLayer(["https://gis.water.ca.gov/arcgis/rest/services/Public/GIC_Boundaries/MapServer",
-       "https://gis.water.ca.gov/arcgis/rest/services/Public/Subsidence/MapServer"],
+    RadioLayer(["https://gis.water.ca.gov/arcgis/rest/services/Public/Test_Boundary_Outlines/MapServer",
+       "https://gis.water.ca.gov/arcgis/rest/services/Public/Test_Boundary_Fill/MapServer"],
       map,
       hookService,
       {
-        keyLayers:["Measurements","Elevations","Change"],
+        keyLayers:["Boundary","Plan"],
         radioTitle:"Select Data Type:",
         checkTitle:"Show Layers:",
         tabName:"Boundaries",

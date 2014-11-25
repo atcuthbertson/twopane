@@ -23,6 +23,7 @@ define([],function(){
 
 
   return function(services, keyLayers, resolver, container, options){
-    var serviceGroups = groupServices(keyLayers, services)
+    var serviceGroups = groupServices(services, keyLayers)
+    console.log(serviceGroups)
   }
 });
