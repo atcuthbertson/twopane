@@ -1,4 +1,4 @@
-define([],function(){
+define(['dojo/_base/array'],function(array){
 
   var DOC = document;
 
@@ -32,14 +32,9 @@ define([],function(){
     DOC.body.appendChild(ifr);
   }
 
-  function forEach(arr, fn){
-    for(var i=0, len = arr.length; i < len; i++){
-      fn(arr[i])
-    }
-  }
 
   return function(paths){
-    forEach(paths,makeDownload)
+    array.forEach(paths,makeDownload)
   }
 
 });

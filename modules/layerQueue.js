@@ -1,4 +1,4 @@
-define([],function(){
+define(["dojo/_base/array"],function(array){
   var queued = [];
   var subscribers = [];
   var firstLoad = 1;
@@ -43,27 +43,13 @@ define([],function(){
 
 
   function broadcast(){
-    var uiQueued = filter(queued,function(service){
+    var uiQueued = array.filter(queued,function(service){
       return service.needsUI
     });
 
-    forEach(subscribers,function(subFn,i){
+    array.forEach(subscribers,function(subFn,i){
       subFn(uiQueued);
     });
-  }
-
-  function forEach(arr,fn){
-    for(var i=0, len=arr.length; i < len; i++){
-      fn(arr[i],i);
-    }
-  }
-
-  function filter(arr,fn){
-    var out = [];
-    forEach(arr,function(v,i){
-      if(fn(v)) out.push(v);
-    })
-    return out;
   }
 
 

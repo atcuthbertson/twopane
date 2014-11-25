@@ -4,6 +4,7 @@ define([
   "dijit/layout/TabContainer",
 
   "dojo/on",
+  "dojo/_base/array",
   "esri/geometry/ScreenPoint",
 
   "esri/tasks/identify",
@@ -16,6 +17,7 @@ function(
   TabContainer,
 
   on,
+  array,
   ScreenPoint,
 
   identify,
@@ -166,7 +168,7 @@ function(
     identifyParameters.width = map.width;
     identifyParameters.height = map.height;
 
-    forEach(tabs.getChildren(),function(v){tabs.removeChild(v)});
+    array.forEach(tabs.getChildren(),function(v){tabs.removeChild(v)});
 
     for(var url in identifyTasks){
       var layers = activeLayers[url];
@@ -188,7 +190,7 @@ function(
   function processIdentify (results){
     if(!results.length) return setNoData();
 
-    forEach(results,function(result){
+    array.forEach(results,function(result){
       var tab = new ContentPane(makePane(result))
       tabs.addChild(tab);
     })
@@ -260,14 +262,6 @@ function(
         title:"No Data"
       })
       tabs.addChild(tab);
-  }
-
-
-  //ie shim
-  function forEach(arr,fn){
-    for(var i=0;i<arr.length;i++){
-      fn(arr[i],i,arr)
-    }
   }
 
 

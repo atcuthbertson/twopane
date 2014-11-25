@@ -1,5 +1,6 @@
 define([
   "dojo/on",
+  "dojo/_base/array",
 
   "modules/layers/makeServices.js",
   "modules/buildParams.js",
@@ -12,6 +13,7 @@ define([
 
 function(
   on,
+  array,
 
   makeServices,
   buildParams,
@@ -32,11 +34,6 @@ function(
     return name.replace(/ /g,"_")
   }
 
-  function forEach(arr,fn){
-    for(var i=0, len=arr.length; i < len; i++){
-      fn(arr[i],i);
-    }
-  }
 
 
 
@@ -89,10 +86,12 @@ function(
     }
   }
 
-  function makeChanger(){
+
+
+  function makeAllCheckToggler(){
     var opacities = [];
     return function(checkObjs, resolver){
-      forEach(checkObjs,function(checkObj){
+      array.forEach(checkObjs,function(checkObj){
         var check = checkObj.check;
         if(check.checked){
           var service = resolver.resolve(check);
@@ -120,7 +119,7 @@ function(
     dataType.className = 'divisionHeader';
     form.appendChild(dataType);
      
-    forEach(urls, function(url, i){
+    array.forEach(urls, function(url, i){
       var serviceName = makeSpaced(url.match(nameReg)[1]);
       var serviceUnderscored = makeUnderscored(serviceName);
 
@@ -146,7 +145,7 @@ function(
       wrap.appendChild(label); 
       form.appendChild(wrap);
 
-      var changeAll = makeChanger();
+      var changeAll = makeAllCheckToggler();
 
       on(inp, "change", function(){
         var checkObjs = resolver.getRegistered();
@@ -189,7 +188,7 @@ function(
     clearAllLayers.register(resolver);
     toggleLayer.register(options);
 
-    forEach(urls, function(url,i){
+    array.forEach(urls, function(url,i){
       makeServices(url, map, attachUI, +(i===0), options);
     });
 
