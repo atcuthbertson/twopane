@@ -26,7 +26,7 @@ require([
   "modules/layers/newSimple.js",
    
   "require"
-  ], 
+], 
 
 function(
   Map,
@@ -52,7 +52,7 @@ function(
   CheckLayer,
 
   require
-  ){
+){
 
   //Disable CORS detection, since services.arcgisonline.com is not CORS enabled
   esri.config.defaults.io.corsDetection = false;
@@ -309,6 +309,7 @@ function(
       map,
       hookService,
       {
+        keyLayers:["Measurements","Elevations","Change"],
         radioTitle:"Select Data Type:",
         checkTitle:"Show Layers:",
         tabName:"Boundaries",

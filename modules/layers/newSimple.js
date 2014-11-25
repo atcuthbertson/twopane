@@ -7,7 +7,8 @@ define([
   "modules/toggleLayer.js",
   "modules/makeCheck.js",
   "modules/spinner.js"
-  ],
+],
+
 function(
   on,
 

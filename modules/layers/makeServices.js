@@ -5,7 +5,8 @@ define([
 
   "modules/layerQueue.js",
   "modules/info.js"
-  ],
+],
+
 function(
   on,
 

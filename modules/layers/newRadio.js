@@ -2,16 +2,19 @@ define([
   "dojo/on",
 
   "modules/layers/makeServices.js",
+  "modules/buildParams.js",
   "modules/resolveLayers.js",
   "modules/clearAllLayers.js",
   "modules/toggleLayer.js",
   "modules/makeCheck.js",
   "modules/spinner.js"
-  ],
+],
+
 function(
   on,
 
   makeServices,
+  buildParams,
   ResolveLayers,
   clearAllLayers,
   toggleLayer,
@@ -54,6 +57,10 @@ function(
     var checks = {};
 
     return function (services, serviceObj){
+      if(options.keyLayers){
+        services = buildParams(options.keyLayers,services,resolver,container,options);
+      }
+
       for(var i=0; i<services.length; i++){
         var service = services[i];
         var spacedName = makeSpaced(service.layerName);

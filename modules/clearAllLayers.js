@@ -1,7 +1,8 @@
 define([
   "dojo/on",
   "modules/toggleLayer.js"
-  ],
+],
+
 function(
   on,
   toggleLayer

@@ -2,12 +2,14 @@ define([
   "dojo/on",
   "dojo/dom-class",
   "modules/layerQueue.js"
-  ],
-  function(
-    on,
-    domClass,
-    layerQueue
-  ){
+],
+
+function(
+  on,
+  domClass,
+  layerQueue
+){
+  
   return function(serviceNode, populate){
 
     var len;
