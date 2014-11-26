@@ -51,16 +51,22 @@ function(
       return checkResolver.call(this,resolver)
     }
 
+    function paramResolver(services){
+      console.log(services)
+      return services;
+    }
+
     var checks = [];
 
     return function (services, serviceObj){
       if(options.keyLayers){
-        services = buildParams(services, options.keyLayers, resolver, container, options);
+        services = buildParams(services, options.keyLayers, resolver, paramResolver, container, options);
       }
 
       for(var i=0; i<services.length; i++){
         var service = services[i];
         var spacedName = makeSpaced(service.layerName);
+        console.log(spacedName)
         var check;
 
         if(checks[i]){

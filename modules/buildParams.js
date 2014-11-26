@@ -7,7 +7,8 @@ define([],function(){
       var group = {
         services : [],
         params: [],
-        layerName : keyLayers[h]
+        layerName : keyLayers[h],
+        serviceName: services[0].serviceName
       };
       groups.push(group);
     }
@@ -29,9 +30,10 @@ define([],function(){
   }
 
 
-  return function(services, keyLayers, resolver, container, options){
+  return function(services, keyLayers, resolver, paramResolver, container, options){
     var serviceGroups = groupServices(services, keyLayers)
-    console.log(serviceGroups)
+    resolver.wrap(paramResolver);
+
     return serviceGroups
   }
 });

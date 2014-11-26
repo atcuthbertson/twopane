@@ -6,6 +6,7 @@ define([],function(){
 
     function resolve(check){
       var obj = checks[check.id];
+      console.log(obj.services)
       return resolvingFn(obj.services);
     }
 
@@ -31,7 +32,7 @@ define([],function(){
     function wrap(fn){
       var orig = resolvingFn;
       resolvingFn = function(services){
-        return orig(fn(services))
+        return fn(orig(services))
       }
     }
 
