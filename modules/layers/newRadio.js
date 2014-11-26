@@ -36,12 +36,21 @@ function(
 
 
 
-
   function checkResolver(resolver){
     var layer = resolver.resolve(this);
     toggleLayer.toggle(layer);
     if(!layer.suspended)spinner(this,layer);
   }
+
+  function makeParamResolver(paramObj){
+     
+    return function(serviceGroup){
+      for(var i=0; i<serviceGroup.params; i++){
+        if(serviceGroup.params[i] === paramObj.param){
+          return serviceGroup.services[i];
+        }
+      }
+    }
 
 
 
@@ -51,18 +60,12 @@ function(
       return checkResolver.call(this,resolver)
     }
 
-    function paramResolver(services){
-      console.log(services)
-      return services;
-    }
-
-    if(options.keyLayers) resolver.wrap(paramResolver);
 
     var checks = [];
 
     return function (services, serviceObj){
       if(options.keyLayers){
-        services = buildParams(services, options.keyLayers, resolver, container, options);
+        services = buildParams(services, options.keyLayers, resolver, paramResolver, container, options);
       }
 
       for(var i=0; i<services.length; i++){
