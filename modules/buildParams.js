@@ -30,9 +30,8 @@ define([],function(){
   }
 
 
-  return function(services, keyLayers, resolver, paramResolver, container, options){
+  return function(services, keyLayers, resolver, container, options){
     var serviceGroups = groupServices(services, keyLayers)
-    resolver.wrap(paramResolver);
 
     return serviceGroups
   }

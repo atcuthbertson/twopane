@@ -56,11 +56,13 @@ function(
       return services;
     }
 
+    if(options.keyLayers) resolver.wrap(paramResolver);
+
     var checks = [];
 
     return function (services, serviceObj){
       if(options.keyLayers){
-        services = buildParams(services, options.keyLayers, resolver, paramResolver, container, options);
+        services = buildParams(services, options.keyLayers, resolver, container, options);
       }
 
       for(var i=0; i<services.length; i++){
