@@ -51,7 +51,7 @@ function(
       return checkResolver.call(this,resolver)
     }
 
-    var checks = {};
+    var checks = [];
 
     return function (services, serviceObj){
       if(options.keyLayers){
