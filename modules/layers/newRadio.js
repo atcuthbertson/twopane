@@ -51,10 +51,10 @@ function(
         }
       }
     }
+  }
 
 
-
-  function makeAttacher(resolver, container, hookService, options){
+  function makeAttacher(resolver, container, hookService, paramManager, options){
 
     function boundResolver(){
       return checkResolver.call(this,resolver)
@@ -64,8 +64,8 @@ function(
     var checks = [];
 
     return function (services, serviceObj){
-      if(options.keyLayers){
-        services = buildParams(services, options.keyLayers, resolver, paramResolver, container, options);
+      if(paramManager){
+        services = paramManager(services, options.keyLayers, options);
       }
 
       for(var i=0; i<services.length; i++){
@@ -194,7 +194,8 @@ function(
     var resolver = ResolveLayers(resolvingFn);
     var selected = {name:""};
     var container = buildDOM(urls, resolver, selected, options);
-    var attachUI = makeAttacher(resolver, container, hookService, options);
+    var paramManager = buildParams(container, resolver, makeParamResolver, options);
+    var attachUI = makeAttacher(resolver, container, hookService, paramManager, options);
 
     clearAllLayers.register(resolver);
     toggleLayer.register(options);
