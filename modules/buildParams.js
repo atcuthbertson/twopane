@@ -1,14 +1,27 @@
 define([
+  'dijit/registry',
   'dijit/form/ComboBox',
   'dojo/store/Memory'
 ],
 
 function(
+  registry,
   ComboBox,
   Memory
 ){
 
   return function(container, resolver, makeParamResolver, options){
+
+    var inp = document.createElement('input');
+    container.appendChild(inp); 
+    var memory = new Memory({
+      data:[]
+    }); 
+    var combo = new ComboBox({store:memory,
+                              searchAttr:"param"
+                             },inp);
+    combo.startup(); 
+   memory.setData([{param:2},{param:3}]); 
 
     function groupServices(services, keyLayers){
       var groups = [];
@@ -41,14 +54,11 @@ function(
 
     function addLayers(services, keyLayers, options){
       var serviceGroups = groupServices(services, keyLayers)
-        var inp = document.createElement('input');
-      container.appendChild(inp); 
 
-      var cb = new ComboBox({store:[123,345,456]},inp).startup(); 
-      console.log(cb); 
       return serviceGroups
     }
-    
+
+     
     return addLayers; 
     
   } 
