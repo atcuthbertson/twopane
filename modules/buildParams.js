@@ -14,6 +14,10 @@ function(
 
     var inp = document.createElement('input');
     container.appendChild(inp); 
+
+    var paramObject = {param:''};
+    resolver.wrap(makeParamResolver(paramObject));
+
     var memory = new Memory({
       data:[]
     }); 
@@ -21,6 +25,12 @@ function(
                               searchAttr:"param"
                              },inp);
     combo.startup(); 
+    combo.onChange = function(value){
+      paramObject.param = value;
+      console.log(paramObject);
+    }
+    memory.setData([{param:3},{param:4}]);
+     
 //need to make the param resolver and wrap the resolver with it
 //the paramObject gets set whenever something is selected from 
 //the combo box.. that gets set at the param of the paramObject..
