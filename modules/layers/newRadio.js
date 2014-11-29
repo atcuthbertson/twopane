@@ -45,7 +45,7 @@ function(
   function makeParamResolver(paramObj){
      
     return function(serviceGroup){
-      for(var i=0; i<serviceGroup.params; i++){
+      for(var i=0; i<serviceGroup.params.length; i++){
         if(serviceGroup.params[i] === paramObj.param){
           return serviceGroup.services[i];
         }
