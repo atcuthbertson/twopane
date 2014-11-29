@@ -21,14 +21,16 @@ function(
     var memory = new Memory({
       data:[]
     }); 
+
     var combo = new ComboBox({store:memory,
                               searchAttr:"param"
                              },inp);
-    combo.startup(); 
     combo.onChange = function(value){
       paramObject.param = value;
       console.log(paramObject);
     }
+    combo.startup(); 
+
     memory.setData([{param:3},{param:4}]);
      
 //need to make the param resolver and wrap the resolver with it
@@ -70,13 +72,22 @@ function(
     }
 
     function addLayers(services, keyLayers, options){
+      console.log("addLayers",arguments);
       var serviceGroups = groupServices(services, keyLayers)
-
+      console.log(serviceGroups); 
       return serviceGroups
     }
 
+    function setParams(serviceGroup){
+      console.log(serviceGroup);
+
+      memory.setData([]);
+    }
+
      
-    return addLayers; 
-    
-  } 
+    return {
+      setParams:setParams,
+      addLayers:addLayers 
+    } 
+  }
 });

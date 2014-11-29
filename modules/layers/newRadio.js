@@ -64,8 +64,9 @@ function(
     var checks = [];
 
     return function (services, serviceObj){
+      console.log("attachUI");
       if(paramManager){
-        services = paramManager(services, options.keyLayers, options);
+        services = paramManager.addLayers(services, options.keyLayers, options);
       }
 
       for(var i=0; i<services.length; i++){
