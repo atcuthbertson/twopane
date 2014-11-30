@@ -158,7 +158,7 @@ function(
       form.appendChild(wrap);
 
       var changeAll = makeAllCheckToggler();
-
+console.log("buildDOM.. need to call to a subscription fn.. on(inp, fireRegistered)");
       on(inp, "change", function(){
         var checkObjs = resolver.getRegistered();
         changeAll(checkObjs, resolver);
