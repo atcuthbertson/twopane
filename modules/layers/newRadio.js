@@ -149,10 +149,10 @@ function(
       label.setAttribute('for',inpId);
       label.textContent = label.innerText = serviceName;
 
-      if(i===0){
+     /* if(i===0){
         inp.checked = "checked";
         selected.name = serviceUnderscored;
-      }
+      }*/
 
       
       wrap.appendChild(inp);

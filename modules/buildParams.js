@@ -36,8 +36,6 @@ function(
       console.log(paramObject);
     }
     combo.startup(); 
-
-    memory.setData([{param:3},{param:4}]);
      
 //need to make the param resolver and wrap the resolver with it
 //the paramObject gets set whenever something is selected from 
@@ -106,8 +104,13 @@ function(
 
 
     function setParams(e){
-      var group = groupObj[makeUnderscored(e.target.nextSibling.innerHTML)];
-      memory.setData(group.params);
+      var params = groupObj[makeUnderscored(e.target.nextSibling.innerHTML)].params;
+      var lastVal = combo.value;
+      memory.setData(params);
+      for(var i=0; i<params.length; i++){
+        if(lastVal === params[i].param) break;
+      }
+      if(i===params.length||!lastVal)combo.setValue(params[0].param)
     }
 
      
