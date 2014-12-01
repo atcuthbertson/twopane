@@ -88,12 +88,26 @@ function(
       return serviceGroups
     }
 
+    function unionParams(serviceGroups){
+      var paramObj = {};
+      var params = [];
+      for(var i=0; i<serviceGroups.length; i++){
+        var currParams = serviceGroups[i].params;
+        for(var j=0; j<currParams.length; j++){
+          var curr = currParams[j];
+          if(!paramObj[curr]){
+            params.push({param:curr});
+            paramObj[curr] = 1;
+          }
+        }
+      }
+      return params;
+    }
+
 
     function setParams(e){
       var group = groupObj[makeUnderscored(e.target.nextSibling.innerHTML)];
-      console.log("setting params",group);
-
-      memory.setData([]);
+      memory.setData(group.params);
     }
 
      
