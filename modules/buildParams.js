@@ -10,6 +10,10 @@ function(
   Memory
 ){
 
+  function makeUnderscored(name){
+    return name.replace(/ /g,"_")
+  }
+
   return function(container, resolver, makeParamResolver, options){
 
     var inp = document.createElement('input');
@@ -18,9 +22,11 @@ function(
     var paramObject = {param:''};
     resolver.wrap(makeParamResolver(paramObject));
 
+    var groupObj = {};
+
     var memory = new Memory({
       data:[]
-    }); 
+    });
 
     var combo = new ComboBox({store:memory,
                               searchAttr:"param"
@@ -74,12 +80,18 @@ function(
     function addLayers(services, keyLayers, options){
       console.log("addLayers",arguments);
       var serviceGroups = groupServices(services, keyLayers)
-      console.log(serviceGroups); 
+      console.log(serviceGroups);
+      groupObj[serviceGroups[0].serviceName] = {
+        group:serviceGroups,
+        params:unionParams(serviceGroups)
+      }
       return serviceGroups
     }
 
-    function setParams(serviceGroup){
-      console.log(serviceGroup);
+
+    function setParams(e){
+      var group = groupObj[makeUnderscored(e.target.nextSibling.innerHTML)];
+      console.log("setting params",group);
 
       memory.setData([]);
     }

@@ -66,7 +66,7 @@ function(
     var checks = [];
 
     return function (services, serviceObj){
-      console.log("attachUI");
+      console.log("attachUI",arguments);
       if(paramManager){
         services = paramManager.addLayers(services, options.keyLayers, options);
       }
@@ -206,6 +206,7 @@ function(
     var paramManager = buildParams(container, resolver, makeParamResolver, options);
     var attachUI = makeAttacher(resolver, container, hookService, paramManager, options);
 
+    options.toggleEffects.subscribe(paramManager.setParams)
     clearAllLayers.register(resolver);
     toggleLayer.register(options);
 
