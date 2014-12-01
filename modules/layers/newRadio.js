@@ -5,6 +5,7 @@ define([
   "modules/layers/makeServices.js",
   "modules/buildParams.js",
   "modules/resolveLayers.js",
+  "modules/broadcaster.js",
   "modules/clearAllLayers.js",
   "modules/toggleLayer.js",
   "modules/makeCheck.js",
@@ -18,6 +19,7 @@ function(
   makeServices,
   buildParams,
   ResolveLayers,
+  broadcaster,
   clearAllLayers,
   toggleLayer,
   makeCheck,
@@ -120,7 +122,7 @@ function(
 
 
 
-  function buildDOM(urls, resolver, selected, options){
+  function buildDOM(urls, selected, resolver, options){
     var form = document.createElement('form');
     var container = document.createElement('div');
     var dataType = document.createElement('h4');
@@ -158,13 +160,17 @@ function(
       form.appendChild(wrap);
 
       var changeAll = makeAllCheckToggler();
-console.log("buildDOM.. need to call to a subscription fn.. on(inp, fireRegistered)");
-      on(inp, "change", function(){
+
+      function toggleChecks(){
         var checkObjs = resolver.getRegistered();
         changeAll(checkObjs, resolver);
         selected.name = serviceUnderscored;
         changeAll(checkObjs, resolver);
-      });
+      }
+
+      options.toggleEffects.subscribe(toggleChecks);
+
+      on(inp, "change", options.toggleEffects.broadcast);
 
     });
 
@@ -191,10 +197,12 @@ console.log("buildDOM.. need to call to a subscription fn.. on(inp, fireRegister
         }
       }
     }
+    if(!options.toggleEffects) options.toggleEffects = broadcaster();
+    if(!options.paramEffects) options.paramEffects = broadcaster();
 
     var resolver = ResolveLayers(resolvingFn);
     var selected = {name:""};
-    var container = buildDOM(urls, resolver, selected, options);
+    var container = buildDOM(urls, selected, resolver, options);
     var paramManager = buildParams(container, resolver, makeParamResolver, options);
     var attachUI = makeAttacher(resolver, container, hookService, paramManager, options);
 
