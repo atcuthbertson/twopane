@@ -19,7 +19,7 @@ define([],function(){
 
     function broadcast(){
       for(var i=0; i<subscribed.length; i++){
-        
+        subscribed[i].apply(this,arguments);
       }
     }
     return {
