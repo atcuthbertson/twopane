@@ -108,16 +108,18 @@ function(
 
   function makeAllCheckToggler(){
     var opacities = [];
-    return function(checkObjs, resolver){
+    return function(checkObjs, resolver, firstPass){
       array.forEach(checkObjs,function(checkObj){
         var check = checkObj.check;
+        var service = resolver.resolve(check);
+        console.log(opacities)
+        if(firstPass){
+          opacities.push(service.opacity);
+        }else{
+          service.setOpacity(opacities.shift());
+        }
+        console.log(opacities)
         if(check.checked){
-          var service = resolver.resolve(check);
-          if(opacities.length){
-            service.setOpacity(opacities.shift());
-          }else{
-            opacities.push(service.opacity);
-          }
           on.emit(check,"change",{bubbles:true,cancelable:true});
         }
       });
@@ -139,12 +141,12 @@ function(
     form.appendChild(dataType);
 
     options.toggleEffects.subscribe(toggleChecks);
-    
+
     function toggleChecks(e){
       var checkObjs = resolver.getRegistered();
-      changeAll(checkObjs, resolver);
+      changeAll(checkObjs, resolver, 1);
       options.selectedRadio.name = makeUnderscored(e.target.nextSibling.innerHTML);
-      changeAll(checkObjs, resolver);
+      changeAll(checkObjs, resolver, 0);
     }
      
     array.forEach(urls, function(url, i){
@@ -197,14 +199,13 @@ function(
 
     function resolvingFn(services){
       var name = options.selectedRadio.name;
-      console.log(name);
       for(var i=0; i<services.length; i++){
         if(name === services[i].serviceName){
-          console.log("Radio resolver. Resolving ",services,"..got", services[i])
           return services[i];
         }
       }
     }
+
     if(!options.toggleEffects) options.toggleEffects = broadcaster();
     if(!options.paramEffects) options.paramEffects = broadcaster();
     if(!options.selectedRadio) options.selectedRadio = {name:""};
