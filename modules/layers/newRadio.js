@@ -70,11 +70,15 @@ function(
       if(paramManager){
         services = paramManager.addLayers(services, options.keyLayers, options);
       }
+      console.log(underscoredService,options.selectedRadio)
+      var underscoredService = makeUnderscored(services[0].serviceName)
+      if(underscoredService === options.selectedRadio.name){
+        on.emit(options.firstRadioNode,"change",{bubbles:true,cancelable:true});
+      }
 
       for(var i=0; i<services.length; i++){
         var service = services[i];
         var spacedName = makeSpaced(service.layerName);
-        console.log(spacedName)
         var check;
 
         if(checks[i]){
@@ -122,7 +126,7 @@ function(
 
 
 
-  function buildDOM(urls, selected, resolver, options){
+  function buildDOM(urls, resolver, options){
     var form = document.createElement('form');
     var container = document.createElement('div');
     var dataType = document.createElement('h4');
@@ -149,14 +153,15 @@ function(
       label.setAttribute('for',inpId);
       label.textContent = label.innerText = serviceName;
 
-     /* if(i===0){
+      if(i===0){
         inp.checked = "checked";
-        selected.name = serviceUnderscored;
-      }*/
+        options.selectedRadio.name = serviceUnderscored;
+        options.firstRadioNode = inp;
+      }
 
       
       wrap.appendChild(inp);
-      wrap.appendChild(label); 
+      wrap.appendChild(label);
       form.appendChild(wrap);
 
       var changeAll = makeAllCheckToggler();
@@ -164,7 +169,7 @@ function(
       function toggleChecks(){
         var checkObjs = resolver.getRegistered();
         changeAll(checkObjs, resolver);
-        selected.name = serviceUnderscored;
+        options.selectedRadio.name = serviceUnderscored;
         changeAll(checkObjs, resolver);
       }
 
@@ -199,10 +204,9 @@ function(
     }
     if(!options.toggleEffects) options.toggleEffects = broadcaster();
     if(!options.paramEffects) options.paramEffects = broadcaster();
-
+    if(!options.selectedRadio) options.selectedRadio = {name:""};
     var resolver = ResolveLayers(resolvingFn);
-    var selected = {name:""};
-    var container = buildDOM(urls, selected, resolver, options);
+    var container = buildDOM(urls, resolver, options);
     var paramManager = buildParams(container, resolver, makeParamResolver, options);
     var attachUI = makeAttacher(resolver, container, hookService, paramManager, options);
 
