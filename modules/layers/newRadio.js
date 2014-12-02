@@ -70,7 +70,7 @@ function(
       if(paramManager){
         services = paramManager.addLayers(services, options.keyLayers, options);
       }
-      console.log(underscoredService,options.selectedRadio)
+
       var underscoredService = makeUnderscored(services[0].serviceName)
       if(underscoredService === options.selectedRadio.name){
         on.emit(options.firstRadioNode,"change",{bubbles:true,cancelable:true});
@@ -131,11 +131,21 @@ function(
     var container = document.createElement('div');
     var dataType = document.createElement('h4');
     var radioName = Math.random();
+    var changeAll = makeAllCheckToggler();
 
     form.className = 'radioForm';
     dataType.textContent = dataType.innerText = options.radioTitle|| "Select Data Type:";
     dataType.className = 'divisionHeader';
     form.appendChild(dataType);
+
+    options.toggleEffects.subscribe(toggleChecks);
+    
+    function toggleChecks(e){
+      var checkObjs = resolver.getRegistered();
+      changeAll(checkObjs, resolver);
+      options.selectedRadio.name = makeUnderscored(e.target.nextSibling.innerHTML);
+      changeAll(checkObjs, resolver);
+    }
      
     array.forEach(urls, function(url, i){
       var serviceName = makeSpaced(url.match(nameReg)[1]);
@@ -155,6 +165,7 @@ function(
 
       if(i===0){
         inp.checked = "checked";
+        console.log("setting selected radio",serviceUnderscored);
         options.selectedRadio.name = serviceUnderscored;
         options.firstRadioNode = inp;
       }
@@ -163,17 +174,6 @@ function(
       wrap.appendChild(inp);
       wrap.appendChild(label);
       form.appendChild(wrap);
-
-      var changeAll = makeAllCheckToggler();
-
-      function toggleChecks(){
-        var checkObjs = resolver.getRegistered();
-        changeAll(checkObjs, resolver);
-        options.selectedRadio.name = serviceUnderscored;
-        changeAll(checkObjs, resolver);
-      }
-
-      options.toggleEffects.subscribe(toggleChecks);
 
       on(inp, "change", options.toggleEffects.broadcast);
 
@@ -196,8 +196,11 @@ function(
   return function(urls, map, hookService, options){
 
     function resolvingFn(services){
+      var name = options.selectedRadio.name;
+      console.log(name);
       for(var i=0; i<services.length; i++){
-        if(selected.name === services[i].serviceName){
+        if(name === services[i].serviceName){
+          console.log("Radio resolver. Resolving ",services,"..got", services[i])
           return services[i];
         }
       }
