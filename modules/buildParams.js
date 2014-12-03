@@ -40,15 +40,6 @@ function(
     }
     combo.startup(); 
      
-//need to make the param resolver and wrap the resolver with it
-//the paramObject gets set whenever something is selected from 
-//the combo box.. that gets set at the param of the paramObject..
-//and helps resolve the proper service by checking the param array
-//the actual setting can likely be done by listening to an event on the
-//combobox
-//
-//setting the data of the memory store needs to be done as well..
-//
     function groupServices(services, keyLayers){
       var groups = [];
 
@@ -79,9 +70,7 @@ function(
     }
 
     function addLayers(services, keyLayers, options){
-      console.log("addLayers",arguments);
       var serviceGroups = groupServices(services, keyLayers)
-      console.log(serviceGroups);
       groupObj[serviceGroups[0].serviceName] = {
         group:serviceGroups,
         params:unionParams(serviceGroups)

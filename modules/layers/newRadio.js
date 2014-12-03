@@ -68,7 +68,6 @@ function(
     var checks = [];
 
     return function (services, serviceObj){
-      console.log("attachUI",arguments);
       if(paramManager){
         services = paramManager.addLayers(services, options.keyLayers, options);
       }
@@ -146,7 +145,6 @@ function(
 
       if(i===0){
         inp.checked = "checked";
-        console.log("setting selected radio",serviceUnderscored);
         options.selectedRadio.name = serviceUnderscored;
         options.firstRadioNode = inp;
       }

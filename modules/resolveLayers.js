@@ -6,7 +6,6 @@ define([],function(){
 
     function resolve(check){
       var obj = checks[check.id];
-      console.log(obj.services)
       return resolvingFn(obj.services);
     }
 
