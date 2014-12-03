@@ -1,13 +1,15 @@
 define([
   'dijit/registry',
   'dijit/form/ComboBox',
-  'dojo/store/Memory'
+  'dojo/store/Memory',
+  'modules/toggleAll.js'
 ],
 
 function(
   registry,
   ComboBox,
-  Memory
+  Memory,
+  toggleAll
 ){
 
   function makeUnderscored(name){
@@ -32,8 +34,9 @@ function(
                               searchAttr:"param"
                              },inp);
     combo.onChange = function(value){
-      paramObject.param = value;
-      console.log(paramObject);
+      toggleAll(resolver,function(){
+        paramObject.param = value;
+      });
     }
     combo.startup(); 
      

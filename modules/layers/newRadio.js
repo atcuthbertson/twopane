@@ -7,6 +7,7 @@ define([
   "modules/resolveLayers.js",
   "modules/broadcaster.js",
   "modules/clearAllLayers.js",
+  "modules/toggleAll.js",
   "modules/toggleLayer.js",
   "modules/makeCheck.js",
   "modules/spinner.js"
@@ -21,6 +22,7 @@ function(
   ResolveLayers,
   broadcaster,
   clearAllLayers,
+  toggleAll,
   toggleLayer,
   makeCheck,
   spinner
@@ -106,34 +108,12 @@ function(
 
 
 
-  function makeAllCheckToggler(){
-    var opacities = [];
-    return function(checkObjs, resolver, firstPass){
-      array.forEach(checkObjs,function(checkObj){
-        var check = checkObj.check;
-        var service = resolver.resolve(check);
-        console.log(opacities)
-        if(firstPass){
-          opacities.push(service.opacity);
-        }else{
-          service.setOpacity(opacities.shift());
-        }
-        console.log(opacities)
-        if(check.checked){
-          on.emit(check,"change",{bubbles:true,cancelable:true});
-        }
-      });
-    }
-  }
-
-
 
   function buildDOM(urls, resolver, options){
     var form = document.createElement('form');
     var container = document.createElement('div');
     var dataType = document.createElement('h4');
     var radioName = Math.random();
-    var changeAll = makeAllCheckToggler();
 
     form.className = 'radioForm';
     dataType.textContent = dataType.innerText = options.radioTitle|| "Select Data Type:";
@@ -143,10 +123,9 @@ function(
     options.toggleEffects.subscribe(toggleChecks);
 
     function toggleChecks(e){
-      var checkObjs = resolver.getRegistered();
-      changeAll(checkObjs, resolver, 1);
-      options.selectedRadio.name = makeUnderscored(e.target.nextSibling.innerHTML);
-      changeAll(checkObjs, resolver, 0);
+      toggleAll(resolver, function(){
+        options.selectedRadio.name = makeUnderscored(e.target.nextSibling.innerHTML);
+      });
     }
      
     array.forEach(urls, function(url, i){
