@@ -10,6 +10,7 @@ define([
   "modules/toggleAll.js",
   "modules/toggleLayer.js",
   "modules/makeCheck.js",
+  "modules/makeHeader.js",
   "modules/spinner.js"
 ],
 
@@ -25,6 +26,7 @@ function(
   toggleAll,
   toggleLayer,
   makeCheck,
+  makeHeader,
   spinner
 ){
 
@@ -114,8 +116,7 @@ function(
     var radioName = Math.random();
 
     form.className = 'radioForm';
-
-    makeHeader(form, options.radioTitle||"Select Data Type:");
+    makeHeader(container, options.radioTitle||"Select Data Type:");
     options.toggleEffects.subscribe(toggleChecks);
 
     function toggleChecks(e){
@@ -157,17 +158,11 @@ function(
 
     container.appendChild(form);
        
-    makeHeader(container, options.checkTitle||'Show Layers');
 
     return container;
   }
 
-  function makeHeader(container, text){
-    var header = document.createElement('h4');
-    header.textContent = header.innerText = text;
-    header.className = 'divisionHeader';
-    container.appendChild(header);
-  }
+  
 
 
 
@@ -189,7 +184,8 @@ function(
     var container = buildDOM(urls, resolver, options);
     var paramManager = buildParams(container, resolver, makeParamResolver, options);
     var attachUI = makeAttacher(resolver, container, hookService, paramManager, options);
-
+    
+    makeHeader(container, options.checkTitle||'Show Layers');
     options.toggleEffects.subscribe(paramManager.setParams)
     clearAllLayers.register(resolver);
     toggleLayer.register(options);
