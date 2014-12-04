@@ -111,14 +111,11 @@ function(
   function buildDOM(urls, resolver, options){
     var form = document.createElement('form');
     var container = document.createElement('div');
-    var dataType = document.createElement('h4');
     var radioName = Math.random();
 
     form.className = 'radioForm';
-    dataType.textContent = dataType.innerText = options.radioTitle|| "Select Data Type:";
-    dataType.className = 'divisionHeader';
-    form.appendChild(dataType);
 
+    makeHeader(form, options.radioTitle||"Select Data Type:");
     options.toggleEffects.subscribe(toggleChecks);
 
     function toggleChecks(e){
@@ -159,16 +156,18 @@ function(
     });
 
     container.appendChild(form);
-
-    var showLayers = document.createElement('h4');
-    showLayers.className = 'divisionHeader';
-    showLayers.textContent = showLayers.innerText = options.checkTitle||'Show Layers';
-    container.appendChild(showLayers);
+       
+    makeHeader(container, options.checkTitle||'Show Layers');
 
     return container;
   }
 
-
+  function makeHeader(container, text){
+    var header = document.createElement('h4');
+    header.textContent = header.innerText = text;
+    header.className = 'divisionHeader';
+    container.appendChild(header);
+  }
 
 
 

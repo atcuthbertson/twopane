@@ -311,6 +311,7 @@ function(
       {
         keyLayers:["Boundary","Plan"],
         radioTitle:"Select Data Type:",
+        paramTitle:"Select Color:",
         checkTitle:"Show Layers:",
         tabName:"Boundaries",
         exclude:["B118_GW_Basins"],
