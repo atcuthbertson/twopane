@@ -14,7 +14,8 @@ function(
     array.forEach(checkObjs,function(checkObj){
       var check = checkObj.check;
       var service = resolver.resolve(check);
-      if(!service)return;
+      if(!service) return disableCheck(check);
+      if(check.disabled) enableCheck(check);
       if(firstPass){
         opacities.push(service.opacity);
       }else{
@@ -25,6 +26,16 @@ function(
         on.emit(check,"change",{bubbles:true,cancelable:true});
       }
     });
+  }
+
+  function disableCheck(check){
+    domClass.add(check.parentNode, 'disabledCheck');
+    check.disabled = 1;
+  }
+
+  function enableCheck(check){
+    domClass.remove(check.parentNode, 'disableCheck');
+    check.disabled = 0;
   }
 
   function toggleAll(resolver, fn){
