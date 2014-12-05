@@ -148,10 +148,6 @@ h3, b{
   clear:both;
 }
 
-.radioForm{
-  clear:both;
-  padding-bottom:15px;
-}
 
 .radioInput{
   margin:0 10px 4px 10px;
@@ -161,10 +157,13 @@ h3, b{
   font-size:17px;
   padding:0;
   margin:0;
+  padding-top:15px;
   margin-bottom:5px;
 }
 
-
+.dijitComboBox{
+  margin: 2px 0 0 7px;
+}
 
 .dijitSliderBar{
   height:2px;
