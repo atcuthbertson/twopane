@@ -2,14 +2,16 @@ define([
   'dijit/registry',
   'dijit/form/ComboBox',
   'dojo/store/Memory',
-  'modules/toggleAll.js'
+  'modules/toggleAll.js',
+  'modules/makeHeader.js'
 ],
 
 function(
   registry,
   ComboBox,
   Memory,
-  toggleAll
+  toggleAll,
+  makeHeader
 ){
 
   function makeUnderscored(name){
@@ -19,12 +21,12 @@ function(
   return function(container, resolver, makeParamResolver, options){
 
     var inp = document.createElement('input');
-    container.appendChild(inp); 
-
+    var groupObj = {};
     var paramObject = {param:''};
     resolver.wrap(makeParamResolver(paramObject));
 
-    var groupObj = {};
+    makeHeader(container, options.paramTitle||"Select Parameter:"); 
+    container.appendChild(inp); 
 
     var memory = new Memory({
       data:[]
