@@ -35,11 +35,13 @@ function(
     var combo = new ComboBox({store:memory,
                               searchAttr:"param"
                              },inp);
-    combo.onChange = function(value){
+    options.paramEffects.subscribe(function(value){
       toggleAll(resolver,function(){
         paramObject.param = value;
       });
-    }
+    });
+    
+    combo.onChange = options.paramEffects.broadcast;
     combo.startup(); 
      
     function groupServices(services, keyLayers){
