@@ -44,8 +44,10 @@ function(
 
   function checkResolver(resolver){
     var layer = resolver.resolve(this);
-    toggleLayer.toggle(layer);
-    if(!layer.suspended)spinner(this,layer);
+    if(layer){
+      toggleLayer.toggle(layer);
+      if(!layer.suspended)spinner(this,layer);
+    }
   }
 
   function makeParamResolver(paramObj){
