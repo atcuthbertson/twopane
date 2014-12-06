@@ -14,10 +14,15 @@ function(
 
   function checkAll(checkObjs, resolver, firstPass){
     array.forEach(checkObjs,function(checkObj){
+      console.log('need to figure out first pass');
       var check = checkObj.check;
       var service = resolver.resolve(check);
-      if(!service) return disableCheck(check);
+      if(!service){
+        return disableCheck(check);
+        else return;
+      }
       if(check.disabled) enableCheck(check);
+      if(Math.random()>0.5) disableCheck(check);
       if(firstPass){
         opacities.push(service.opacity);
       }else{
@@ -32,11 +37,14 @@ function(
 
   function disableCheck(check){
     domClass.add(check.parentNode, 'disabledCheck');
+    //check.slider.disable();
+    console.log(check.slider);
     check.disabled = 1;
   }
 
   function enableCheck(check){
     domClass.remove(check.parentNode, 'disableCheck');
+    //check.slider.enable();
     check.disabled = 0;
   }
 

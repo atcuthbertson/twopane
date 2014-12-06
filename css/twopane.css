@@ -218,7 +218,13 @@ label:hover,.serviceRadio,.layerCheck{
   float:left;
 }
 
+.disabledCheck{
+  opacity:0.6;
+}
 
+.disabledCheck > input, .disabledCheck > label{
+  cursor:default;
+}
 
 
 #centerPane{

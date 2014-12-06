@@ -39,7 +39,10 @@ function(
         if(curr) curr.setOpacity(value);
       }
       }, sliderNode
-    ).startup();
+    )
+     
+    check.slider = slider;
+    slider.startup(); 
 
     container.appendChild(wrapper);
 
