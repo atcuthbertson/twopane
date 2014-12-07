@@ -219,10 +219,12 @@ label:hover,.serviceRadio,.layerCheck{
 }
 
 .disabledCheck{
-  opacity:0.6;
+  opacity:0.4;
 }
 
-.disabledCheck > input, .disabledCheck > label{
+.disabledCheck > input, .disabledCheck > label, 
+.disabledCheck .dijitSliderBar, .disabledCheck .dijitReset, .disabledCheck .dijitSliderImageHandle,
+.disabledCheck .dijitSliderDecrementIconH, .disabledCheck .dijitSliderIncrementIconH{
   cursor:default;
 }
 
