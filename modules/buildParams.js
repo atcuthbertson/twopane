@@ -23,6 +23,7 @@ function(
     var inp = document.createElement('input');
     var groupObj = {};
     var paramObject = {param:''};
+    var firstPass = 1;
     resolver.wrap(makeParamResolver(paramObject));
 
     makeHeader(container, options.paramTitle||"Select Parameter:"); 
@@ -42,7 +43,7 @@ function(
     });
     
     combo.onChange = options.paramEffects.broadcast;
-    combo.startup(); 
+    combo.startup();
      
     function groupServices(services, keyLayers){
       var groups = [];
@@ -100,11 +101,16 @@ function(
 
 
     function setParams(e){
+      console.log("setting params");
       var params = groupObj[makeUnderscored(e.target.nextSibling.innerHTML)].params;
       var lastVal = combo.value;
       memory.setData(params);
       for(var i=0; i<params.length; i++){
         if(lastVal === params[i].param) break;
+      }
+      if(firstPass){
+        paramObject.param = params[0].param;
+        firstPass = 0;
       }
       if(i===params.length||!lastVal)combo.setValue(params[0].param)
     }

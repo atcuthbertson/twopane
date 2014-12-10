@@ -13,15 +13,15 @@ function(
   var opacities = [];
 
   function checkAll(checkObjs, resolver, firstPass){
+
     array.forEach(checkObjs,function(checkObj){
-      console.log('need to figure out first pass');
       var check = checkObj.check;
       var service = resolver.resolve(check);
+      console.log(service);
       if(!service){
         return disableCheck(check);
       }
       if(check.disabled) enableCheck(check);
-      if(Math.random()>0.5) disableCheck(check);
       if(firstPass){
         opacities.push(service.opacity);
       }else{
@@ -48,7 +48,9 @@ function(
   }
 
   function toggleAll(resolver, fn){
+    console.log("toggleAll called", arguments);
     var checkObjs = resolver.getRegistered();
+    console.log("checkobjs",checkObjs);
     checkAll(checkObjs,resolver,1);
     fn();
     checkAll(checkObjs,resolver,0);
