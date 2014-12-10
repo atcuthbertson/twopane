@@ -304,19 +304,17 @@ function(
 
 
     //Layer composed of simple checkboxes
-    RadioLayer(["https://gis.water.ca.gov/arcgis/rest/services/Public/Test_Boundary_Outlines/MapServer",
-       "https://gis.water.ca.gov/arcgis/rest/services/Public/Test_Boundary_Fill/MapServer"],
+    RadioLayer(["https://darcgis.water.ca.gov/arcgis/rest/services/GGI/GIC_Depth/MapServer",
+       "https://darcgis.water.ca.gov/arcgis/rest/services/GGI/GIC_Elevation/MapServer"],
       map,
       hookService,
       {
-        keyLayers:["Boundary","Plan"],
+        keyLayers:["Points","Contours","ColorRamp"],
         radioTitle:"Select Data Type:",
-        paramTitle:"Select Color:",
+        paramTitle:"Select Period:",
         checkTitle:"Show Layers:",
-        tabName:"Boundaries",
-        exclude:["B118_GW_Basins"],
+        tabName:"Water Levels",
         downloader:downloader,
-        excludeDownload:["Groundwater_Management_Plan"]
       }
     );
     
