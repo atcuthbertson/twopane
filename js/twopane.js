@@ -22,8 +22,8 @@ require([
   "modules/makeTabs.js",
   "modules/populate.js",
   "modules/clearAllLayers.js",
-  "modules/layers/newRadio.js",
-  "modules/layers/newSimple.js",
+  "modules/layers/radio.js",
+  "modules/layers/simple.js",
    
   "require"
 ], 

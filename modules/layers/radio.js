@@ -1,13 +1,36 @@
 define([
-  "modules/layers/baseCheck.js",
+  "dojo/on",
+  "dojo/_base/array",
+
+  "modules/layers/makeServices.js",
+  "modules/buildParams.js",
   "modules/resolveLayers.js",
-  "dojo/on"],
+  "modules/broadcaster.js",
+  "modules/clearAllLayers.js",
+  "modules/toggleAll.js",
+  "modules/toggleLayer.js",
+  "modules/makeCheck.js",
+  "modules/makeHeader.js",
+  "modules/spinner.js"
+],
+
 function(
-  baseCheck,
+  on,
+  array,
+
+  makeServices,
+  buildParams,
   ResolveLayers,
-  on
+  broadcaster,
+  clearAllLayers,
+  toggleAll,
+  toggleLayer,
+  makeCheck,
+  makeHeader,
+  spinner
 ){
 
+  var nameReg = /([^\/]*)\/MapServer/;
 
   function makeSpaced(name){
     return name.replace(/_/g," ")
@@ -17,58 +40,94 @@ function(
     return name.replace(/ /g,"_")
   }
 
-  function forEach(arr,fn){
-    for(var i=0, len=arr.length; i < len; i++){
-      fn(arr[i],i);
+
+
+  function checkResolver(resolver){
+    var layer = resolver.resolve(this);
+    if(layer){
+      toggleLayer.toggle(layer);
+      if(!layer.suspended)spinner(this,layer);
     }
   }
 
-  var nameReg = /([^\/]*)\/MapServer/;
-
-
-
-  return function(urls, map, hookService, options){
-
-    var resolver = ResolveLayers(resolvingFn);
-    var selected = {name:""};
-    var container = buildDOM(urls, resolver, selected, options);
-
-
-    function resolvingFn(services){
-      for(var i=0; i<services.length; i++){
-        if(selected.name === services[i].service){
-          return services[i];
+  function makeParamResolver(paramObj){
+     
+    return function(serviceGroup){
+      for(var i=0; i<serviceGroup.params.length; i++){
+        if(serviceGroup.params[i] === paramObj.param){
+          return serviceGroup.services[i];
         }
       }
     }
-
-
-    return baseCheck(urls, container, resolver, map, hookService, options);
   }
 
 
+  function makeAttacher(resolver, container, hookService, paramManager, options){
 
-  function changeAll(checkObjs){
-    forEach(checkObjs,function(checkObj){
-      var check = checkObj.check;
-      if(check.checked){
-        on.emit(check,"change",{bubbles:true,cancelable:true});
+    function boundResolver(){
+      return checkResolver.call(this,resolver)
+    }
+
+
+    var checks = [];
+
+    return function (services, serviceObj){
+      if(paramManager){
+        services = paramManager.addLayers(services, options.keyLayers, options);
       }
-    });
+
+      var underscoredService = makeUnderscored(services[0].serviceName)
+      if(underscoredService === options.selectedRadio.name){
+        on.emit(options.firstRadioNode,"change",{bubbles:true,cancelable:true});
+      }
+
+      for(var i=0; i<services.length; i++){
+        var service = services[i];
+        var spacedName = makeSpaced(service.layerName);
+        var check;
+
+        if(checks[i]){
+          check = checks[i];
+        }else{
+         check = makeCheck(container, spacedName, resolver.resolve);
+         on(check,"change",boundResolver);
+         checks[i] = check;
+        }
+
+        resolver.register(check, service);
+      }
+
+      if(serviceObj.needsUI){
+        var serviceProps = {
+          node : container,
+          description : serviceObj.evt.layer.description,
+          tabName : options.tabName
+        }
+
+        hookService(serviceProps);
+      }
+    }
   }
 
-  function buildDOM(urls, resolver, selected, options){
+
+
+
+  function buildDOM(urls, resolver, options){
     var form = document.createElement('form');
     var container = document.createElement('div');
-    var dataType = document.createElement('h4');
     var radioName = Math.random();
 
     form.className = 'radioForm';
-    dataType.textContent = dataType.innerText = options.radioTitle|| "Select Data Type:";
-    dataType.className = 'divisionHeader';
-    form.appendChild(dataType);
+    makeHeader(container, options.radioTitle||"Select Data Type:");
+    options.toggleEffects.subscribe(toggleChecks);
+
+    function toggleChecks(e){
+      toggleAll(resolver, function(){
+        options.selectedRadio.name = makeUnderscored(e.target.nextSibling.innerHTML);
+      });
+    }
      
-    forEach(urls, function(url, i){
+    array.forEach(urls, function(url, i){
       var serviceName = makeSpaced(url.match(nameReg)[1]);
       var serviceUnderscored = makeUnderscored(serviceName);
 
@@ -86,29 +145,57 @@ function(
 
       if(i===0){
         inp.checked = "checked";
-        selected.name = serviceUnderscored;
+        options.selectedRadio.name = serviceUnderscored;
+        options.firstRadioNode = inp;
       }
 
       
       wrap.appendChild(inp);
-      wrap.appendChild(label); 
+      wrap.appendChild(label);
       form.appendChild(wrap);
 
-      on(inp, "change", function(){
-        var checkObjs = resolver.getRegistered();
-        changeAll(checkObjs);
-        selected.name = serviceUnderscored;
-        changeAll(checkObjs);
-      });
+      on(inp, "change", options.toggleEffects.broadcast);
 
-    });     
+    });
+
     container.appendChild(form);
-
-    var showLayers = document.createElement('h4');
-    showLayers.className = 'divisionHeader';
-    showLayers.textContent = showLayers.innerText = options.checkTitle||'Show Layers';
-    container.appendChild(showLayers);
+       
 
     return container;
   }
+
+  
+
+
+
+  return function(urls, map, hookService, options){
+
+    function resolvingFn(services){
+      var name = options.selectedRadio.name;
+      for(var i=0; i<services.length; i++){
+        if(name === services[i].serviceName){
+          return services[i];
+        }
+      }
+    }
+
+    if(!options.toggleEffects) options.toggleEffects = broadcaster();
+    if(!options.paramEffects) options.paramEffects = broadcaster();
+    if(!options.selectedRadio) options.selectedRadio = {name:""};
+    var resolver = ResolveLayers(resolvingFn);
+    var container = buildDOM(urls, resolver, options);
+    var paramManager = buildParams(container, resolver, makeParamResolver, options);
+    var attachUI = makeAttacher(resolver, container, hookService, paramManager, options);
+    
+    makeHeader(container, options.checkTitle||'Show Layers');
+    options.toggleEffects.subscribe(paramManager.setParams)
+    clearAllLayers.register(resolver);
+    toggleLayer.register(options);
+
+    array.forEach(urls, function(url,i){
+      makeServices(url, map, attachUI, +(i===0), options);
+    });
+
+  }
+
 });

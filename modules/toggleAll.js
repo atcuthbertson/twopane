@@ -19,7 +19,6 @@ function(
       var service = resolver.resolve(check);
       if(!service){
         return disableCheck(check);
-        else return;
       }
       if(check.disabled) enableCheck(check);
       if(Math.random()>0.5) disableCheck(check);
@@ -38,7 +37,7 @@ function(
   function disableCheck(check){
     domClass.add(check.parentNode, 'disabledCheck');
     //check.slider.disable();
-    console.log(check.slider);
+    //console.log(check.slider);
     check.disabled = 1;
   }
 
