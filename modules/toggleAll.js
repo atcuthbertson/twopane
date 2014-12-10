@@ -17,7 +17,6 @@ function(
     array.forEach(checkObjs,function(checkObj){
       var check = checkObj.check;
       var service = resolver.resolve(check);
-      console.log(service);
       if(!service){
         return disableCheck(check);
       }
@@ -36,21 +35,16 @@ function(
 
   function disableCheck(check){
     domClass.add(check.parentNode, 'disabledCheck');
-    //check.slider.disable();
-    //console.log(check.slider);
     check.disabled = 1;
   }
 
   function enableCheck(check){
-    domClass.remove(check.parentNode, 'disableCheck');
-    //check.slider.enable();
+    domClass.remove(check.parentNode, 'disabledCheck');
     check.disabled = 0;
   }
 
   function toggleAll(resolver, fn){
-    console.log("toggleAll called", arguments);
     var checkObjs = resolver.getRegistered();
-    console.log("checkobjs",checkObjs);
     checkAll(checkObjs,resolver,1);
     fn();
     checkAll(checkObjs,resolver,0);

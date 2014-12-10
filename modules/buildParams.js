@@ -65,7 +65,6 @@ function(
         };
         groups.push(group);
       }
-      console.log(groups);
 
       for(var i=0; i<services.length; i++){
         for(var j=0; j<keyLayers.length; j++){
@@ -80,7 +79,6 @@ function(
           }
         }
       }
-      console.log(groups);
 
       return groups;
     }
@@ -125,7 +123,6 @@ function(
 
 
     function setParams(e){
-      console.log("setting params");
       var params = groupObj[makeUnderscored(e.target.nextSibling.innerHTML)].params;
       var lastVal = combo.value;
       memory.setData(params);

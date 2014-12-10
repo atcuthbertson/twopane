@@ -18,9 +18,7 @@ define([],function(){
     }
 
     function broadcast(){
-      console.log("BROADCASTING")
       for(var i=0; i<subscribed.length; i++){
-        console.log(subscribed[i])
         subscribed[i].apply(this,arguments);
       }
     }
