@@ -1,11 +1,13 @@
 define([
   'dojo/_base/array',
-  'dojo/on'
+  'dojo/on',
+  'dojo/dom-class'
 ],
 
 function(
   array,
-  on
+  on,
+  domClass
 ){
 
   var opacities = [];
