@@ -218,7 +218,15 @@ label:hover,.serviceRadio,.layerCheck{
   float:left;
 }
 
+.disabledCheck{
+  opacity:0.4;
+}
 
+.disabledCheck > input, .disabledCheck > label, 
+.disabledCheck .dijitSliderBar, .disabledCheck .dijitReset, .disabledCheck .dijitSliderImageHandle,
+.disabledCheck .dijitSliderDecrementIconH, .disabledCheck .dijitSliderIncrementIconH{
+  cursor:default;
+}
 
 
 #centerPane{

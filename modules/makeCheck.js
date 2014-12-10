@@ -35,10 +35,14 @@ function(
       intermediateChanges: true,
       style:"width:120px;",
       onChange:function(value){
-        resolveLayer(check).setOpacity(value);
+        var curr = resolveLayer(check);
+        if(curr) curr.setOpacity(value);
       }
       }, sliderNode
-    ).startup();
+    )
+     
+    check.slider = slider;
+    slider.startup(); 
 
     container.appendChild(wrapper);
 
