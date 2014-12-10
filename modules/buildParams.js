@@ -18,6 +18,14 @@ function(
     return name.replace(/ /g,"_")
   }
 
+  function makeSpaced(name){
+    return name.replace(/_/g," ")
+  }
+
+  function trim(str){
+    return str.replace(/^[_\s]+|[_\s]+$/g,'')
+  }
+
   return function(container, resolver, makeParamResolver, options){
 
     var inp = document.createElement('input');
@@ -63,17 +71,31 @@ function(
         for(var j=0; j<keyLayers.length; j++){
           var service = services[i];
           var layer = keyLayers[j];
-          var index = service.layerName.indexOf(layer)
-            if(index > -1){
-              groups[j].services.push(service);
-              groups[j].params.push(service.layerName.slice(index+layer.length+1))
-                break;
-            }
+          var param = extractParam(service, layer);
+
+          if(param){
+            groups[j].services.push(service);
+            groups[j].params.push(param);
+            break;
+          }
         }
       }
       console.log(groups);
 
       return groups;
+    }
+
+    function extractParam(service, layer){
+      var index = service.layerName.indexOf(layer)
+      if(index > -1){
+        var arr = service.layerName.split(layer);
+        for(var i=0; i<arr.length; i++){
+          if(arr[i]!==''){
+            return trim(makeSpaced(arr[i]));
+          }
+        }
+      }
+      return null;
     }
 
     function addLayers(services, keyLayers, options){
