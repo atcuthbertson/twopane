@@ -304,9 +304,9 @@ function(
 
 
     //Layer composed of simple checkboxes
-    RadioLayer(["https://darcgis.water.ca.gov/arcgis/rest/services/GGI/GIC_Depth/MapServer",
-       "https://darcgis.water.ca.gov/arcgis/rest/services/GGI/GIC_Elevation/MapServer",
-       "https://darcgis.water.ca.gov/arcgis/rest/services/GGI/GIC_Change/MapServer"],
+    RadioLayer(["https://gis.water.ca.gov/arcgis/rest/services/Public/GIC_Depth/MapServer",
+       "https://gis.water.ca.gov/arcgis/rest/services/Public/GIC_Elevation/MapServer",
+       "https://gis.water.ca.gov/arcgis/rest/services/Public/GIC_Change/MapServer"],
       map,
       hookService,
       {
