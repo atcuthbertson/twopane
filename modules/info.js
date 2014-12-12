@@ -267,14 +267,14 @@ function(
 
 
   function activate(service){
-    activeLayers[service.url].push(service);
+    activeLayers[service.url].push(service.visibleLayers[0]);
   }
 
 
   function deactivate(service){
     var arr = activeLayers[service.url];
     for(var i=0; i<arr.length; i++){
-      if(arr[i] === service) return arr.splice(i,1)
+      if(arr[i] === service.visibleLayers[0]) return arr.splice(i,1)
     }
   }
 
