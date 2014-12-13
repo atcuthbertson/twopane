@@ -11,6 +11,7 @@ function(
     var dlCount = 0;
     var excluded = {};
     var excludedCount = 0;
+    var dlFiles = [];
     var neutralText = dlSite ? "Visit Website" : "Select a Layer";
     
     node.parentNode.style.display = "block"; 
@@ -24,14 +25,10 @@ function(
     }
 
 
-    function download(){
-      var dlFiles = [];
-      for(var name in downloads){
-        if(downloads.hasOwnProperty(name) && downloads[name]){
-          dlFiles.push(getFullPath(name))
-        }
-      }
+    function download(){      
       downloadMultiple(dlFiles);
+      setTimeout(function(){node.href = dlSite;},0)
+      dlFiles.length = 0;
     }
 
 
@@ -86,11 +83,23 @@ function(
     }
 
 
+    function prepareDownloads(){
+      for(var name in downloads){
+        if(downloads.hasOwnProperty(name) && downloads[name]){
+          dlFiles.push(getFullPath(name))
+        }
+      }
+
+      if(dlFiles.length) node.removeAttribute('href');
+    }
+
+
     return {
       download:download,
       add:add,
       remove:remove,
-      exclude:exclude
+      exclude:exclude,
+     prepareDownloads:prepareDownloads   
     }
   }
 })

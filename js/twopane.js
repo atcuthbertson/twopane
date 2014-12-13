@@ -289,7 +289,8 @@ function(
     //Otherwise, don't include the downloader
     var downloader = GetDownloads("./downloads", downloadNode, "http://water.ca.gov/groundwater");
 
-    on(downloadNode,"click",downloader.download)
+    on(downloadNode,"mousedown", downloader.prepareDownloads);
+    on(downloadNode,"click", downloader.download)
 
 
     //initialize the populate module with a node where information will be placed 
