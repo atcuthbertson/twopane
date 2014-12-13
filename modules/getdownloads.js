@@ -5,13 +5,19 @@ function(
   domClass,
   downloadMultiple
 ){
-  return function(path, node/*, guaranteedDownloads*/){
+
+  return function(path, node, dlSite/*, guaranteedDownloads*/){
     var downloads = {};
     var dlCount = 0;
     var excluded = {};
     var excludedCount = 0;
+    var neutralText = dlSite ? "Visit Website" : "Select a Layer";
     
     node.parentNode.style.display = "block"; 
+    if(dlSite){
+      node.textContent = node.innerText = neutralText;
+      node.href = dlSite;
+    }
 
     function getFullPath(name){
       return path + "/" + name + ".zip";
@@ -34,7 +40,7 @@ function(
         excludedCount++;
         if(dlCount === 0){
           domClass.add(node,"noDownloadAvailable")
-          node.textContent = "Unavailable";
+          node.textContent = node.innerText = "Unavailable";
         }
         return;
       }
@@ -42,7 +48,7 @@ function(
       downloads[name] = 1;
       if(dlCount === 0){
         domClass.add(node,"downloadable")
-        node.textContent = "Download";
+        node.textContent = node.innerText = "Download";
       }
       dlCount++;
     }
@@ -53,7 +59,7 @@ function(
         excludedCount--;
         if(dlCount === 0 && excludedCount === 0){
           domClass.remove(node,"noDownloadAvailable")
-          node.textContent = "Select a Layer";
+          node.textContent = node.innerText = neutralText; 
         }
         return;
       }
@@ -64,10 +70,10 @@ function(
         domClass.remove(node,"downloadable");
         if(excludedCount === 0){
           domClass.remove(node,"noDownloadAvailable")
-          node.textContent = "Select a Layer";
+          node.textContent = node.innerText = neutralText;
         }else{
           domClass.add(node,"noDownloadAvailable")
-          node.textContent = "Unavailable";
+          node.textContent = node.innerText = "Unavailable";
         }
       }
     }

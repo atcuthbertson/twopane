@@ -287,7 +287,7 @@ function(
     //Assumes Service_Name_Layer_Name.zip format
     //Be certain the zip files are in place and properly named, or the app will throw errors.
     //Otherwise, don't include the downloader
-    var downloader = GetDownloads("./downloads", downloadNode);
+    var downloader = GetDownloads("./downloads", downloadNode, "http://water.ca.gov/groundwater");
 
     on(downloadNode,"click",downloader.download)
 
