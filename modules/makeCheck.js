@@ -20,7 +20,7 @@ function(
 
     var label = DOC.createElement('label');
     label.setAttribute('for',id);
-    label.innerText = name;
+    label.textContent = label.innerText = name;
 
     var sliderNode = DOC.createElement('div')
 
