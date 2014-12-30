@@ -184,11 +184,13 @@ function(
     if(!options.selectedRadio) options.selectedRadio = {name:""};
     var resolver = ResolveLayers(resolvingFn);
     var container = buildDOM(urls, resolver, options);
-    var paramManager = buildParams(container, resolver, makeParamResolver, options);
+
+    var paramManager = options.paramTitle ? buildParams(container, resolver, makeParamResolver, options) : null;
     var attachUI = makeAttacher(resolver, container, hookService, paramManager, options);
     
     makeHeader(container, options.checkTitle||'Show Layers');
-    options.toggleEffects.subscribe(paramManager.setParams)
+    if (paramManager) options.toggleEffects.subscribe(paramManager.setParams)
+
     clearAllLayers.register(resolver);
     toggleLayer.register(options);
 
