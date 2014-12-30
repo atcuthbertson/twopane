@@ -6,7 +6,8 @@ define([
   "modules/clearAllLayers.js",
   "modules/toggleLayer.js",
   "modules/makeCheck.js",
-  "modules/spinner.js"
+  "modules/spinner.js",
+  "modules/utils.js"
 ],
 
 function(
@@ -17,16 +18,14 @@ function(
   clearAllLayers,
   toggleLayer,
   makeCheck,
-  spinner
+  spinner,
+  utils
 ){
 
   function resolvingFn(services){
     return services[0]; 
   }
 
-  function makeSpaced(name){
-    return name.replace(/_/g," ")
-  }
 
   function checkResolver(resolver){
     var layer = resolver.resolve(this);
@@ -35,8 +34,6 @@ function(
       if(!layer.suspended)spinner(this,layer);
     }
   }
-
-  var nameReg = /([^\/]*)\/MapServer/;
 
       //  Make all services, augment services, call passed function
       //  This function will decide how many checks to build
@@ -56,8 +53,7 @@ function(
     return function (services, serviceObj){
       for(var i=0; i<services.length; i++){
         var service = services[i];
-        var spacedName = makeSpaced(service.layerName);
-        var check = makeCheck(container, spacedName, resolver.resolve);
+        var check = makeCheck(container, service, resolver.resolve);
 
         resolver.register(check, service);
         on(check,"change",boundResolver);
@@ -78,7 +74,7 @@ function(
 
   return function(url, map, hookService, options){
     
-    var serviceName = makeSpaced(url.match(nameReg)[1]);
+    var serviceName = utils.space(url.match(nameReg)[1]);
     if (!options.tabName) options.tabName = serviceName;
 
     var container = document.createElement('div');

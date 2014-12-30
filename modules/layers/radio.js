@@ -11,7 +11,9 @@ define([
   "modules/toggleLayer.js",
   "modules/makeCheck.js",
   "modules/makeHeader.js",
-  "modules/spinner.js"
+  "modules/spinner.js",
+  "modules/utils.js"
+
 ],
 
 function(
@@ -27,19 +29,9 @@ function(
   toggleLayer,
   makeCheck,
   makeHeader,
-  spinner
+  spinner,
+  utils
 ){
-
-  var nameReg = /([^\/]*)\/MapServer/;
-
-  function makeSpaced(name){
-    return name.replace(/_/g," ")
-  }
-
-  function makeUnderscored(name){
-    return name.replace(/ /g,"_")
-  }
-
 
 
   function checkResolver(resolver){
@@ -76,20 +68,19 @@ function(
         services = paramManager.addLayers(services, options.keyLayers, options);
       }
 
-      var underscoredService = makeUnderscored(services[0].serviceName)
+      var underscoredService = utils.underscore(services[0].serviceName)
       if(underscoredService === options.selectedRadio.name){
         on.emit(options.firstRadioNode,"change",{bubbles:true,cancelable:true});
       }
 
       for(var i=0; i<services.length; i++){
         var service = services[i];
-        var spacedName = makeSpaced(service.layerName);
         var check;
 
         if(checks[i]){
           check = checks[i];
         }else{
-         check = makeCheck(container, spacedName, resolver.resolve);
+         check = makeCheck(container, service, resolver.resolve);
          on(check,"change",boundResolver);
          checks[i] = check;
         }
@@ -123,13 +114,13 @@ function(
 
     function toggleChecks(e){
       toggleAll(resolver, function(){
-        options.selectedRadio.name = makeUnderscored(e.target.nextSibling.innerHTML);
+        options.selectedRadio.name = utils.underscore(e.target.nextSibling.innerHTML);
       });
     }
      
     array.forEach(urls, function(url, i){
       var serviceName = makeSpaced(url.match(nameReg)[1]);
-      var serviceUnderscored = makeUnderscored(serviceName);
+      var serviceUnderscored = utils.underscore(serviceName);
 
       var wrap = document.createElement('div');
       var inp = document.createElement('input');
@@ -188,11 +179,11 @@ function(
     var paramManager = options.paramTitle ? buildParams(container, resolver, makeParamResolver, options) : null;
     var attachUI = makeAttacher(resolver, container, hookService, paramManager, options);
     
-    makeHeader(container, options.checkTitle||'Show Layers');
     if (paramManager) options.toggleEffects.subscribe(paramManager.setParams)
-
     clearAllLayers.register(resolver);
     toggleLayer.register(options);
+     
+    makeHeader(container, options.checkTitle||'Show Layers');
 
     array.forEach(urls, function(url,i){
       makeServices(url, map, attachUI, +(i===0), options);

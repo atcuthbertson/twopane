@@ -4,7 +4,8 @@ define([
   "esri/layers/ArcGISDynamicMapServiceLayer",
 
   "modules/layerQueue.js",
-  "modules/info.js"
+  "modules/info.js",
+  "modules/utils.js"
 ],
 
 function(
@@ -13,19 +14,10 @@ function(
   ArcGISDynamicMapServiceLayer,
 
   layerQueue,
-  info
+  info,
+  utils
 ){
 
-  var nameReg = /([^\/]*)\/MapServer/;
-
-
-  function makeSpaced(name){
-    return name.replace(/_/g," ")
-  }
-
-  function makeUnderscored(name){
-    return name.replace(/ /g,"_")
-  }
 
   function makeService(url){
     var service = new ArcGISDynamicMapServiceLayer(url);
@@ -53,8 +45,8 @@ function(
       var layerInfos = layer.layerInfos;
       var layerCount = layerInfos.length;
 
-      var serviceName = makeSpaced(url.match(nameReg)[1]);
-      var serviceUnderscored = makeUnderscored(serviceName);
+      var serviceName = utils.space(url.match(nameReg)[1]);
+      var serviceUnderscored = utils.underscore(serviceName);
 
       info.register(url);
       excludeDownloads(serviceUnderscored, layerInfos);
@@ -63,7 +55,7 @@ function(
       
       for(var i=0; i<layerCount; i++){
         var service;
-        var underscoredName = makeUnderscored(layerInfos[i].name);
+        var underscoredName = utils.underscore(layerInfos[i].name);
         if(exclude.indexOf(underscoredName) !== -1) continue;
         if(i>0) service = makeService(url);
         else service = firstService;  
@@ -87,11 +79,11 @@ function(
       if(downloader && excludeDownload.length){
         if(excludeDownload[0] === "*"){
           for (i = 0; i < layerInfos.length; i++) {
-            excludeDownload[i] =  serviceUnderscored + "/" + makeUnderscored(layerInfos[i].name);
+            excludeDownload[i] =  serviceUnderscored + "/" + utils.underscore(layerInfos[i].name);
           }
         }else{
           for(i = 0; i<excludeDownload.length; i++){
-            excludeDownload[i] = serviceUnderscored + "/" + makeUnderscored(excludeDownload[i]);
+            excludeDownload[i] = serviceUnderscored + "/" + utils.underscore(excludeDownload[i]);
           }
         }
         downloader.exclude(excludeDownload);
