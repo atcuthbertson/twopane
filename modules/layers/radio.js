@@ -119,7 +119,7 @@ function(
     }
      
     array.forEach(urls, function(url, i){
-      var serviceName = makeSpaced(url.match(nameReg)[1]);
+      var serviceName = utils.space(utils.getServiceName(url));
       var serviceUnderscored = utils.underscore(serviceName);
 
       var wrap = document.createElement('div');

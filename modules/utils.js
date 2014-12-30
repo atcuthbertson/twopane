@@ -9,6 +9,10 @@ define([],function(){
     return name.replace(/ /g,"_")
   }
 
+  function getServiceName(url){
+    return url.match(nameReg)[1])
+  }
+
   return {
     space:makeSpaced,
     underscore:makeUnderscored

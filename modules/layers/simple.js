@@ -74,7 +74,7 @@ function(
 
   return function(url, map, hookService, options){
     
-    var serviceName = utils.space(url.match(nameReg)[1]);
+    var serviceName = utils.space(utils.getServiceName(url));
     if (!options.tabName) options.tabName = serviceName;
 
     var container = document.createElement('div');

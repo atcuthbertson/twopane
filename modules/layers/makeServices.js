@@ -45,7 +45,7 @@ function(
       var layerInfos = layer.layerInfos;
       var layerCount = layerInfos.length;
 
-      var serviceName = utils.space(url.match(nameReg)[1]);
+      var serviceName = utils.space(utils.getServiceName(url));
       var serviceUnderscored = utils.underscore(serviceName);
 
       info.register(url);
