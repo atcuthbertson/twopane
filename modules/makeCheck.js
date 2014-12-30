@@ -1,16 +1,28 @@
 define([
-  "dijit/form/HorizontalSlider"
+  "dijit/form/HorizontalSlider",
+  "modules/utils.js"
 ],
 
 function(
-  Slider
+  Slider,
+  utils
 ){
 
   var DOC = document;
 
-  return function(container, name, resolveLayer){
-    var id = Math.random();
+  return function(container, service, resolveLayer, legendDir){
 
+    var name = utils.space(service.layerName);
+
+    if(legendDir){
+      if(legendDir[legendDir.length - 1] !== "/") legendDir += "/"
+    }else{
+      legendDir = "images/"
+    }
+
+    var legendName = legendDir + utils.underscore(service.serviceName) + "_" + utils.underscore(service.layerName) + ".png";
+
+    var id = Math.random(); 
     var wrapper = DOC.createElement('div');
     wrapper.className = 'serviceWrapper';
 
@@ -22,10 +34,15 @@ function(
     label.setAttribute('for',id);
     label.textContent = label.innerText = name;
 
-    var sliderNode = DOC.createElement('div')
+    var legend = DOC.createElement('img');
+    img.className = 'legend';
+    img.src = legendName;
+
+    var sliderNode = DOC.createElement('div');
 
     wrapper.appendChild(check);
     wrapper.appendChild(label);
+    wrapper.appendChild(legend);
     wrapper.appendChild(sliderNode);
 
     var slider = new Slider({
