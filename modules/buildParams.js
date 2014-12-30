@@ -3,7 +3,8 @@ define([
   'dijit/form/ComboBox',
   'dojo/store/Memory',
   'modules/toggleAll.js',
-  'modules/makeHeader.js'
+  'modules/makeHeader.js',
+  'modules/utils.js'
 ],
 
 function(
@@ -11,20 +12,9 @@ function(
   ComboBox,
   Memory,
   toggleAll,
-  makeHeader
+  makeHeader,
+  utils
 ){
-
-  function makeUnderscored(name){
-    return name.replace(/ /g,"_")
-  }
-
-  function makeSpaced(name){
-    return name.replace(/_/g," ")
-  }
-
-  function trim(str){
-    return str.replace(/^[_\s]+|[_\s]+$/g,'')
-  }
 
   return function(container, resolver, makeParamResolver, options){
 
@@ -89,7 +79,7 @@ function(
         var arr = service.layerName.split(layer);
         for(var i=0; i<arr.length; i++){
           if(arr[i]!==''){
-            return trim(makeSpaced(arr[i]));
+            return utils.trim(utils.space(arr[i]));
           }
         }
       }
@@ -123,7 +113,7 @@ function(
 
 
     function setParams(e){
-      var params = groupObj[makeUnderscored(e.target.nextSibling.innerHTML)].params;
+      var params = groupObj[utils.underscore(e.target.nextSibling.innerHTML)].params;
       var lastVal = combo.value;
       memory.setData(params);
       for(var i=0; i<params.length; i++){

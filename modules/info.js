@@ -213,7 +213,7 @@ function(
 
 
   function setTitle(result){
-    return makeSpaced(result.layerName);
+    return utils.space(result.layerName);
   }
 
 
@@ -229,20 +229,12 @@ function(
         &&key!=="Shape_Length"
         &&key!=="Pixel Value"
         ){
-        var spaced = makeSpaced(key);
-        list+= "<li><strong>"+spaced+"</strong>: "+getAttributeHTML(attributes[key])+"</li>"
+        list += "<li><strong>" + utils.space(key) + "</strong>: " + getAttributeHTML(attributes[key]) + "</li>"
       }
     }
     list +="</ul>"
     return list;
   }
-
-
-  function makeSpaced(name){
-    return name.replace(/_/g," ")
-  }
-
-
 
 
   function getAttributeHTML(value){
