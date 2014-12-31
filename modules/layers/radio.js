@@ -157,7 +157,7 @@ function(
         var services = checkObjs[i].services;
         for(var j=0; j<services.length; j++){
           if(services[j].serviceName === toggleName){
-            check.updateLegend(services[j]);
+            checkObjs[i].check.updateLegend(services[j]);
             break;
           }
         }
@@ -188,7 +188,7 @@ function(
     
     options.toggleEffects.subscribe(toggleChecks);
     if (paramManager) options.toggleEffects.subscribe(paramManager.setParams) 
-    options.toggleEffects.subscribe(makeLegendUpdater(resolver));
+    if(!options.excludeLegends) options.toggleEffects.subscribe(makeLegendUpdater(resolver));
 
     function toggleChecks(e){
       toggleAll(resolver, function(){
