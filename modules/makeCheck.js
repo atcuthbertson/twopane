@@ -42,16 +42,16 @@ function(
     label.setAttribute('for',id);
     label.textContent = label.innerText = name;
 
+    var sliderNode = DOC.createElement('div');
+
     var legend = DOC.createElement('img');
     legend.className = 'legend';
     legend.src = legendName;
 
-    var sliderNode = DOC.createElement('div');
-
     wrapper.appendChild(check);
     wrapper.appendChild(label);
-    wrapper.appendChild(legend);
     wrapper.appendChild(sliderNode);
+    wrapper.appendChild(legend);
 
     var slider = new Slider({
       value:1,

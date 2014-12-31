@@ -201,7 +201,7 @@ h3, b{
 }
 
 .legend{
-
+  margin: 5px 0 0 20px; 
 }
 
 label:hover,.serviceRadio,.layerCheck{
