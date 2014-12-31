@@ -16,7 +16,6 @@ function(
     var legendDir = options.legendDir; 
     
     function getLegendName(service){
-      console.log(service);
       return legendDir + utils.underscore(service.serviceName) + "/" + utils.underscore(service.layerName) + ".png";
     }
 
