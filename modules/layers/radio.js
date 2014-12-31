@@ -80,7 +80,7 @@ function(
         if(checks[i]){
           check = checks[i];
         }else{
-         check = makeCheck(container, service, resolver.resolve);
+         check = makeCheck(container, service, resolver.resolve, options);
          on(check,"change",boundResolver);
          checks[i] = check;
         }
@@ -154,7 +154,6 @@ function(
       var toggleName = utils.underscore(utils.getRadioLabel(e));
       var checkObjs = resolver.getRegistered();
       for(var i=0; i<checkObjs.length; i++){
-        var check = checkObjs[i].check;
         var services = checkObjs[i].services;
         for(var j=0; j<services.length; j++){
           if(services[j].serviceName === toggleName){

@@ -53,7 +53,7 @@ function(
     return function (services, serviceObj){
       for(var i=0; i<services.length; i++){
         var service = services[i];
-        var check = makeCheck(container, service, resolver.resolve);
+        var check = makeCheck(container, service, resolver.resolve, options);
 
         resolver.register(check, service);
         on(check,"change",boundResolver);
@@ -71,7 +71,10 @@ function(
     }
   }
 
-
+  /*
+   * The return value of the module.
+   *
+   */ 
   return function(url, map, hookService, options){
     
     var serviceName = utils.space(utils.getServiceName(url));

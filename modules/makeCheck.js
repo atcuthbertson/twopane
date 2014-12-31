@@ -10,10 +10,11 @@ function(
 
   var DOC = document;
 
-  return function(container, service, resolveLayer, legendDir){
+  return function(container, service, resolveLayer, options){
 
     var name = utils.space(service.layerName);
-
+    var legendDir = options.legendDir; 
+    
     function getLegendName(service){
       console.log(service);
       return legendDir + utils.underscore(service.serviceName) + "/" + utils.underscore(service.layerName) + ".png";
@@ -45,16 +46,17 @@ function(
     label.textContent = label.innerText = name;
 
     var sliderNode = DOC.createElement('div');
-
-    var legend = DOC.createElement('img');
-    legend.className = 'legend';
-    legend.src = legendName;
-
+     
     wrapper.appendChild(check);
     wrapper.appendChild(label);
     wrapper.appendChild(sliderNode);
-    wrapper.appendChild(legend);
 
+    if(!options.excludeLegends){
+      var legend = DOC.createElement('img');
+      legend.className = 'legend';
+      legend.src = legendName;
+      wrapper.appendChild(legend);
+    }
     var slider = new Slider({
       value:1,
       minimum:0,

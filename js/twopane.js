@@ -312,6 +312,7 @@ function(
       hookService,
       {
         keyLayers:["Points","Contours","ColorRamp"],
+        excludeLegends:true,
         radioTitle:"Select Data Type:",
         paramTitle:"Select Period:",
         checkTitle:"Show Layers:",
@@ -325,6 +326,7 @@ function(
       hookService,
       {
         downloader:downloader,
+        excludeLegends:true,
         excludeDownload:["*"]
       }
     );
