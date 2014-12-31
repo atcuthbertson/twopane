@@ -151,12 +151,18 @@ function(
   
   function makeLegendUpdater(resolver){
     return function updateLegends(e){
+      var toggleName = utils.underscore(utils.getRadioLabel(e));
       var checkObjs = resolver.getRegistered();
-      array.forEach(checkObjs,function(checkObj){
-        var check = checkObj.check;
-        var service = resolver.resolve(check);
-        if(service)check.updateLegend(service);  
-      }); 
+      for(var i=0; i<checkObjs.length; i++){
+        var check = checkObjs[i].check;
+        var services = checkObjs[i].services;
+        for(var j=0; j<services.length; j++){
+          if(services[j].serviceName === toggleName){
+            check.updateLegend(services[j]);
+            break;
+          }
+        }
+      }
     }
   }
 
@@ -176,7 +182,7 @@ function(
     if(!options.paramEffects) options.paramEffects = broadcaster();
     if(!options.selectedRadio) options.selectedRadio = {name:""};
     var resolver = ResolveLayers(resolvingFn);
-    var container = buildDOM(urls, resolver, options);
+    var container = buildDOM(urls, options);
     
     var paramManager = options.paramTitle ? buildParams(container, resolver, makeParamResolver, options) : null;
     var attachUI = makeAttacher(resolver, container, hookService, paramManager, options);
@@ -187,7 +193,7 @@ function(
 
     function toggleChecks(e){
       toggleAll(resolver, function(){
-        options.selectedRadio.name = utils.underscore(e.target.nextSibling.innerHTML);
+        options.selectedRadio.name = utils.underscore(utils.getRadioLabel(e));
       });
     } 
 

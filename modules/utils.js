@@ -17,10 +17,15 @@ define([],function(){
     return str.replace(trimStr,'')
   }
 
+  function getRadioLabel(evt){
+    return evt.target.nextSibling.innerHTML;
+  }
+
   return {
     space:makeSpaced,
     underscore:makeUnderscored,
+    trim:trim,
     getServiceName:getServiceName,
-    trim:trim
+    getRadioLabel:getRadioLabel
   }
 });
