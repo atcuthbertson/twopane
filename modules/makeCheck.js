@@ -15,11 +15,13 @@ function(
     var name = utils.space(service.layerName);
 
     function getLegendName(service){
+      console.log(service);
       return legendDir + utils.underscore(service.serviceName) + "/" + utils.underscore(service.layerName) + ".png";
     }
 
     function updateLegend(service){
-      legend.src = getLegendName(service); 
+      var src = getLegendName(service);
+      if(legend.src !== src) legend.src = src; 
     }
 
     if(legendDir){

@@ -103,20 +103,14 @@ function(
 
 
 
-  function buildDOM(urls, resolver, options){
+  function buildDOM(urls, options){
     var form = document.createElement('form');
     var container = document.createElement('div');
     var radioName = Math.random();
 
     form.className = 'radioForm';
     makeHeader(container, options.radioTitle||"Select Data Type:");
-    options.toggleEffects.subscribe(toggleChecks);
-
-    function toggleChecks(e){
-      toggleAll(resolver, function(){
-        options.selectedRadio.name = utils.underscore(e.target.nextSibling.innerHTML);
-      });
-    }
+     
      
     array.forEach(urls, function(url, i){
       var serviceName = utils.space(utils.getServiceName(url));
@@ -154,9 +148,17 @@ function(
 
     return container;
   }
-
   
-
+  function makeLegendUpdater(resolver){
+    return function updateLegends(e){
+      var checkObjs = resolver.getRegistered();
+      array.forEach(checkObjs,function(checkObj){
+        var check = checkObj.check;
+        var service = resolver.resolve(check);
+        if(service)check.updateLegend(service);  
+      }); 
+    }
+  }
 
 
   return function(urls, map, hookService, options){
@@ -175,11 +177,20 @@ function(
     if(!options.selectedRadio) options.selectedRadio = {name:""};
     var resolver = ResolveLayers(resolvingFn);
     var container = buildDOM(urls, resolver, options);
-
+    
     var paramManager = options.paramTitle ? buildParams(container, resolver, makeParamResolver, options) : null;
     var attachUI = makeAttacher(resolver, container, hookService, paramManager, options);
     
-    if (paramManager) options.toggleEffects.subscribe(paramManager.setParams)
+    options.toggleEffects.subscribe(toggleChecks);
+    if (paramManager) options.toggleEffects.subscribe(paramManager.setParams) 
+    options.toggleEffects.subscribe(makeLegendUpdater(resolver));
+
+    function toggleChecks(e){
+      toggleAll(resolver, function(){
+        options.selectedRadio.name = utils.underscore(e.target.nextSibling.innerHTML);
+      });
+    } 
+
     clearAllLayers.register(resolver);
     toggleLayer.register(options);
      
