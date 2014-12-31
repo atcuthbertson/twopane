@@ -13,8 +13,6 @@ require([
 
   "dojo/on",
   "dojo/dom",
-  "dojo/dom-class",
-  "dojo/query",
   "dojo/ready",
 
   "modules/info.js",
@@ -26,9 +24,7 @@ require([
   "modules/populate.js",
   "modules/clearAllLayers.js",
   "modules/layers/radio.js",
-  "modules/layers/simple.js",
-   
-  "require"
+  "modules/layers/simple.js"
 ], 
 
 function(
@@ -40,8 +36,6 @@ function(
 
   on,
   dom,
-  domClass,
-  query,
   ready,
 
   info,
@@ -53,9 +47,7 @@ function(
   populate,
   clearAllLayers,
   RadioLayer,
-  CheckLayer,
-
-  require
+  CheckLayer
 ){
 
   //Disable CORS detection, since services.arcgisonline.com is not CORS enabled
@@ -66,10 +58,9 @@ function(
   //Fires when the DOM is ready and all dependencies are resolved. Usually needed when using dijits.
   ready(function() {
     var W = window;
-    var DOC = document;
 
     //Properly assign server variables
-    var server = DOC.location.hostname;
+    var server = document.location.hostname;
     server = server === "localhost" ? "gis.water.ca.gov" : server;
 
     var serverFolder = server.slice(0,3) === "gis" ? "Public" : "cadre";
@@ -95,7 +86,7 @@ function(
 
     //Layout the application based on screen dimensions
     function setNodeDimensions (){
-      var elem = DOC.documentElement;
+      var elem = document.documentElement;
       var width = elem.offsetWidth;
       var height = elem.offsetHeight;
       var left = leftPane.offsetWidth;
@@ -108,10 +99,10 @@ function(
     setNodeDimensions();
     on(W,"resize",setNodeDimensions);
 
-    W.setTimeout(function(){
-      on.emit(closeButton, "mousedown",{bubbles:true,cancelable:true})
+    /*W.setTimeout(function(){
+ //     on.emit(closeButton, "mousedown",{bubbles:true,cancelable:true})
       setNodeDimensions();
-    },300);   
+    },300);*/   
 
      
     
