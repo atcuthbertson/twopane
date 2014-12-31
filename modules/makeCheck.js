@@ -14,13 +14,21 @@ function(
 
     var name = utils.space(service.layerName);
 
+    function getLegendName(service){
+      return legendDir + utils.underscore(service.serviceName) + "/" + utils.underscore(service.layerName) + ".png";
+    }
+
+    function updateLegend(service){
+      legend.src = getLegendName(service); 
+    }
+
     if(legendDir){
       if(legendDir[legendDir.length - 1] !== "/") legendDir += "/"
     }else{
-      legendDir = "images/"
+      legendDir = "images/legends/"
     }
 
-    var legendName = legendDir + utils.underscore(service.serviceName) + "_" + utils.underscore(service.layerName) + ".png";
+    var legendName = getLegendName(service); 
 
     var id = Math.random(); 
     var wrapper = DOC.createElement('div');
@@ -35,8 +43,8 @@ function(
     label.textContent = label.innerText = name;
 
     var legend = DOC.createElement('img');
-    img.className = 'legend';
-    img.src = legendName;
+    legend.className = 'legend';
+    legend.src = legendName;
 
     var sliderNode = DOC.createElement('div');
 
@@ -58,11 +66,13 @@ function(
       }, sliderNode
     )
      
-    check.slider = slider;
     slider.startup(); 
-
+     
+    check.slider = slider;
+    check.updateLegend = updateLegend;
     container.appendChild(wrapper);
-
-    return check;
+     
+    return check; 
   }
+  
 });

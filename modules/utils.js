@@ -10,7 +10,7 @@ define([],function(){
   }
 
   function getServiceName(url){
-    return url.match(nameReg)[1])
+    return url.match(nameReg)[1]
   }
 
   function trim(str){
