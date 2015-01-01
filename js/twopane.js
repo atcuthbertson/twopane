@@ -181,33 +181,67 @@ function(
 
 
 
-    //Place your downloads in the downloads folder, provide the path below
+    //Create app-wide auto-downloader.
+    //Place your downloads in the downloads folder (provide the path below)
     //Assumes Service_Name_Layer_Name.zip format
-    //Be certain the zip files are in place and properly named, or the app will throw errors.
-    //Otherwise, don't include the downloader
+    //Services can be exluded on a case by case basis (see below)
     var downloader = GetDownloads("./downloads", downloadNode, "http://water.ca.gov/groundwater");
 
     on(downloadNode,"mousedown", downloader.prepareDownloads);
     on(downloadNode,"click", downloader.download)
 
+   
+      
 
-    //initialize the populate module with a node where information will be placed 
+    //Initialize the populate module with a node where information will be placed 
     populate.init(dataNode);
 
 
-    //clear all layers
+
+
+    //Module to clear all layers from every included service
     clearAllLayers.init(clearAll);
 
-    //Hooks services to UI features.
-    var hookService = makeTabs(serviceNode, populate);
 
 
-    //Layer composed of simple checkboxes
+
+    //Hooks services to UI features. This allows the right pane to be populated when switching tabs
+    var hookServiceToTab = makeTabs(serviceNode, populate);
+
+
+  
+    //A simple check layer. Accepts the service url, a reference to the map, 
+    //a function that binds the service to the left and right panes, and an options object for configuring legends, downloads, titles, and parameters.
+    CheckLayer("https://gis.water.ca.gov/arcgis/rest/services/Public/GIC_Boundaries/MapServer",
+      map,
+      hookServiceToTab,
+      {
+        downloader:downloader
+      }
+    );
+
+    
+    //A simple check layer with downloads and legends turned off
+    CheckLayer("https://gis.water.ca.gov/arcgis/rest/services/Public/Subsidence/MapServer",
+      map,
+      hookServiceToTab,
+      {
+        downloader:downloader,
+        excludeLegends:true,
+        excludeDownload:["*"]
+      }
+    );
+
+
+    //A fairly complex radio layer. 
+    //The radio itself allows one to switch between services with similar signatures (ie with Points, Contours, and Color Ramps as service layers).
+    //Parameters are turned on (by providing key layers) which limit the checks produced to just one per key layer
+    //So several $Some_param_Points will result in one Points checkbox and a select element to choose between all the values of $Some_param
     RadioLayer(["https://gis.water.ca.gov/arcgis/rest/services/Public/GIC_Depth/MapServer",
        "https://gis.water.ca.gov/arcgis/rest/services/Public/GIC_Elevation/MapServer",
        "https://gis.water.ca.gov/arcgis/rest/services/Public/GIC_Change/MapServer"],
       map,
-      hookService,
+      hookServiceToTab,
       {
         keyLayers:["Points","Contours","ColorRamp"],
         excludeLegends:true,
@@ -219,23 +253,9 @@ function(
       }
     );
     
-    CheckLayer("https://gis.water.ca.gov/arcgis/rest/services/Public/Subsidence/MapServer",
-      map,
-      hookService,
-      {
-        downloader:downloader,
-        excludeLegends:true,
-        excludeDownload:["*"]
-      }
-    );
+    
 
-    CheckLayer("https://gis.water.ca.gov/arcgis/rest/services/Public/GIC_Boundaries/MapServer",
-      map,
-      hookService,
-      {
-        downloader:downloader
-      }
-    );
+    ;
      
   });
   });
