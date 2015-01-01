@@ -50,7 +50,7 @@ function(
     }();
 
      
-    function hookService(service){
+    function hookServiceToTab(service){
       var button = document.createElement('div');
       button.className = "paneHandle";
       button.textContent = service.tabName;
@@ -77,7 +77,7 @@ function(
 
 
 
-    return hookService;
+    return hookServiceToTab;
 
   }
 

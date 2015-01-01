@@ -44,7 +44,7 @@ function(
 
 
 
-  function makeAttacher(resolver, container, hookService, options){
+  function makeAttacher(resolver, container, hookServiceToTab, options){
 
     function boundResolver(){
       return checkResolver.call(this,resolver)
@@ -66,7 +66,7 @@ function(
           tabName : options.tabName
         }
 
-        hookService(serviceProps);
+        hookServiceToTab(serviceProps);
       }
     }
   }
@@ -75,7 +75,7 @@ function(
    * The return value of the module.
    *
    */ 
-  return function(url, map, hookService, options){
+  return function(url, map, hookServiceToTab, options){
     
     var serviceName = utils.space(utils.getServiceName(url));
     if (!options.tabName) options.tabName = serviceName;
@@ -87,7 +87,7 @@ function(
     container.appendChild(title);
      
     var resolver = ResolveLayers(resolvingFn);
-    var attachUI = makeAttacher(resolver, container, hookService, options);
+    var attachUI = makeAttacher(resolver, container, hookServiceToTab, options);
 
     clearAllLayers.register(resolver);
     toggleLayer.register(options);

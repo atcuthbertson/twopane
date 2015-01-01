@@ -54,7 +54,7 @@ function(
   }
 
 
-  function makeAttacher(resolver, container, hookService, paramManager, options){
+  function makeAttacher(resolver, container, hookServiceToTab, paramManager, options){
 
     function boundResolver(){
       return checkResolver.call(this,resolver)
@@ -95,7 +95,7 @@ function(
           tabName : options.tabName
         }
 
-        hookService(serviceProps);
+        hookServiceToTab(serviceProps);
       }
     }
   }
@@ -166,7 +166,7 @@ function(
   }
 
 
-  return function(urls, map, hookService, options){
+  return function(urls, map, hookServiceToTab, options){
 
     function resolvingFn(services){
       var name = options.selectedRadio.name;
@@ -184,7 +184,7 @@ function(
     var container = buildDOM(urls, options);
     
     var paramManager = options.paramTitle ? buildParams(container, resolver, makeParamResolver, options) : null;
-    var attachUI = makeAttacher(resolver, container, hookService, paramManager, options);
+    var attachUI = makeAttacher(resolver, container, hookServiceToTab, paramManager, options);
     
     options.toggleEffects.subscribe(toggleChecks);
     if (paramManager) options.toggleEffects.subscribe(paramManager.setParams) 
