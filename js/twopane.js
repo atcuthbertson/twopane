@@ -99,13 +99,8 @@ function(
     setNodeDimensions();
     on(W,"resize",setNodeDimensions);
 
-    /*W.setTimeout(function(){
- //     on.emit(closeButton, "mousedown",{bubbles:true,cancelable:true})
-      setNodeDimensions();
-    },300);*/   
+   
 
-     
-    
 
     // Choose your initial extent. The easiest way to find this is to pan around the map, checking the
     // current extent with 'map.extent' in the Javascript console (F12 to open it)
@@ -209,6 +204,7 @@ function(
     var hookServiceToTab = makeTabs(serviceNode, populate);
 
 
+
   
     //A simple check layer. Accepts the service url, a reference to the map, 
     //a function that binds the service to the left and right panes, and an options object for configuring legends, downloads, titles, and parameters.
@@ -252,10 +248,6 @@ function(
         downloader:downloader,
       }
     );
-    
-    
-
-    ;
      
   });
   });
