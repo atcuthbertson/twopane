@@ -163,9 +163,9 @@ function(
     
 
 
-    //Init toggling right pane widget
-    closeToggler = closeToggle();
-    on(closeButton,"mousedown", closeToggle);
+    //Apply listener to toggling right pane widget
+    closeToggle();
+    on(closeButton, "mousedown", closeToggle);
 
 
    
@@ -181,7 +181,8 @@ function(
     //Assumes Service_Name_Layer_Name.zip format
     //Services can be exluded on a case by case basis (see below)
     var downloader = GetDownloads("./downloads", downloadNode, "http://water.ca.gov/groundwater");
-
+     
+    //Preparing downloads means discovering the active layers
     on(downloadNode,"mousedown", downloader.prepareDownloads);
     on(downloadNode,"click", downloader.download)
 
