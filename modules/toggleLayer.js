@@ -2,8 +2,8 @@ define(["modules/info.js"],function(info){
 
   var downloader;
 
-  function register(options){
-    downloader = options.downloader; 
+  function registerDownloader(dl){
+    downloader = dl; 
   }
 
   function toggle(service){
@@ -20,7 +20,7 @@ define(["modules/info.js"],function(info){
 
   return {
     toggle:toggle,
-    register:register
+    registerDownloader:registerDownloader
   }
 
 });

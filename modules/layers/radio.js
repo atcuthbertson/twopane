@@ -197,7 +197,6 @@ function(
     } 
 
     clearAllLayers.register(resolver);
-    toggleLayer.register(options);
      
     makeHeader(container, options.checkTitle||'Show Layers');
 

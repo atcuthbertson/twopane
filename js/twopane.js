@@ -17,6 +17,7 @@ require([
 
   "modules/info.js",
   "modules/basemapToggle.js",
+  "modules/toggleLayer.js",
   "modules/closeToggle.js",
   "modules/getdownloads.js",
   "modules/searchbox.js",
@@ -40,6 +41,7 @@ function(
 
   info,
   basemapToggle,
+  toggleLayer,
   closeToggle,
   GetDownloads,
   Searchbox,
@@ -181,12 +183,13 @@ function(
     //Assumes Service_Name_Layer_Name.zip format
     //Services can be exluded on a case by case basis (see below)
     var downloader = GetDownloads("./downloads", downloadNode, "http://water.ca.gov/groundwater");
-     
+    toggleLayer.registerDownloader(downloader);    
+
     //Preparing downloads means discovering the active layers and queuing them for download
     //This is done at the last minute so we don't need to use more memory keeping a separate
     //data structure for tracking and CPU cycles for updating it whenever layers are toggled
     on(downloadNode,"mousedown", downloader.prepareDownloads);
-    on(downloadNode,"click", downloader.download)
+    on(downloadNode,"click", downloader.download);
 
    
       
@@ -218,18 +221,17 @@ function(
       hookServiceToTab
     );
 
-    
     //A simple check layer with downloads and legends turned off
     CheckLayer("https://gis.water.ca.gov/arcgis/rest/services/Public/Subsidence/MapServer",
       map,
       hookServiceToTab,
       {
-        downloader:downloader,
         excludeLegends:true,
+        downloader:downloader,
         excludeDownload:["*"]
+
       }
     );
-
 
     //A fairly complex radio layer. 
     //The radio itself allows one to switch between services with similar signatures (ie with Points, Contours, and Color Ramps as service layers).
@@ -247,9 +249,7 @@ function(
         paramTitle:"Select Period:",
         checkTitle:"Show Layers:",
         tabName:"Water Levels",
-        downloader:downloader,
       }
     );
-     
   });
   });

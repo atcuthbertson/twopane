@@ -91,7 +91,6 @@ function(
     var attachUI = makeAttacher(resolver, container, hookServiceToTab, options);
 
     clearAllLayers.register(resolver);
-    toggleLayer.register(options);
 
     makeServices(url, map, attachUI, 1, options);
   }
