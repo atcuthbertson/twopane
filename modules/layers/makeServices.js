@@ -18,14 +18,14 @@ function(
   utils
 ){
 
-
+  //Make a dynamic map service and suspend it. This will be done once for each layer in the service so they can have independent transparencies
   function makeService(url){
     var service = new ArcGISDynamicMapServiceLayer(url);
     service.suspend();
     return service;
   }
 
-
+   
   return function(url, map, attachUI, needsUI, options){
 
 
@@ -33,10 +33,14 @@ function(
     var downloader = options.downloader || null;
     var excludeDownload = options.excludeDownload || [];
     
-    layerQueue.push(makeService(url), processLayer, needsUI);
+    //Implement a queue so UI is attached in the right order if we have more than one tab
+    layerQueue.push(makeService(url), processService, needsUI);
 
-
-    function processLayer(serviceObj){
+    //Once a service loads, get all its layerInfos and create more Dynamic Map Services for each of them.
+    //Register this loaded layer with the info function
+    //And if necessary block downloads
+    //Also, add some useful names to each dynamic map service for layer use
+    function processService(serviceObj){
       var firstService = serviceObj.service;
       var layer = serviceObj.evt.layer;
       var services = [];

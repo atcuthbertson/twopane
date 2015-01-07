@@ -56,15 +56,17 @@ function(
     }
 
     //return the attachUI function
-    return function (services, serviceObj){
-      for(var i=0; i<services.length; i++){
-        var service = services[i];
-        var check = makeCheck(container, service, resolver.resolve, options);
+    return function (serviceLayers, serviceObj){
 
-        resolver.register(check, service);
+
+      for(var i=0; i<serviceLayers.length; i++){
+        var serviceLayer = serviceLayers[i];
+        var check = makeCheck(container, serviceLayer, resolver.resolve, options);
+
+        resolver.register(check, serviceLayer);
         on(check,"change",boundResolver);
       }
-
+       
       if(serviceObj.needsUI){
         var serviceProps = {
           node : container,
@@ -77,13 +79,18 @@ function(
     }
   }
 
+
+
   /*
-   * The return value of the module.
+   * The return value of the module. This is what we are calling from twopane.js
    *
    */ 
   return function(url, map, hookServiceToTab, options){
      
     var serviceName = utils.space(utils.getServiceName(url));
+
+    //Create options as an empty object if we didn't pass one.
+    //This allows other modules to not have to worry if it exists or not
     if(!options) options = {};
     if (!options.tabName) options.tabName = serviceName;
 
@@ -93,11 +100,17 @@ function(
     title.textContent = title.innerText = serviceName;
     container.appendChild(title);
      
+    //Create a resolver which associates checks with the appropriate serviceLayer and recalls the right one based on the resolvingFn
     var resolver = ResolveLayers(resolvingFn);
+
+    //Build the UI attacher. We make the attachUI function inside a closure so it has access to additional arguments and functions without
+    //cluttering its call signature
     var attachUI = makeAttacher(resolver, container, hookServiceToTab, options);
 
+    //Allow layers registered to our resolver to be cleared by the 'clear all' button
     clearAllLayers.register(resolver);
-
+     
+    //Make the actual map services for the ArcGIS Server service at the provided URL
     makeServices(url, map, attachUI, 1, options);
   }
 
