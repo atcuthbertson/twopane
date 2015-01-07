@@ -57,7 +57,7 @@ function(
       button.style.width = width;
 
       var curr = container.childNodes.length;
-
+      if(curr === 1) container.style.display = "block";
       if(curr === 3 && len > 4){
         button.style.borderLeft = "none"
         if(len === 5){
