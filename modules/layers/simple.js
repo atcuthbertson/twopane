@@ -76,8 +76,9 @@ function(
    *
    */ 
   return function(url, map, hookServiceToTab, options){
-    
+     
     var serviceName = utils.space(utils.getServiceName(url));
+    if(!options) options = {};
     if (!options.tabName) options.tabName = serviceName;
 
     var container = document.createElement('div');

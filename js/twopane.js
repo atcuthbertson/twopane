@@ -182,7 +182,9 @@ function(
     //Services can be exluded on a case by case basis (see below)
     var downloader = GetDownloads("./downloads", downloadNode, "http://water.ca.gov/groundwater");
      
-    //Preparing downloads means discovering the active layers
+    //Preparing downloads means discovering the active layers and queuing them for download
+    //This is done at the last minute so we don't need to use more memory keeping a separate
+    //data structure for tracking and CPU cycles for updating it whenever layers are toggled
     on(downloadNode,"mousedown", downloader.prepareDownloads);
     on(downloadNode,"click", downloader.download)
 
@@ -190,6 +192,7 @@ function(
       
 
     //Initialize the populate module with a node where information will be placed 
+    //This module is very simple and pulls from the Data Frame description
     populate.init(dataNode);
 
 
@@ -201,7 +204,8 @@ function(
 
 
 
-    //Hooks services to UI features. This allows the right pane to be populated when switching tabs
+    //Hooks services to UI features. Instead of manually managing HTML and JS for tabs, this module builds tabs for you and manages their events
+    //Also allows the right pane to be populated when switching tabs
     var hookServiceToTab = makeTabs(serviceNode, populate);
 
 
@@ -211,10 +215,7 @@ function(
     //a function that binds the service to the left and right panes, and an options object for configuring legends, downloads, titles, and parameters.
     CheckLayer("https://gis.water.ca.gov/arcgis/rest/services/Public/GIC_Boundaries/MapServer",
       map,
-      hookServiceToTab,
-      {
-        downloader:downloader
-      }
+      hookServiceToTab
     );
 
     
