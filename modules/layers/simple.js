@@ -22,11 +22,18 @@ function(
   utils
 ){
 
+  //The resolvingFn differentiates between services that share the same check (every type of layer has a resolvingFn).
+  //For this simple layer, the each check will resolve to exactly one service, so we just return the first entry in our service list
   function resolvingFn(services){
     return services[0]; 
   }
 
 
+
+
+  //Resolve a check to a given layer (passing in the proper resolver). The 'this' value is expected to be a check
+  //Each check is registered with the resolver (below in makeAttacher) so that it can later be resolved
+  //This also toggles the layer's visibility once it is resolved
   function checkResolver(resolver){
     var layer = resolver.resolve(this);
     if(layer){
@@ -35,21 +42,20 @@ function(
     }
   }
 
-      //  Make all services, augment services, call passed function
-      //  This function will decide how many checks to build
-      //  and how to hook them to each service
-      //  (if params exist, for each param, build a mapping from
-      //  param name to service.. then carry this over to the check/resolver)
 
 
 
 
+  //Save a function in this closure and return a function that will be used
+  //to make all the checks, register each check with a resolver, apply listeners to the checks, and contect with the tab manager
   function makeAttacher(resolver, container, hookServiceToTab, options){
 
+    //Call the check resolver this whatever 'this' value the boundResolver is handed 
     function boundResolver(){
       return checkResolver.call(this,resolver)
     }
 
+    //return the attachUI function
     return function (services, serviceObj){
       for(var i=0; i<services.length; i++){
         var service = services[i];
