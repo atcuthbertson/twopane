@@ -61,6 +61,16 @@ function(
 
       for(var i=0; i<serviceLayers.length; i++){
         var serviceLayer = serviceLayers[i];
+        var excluded = 0;
+        if(options.excludeLayers){
+          for(var j=0; j<options.excludeLayers.length; j++){
+            if(options.excludeLayers[j] === serviceLayer.layerName){
+              excluded = 1;
+              break;
+            }
+          }
+        }
+        if (excluded) continue;
         var check = makeCheck(container, serviceLayer, resolver.resolve, options);
 
         resolver.register(check, serviceLayer);
