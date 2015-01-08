@@ -97,7 +97,7 @@ function(
    */ 
   return function(url, map, hookServiceToTab, options){
      
-    var serviceName = utils.space(utils.getServiceName(url));
+    var serviceName = options.title||utils.space(utils.getServiceName(url));
 
     //Create options as an empty object if we didn't pass one.
     //This allows other modules to not have to worry if it exists or not
