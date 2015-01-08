@@ -70,6 +70,7 @@ h3, b{
   height:100%;
   width:360px;
   overflow-x:hidden;
+  overflow-y:scroll;
   box-shadow: 0 0 2px 0 #8596b0;
   background-color:#fafafa;
   background: -webkit-linear-gradient(0deg, #ecfafd 10%, #fafcff 90%); /* Chrome 10+, Saf5.1+ */
