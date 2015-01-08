@@ -10,6 +10,7 @@ define([
   "esri/tasks/identify",
   "esri/tasks/IdentifyTask",
   "esri/tasks/IdentifyParameters",
+  "modules/utils.js"
   ],
 function(
   InfoWindow,
@@ -22,7 +23,8 @@ function(
 
   identify,
   IdentifyTask,
-  IdentifyParameters
+  IdentifyParameters,
+  utils
 ){
   var DOC = document
     , map
