@@ -13,7 +13,7 @@ function(
 ){
   
   //Detect whether an old version of Internet Explorer is being used
-  var oldIE =(document.all&&!W.atob)?true:false;
+  var oldIE =(document.all&&!window.atob)?true:false;
 
   if(oldIE) fx = require("dojo/_base/fx", function(fx){return fx});
    
