@@ -1,0 +1,17 @@
+Types of layers as modules.
+
+As it stands things are pretty tightly coupled.. right pane stuff, service routing stuff. This should not be the case.
+
+Each service interace type needs to provide:
+  Right pane data access.
+  Legend mgmt
+  Download selected
+  Sensible infowindow contents / filtering
+
+
+Current types:
+  Simple checkbox with adjoining legend (subsidence, grounwater boundaries)
+  Radio-controlled. Services with the same layers can share checkboxes. Embedded legend (well data)
+  Radio controlled, extra parameters, legends follow (level measurements)
+  Multiselect, adds legend. Transparency and perhaps reordering controls. with legend.
+
