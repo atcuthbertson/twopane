@@ -29,7 +29,7 @@ function(
   return function(url, map, attachUI, needsUI, options){
 
 
-    var exclude = options.exclude || [];
+    var excludeLayers = options.excludeLayers || [];
     var downloader = options.downloader || null;
     var excludeDownload = options.excludeDownload || [];
     
@@ -60,9 +60,16 @@ function(
       for(var i=0; i<layerCount; i++){
         var service;
         var underscoredName = utils.underscore(layerInfos[i].name);
-        if(exclude.indexOf(underscoredName) !== -1) continue;
+        var excluded=0;
+        for(j=0; j<excludeLayers.length; j++){
+          if(excludeLayers[j]===underscoredName){
+            excluded = 1;
+            break;
+          }
+        }
+        if(excluded) continue;
         if(i>0) service = makeService(url);
-        else service = firstService;  
+        else service = firstService;
   
         service.setVisibleLayers([i]);
         service.fullName =  serviceUnderscored + "/" + underscoredName;
@@ -72,6 +79,7 @@ function(
         map.addLayer(service, 1);
         services.push(service);
       }
+      console.log(services.length)
       attachUI(services,serviceObj); 
 
     }

@@ -74,8 +74,7 @@ function(
     }
 
     function extractParam(service, layer){
-      var index = service.layerName.indexOf(layer)
-      if(index > -1){
+      if(service.layerName.match(layer)){
         var arr = service.layerName.split(layer);
         for(var i=0; i<arr.length; i++){
           if(arr[i]!==''){

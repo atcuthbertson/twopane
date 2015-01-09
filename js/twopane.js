@@ -218,9 +218,10 @@ function(
     //a function that binds the service to the left and right panes, and an optional options object for configuring legends, downloads, titles, and parameters.
     CheckLayer("https://gis.water.ca.gov/arcgis/rest/services/Public/GIC_Boundaries/MapServer",
       map,
-      hookServiceToTab
+      hookServiceToTab,
+      {excludeLayers:["County_Boundary"]}
     );
-   /* 
+   
     //A simple check layer with downloads and legends turned off
     CheckLayer("https://gis.water.ca.gov/arcgis/rest/services/Public/Subsidence/MapServer",
       map,
@@ -250,6 +251,6 @@ function(
         checkTitle:"Show Layers:",
         tabName:"Water Levels",
       }
-    );*/
+    );
   });
   });
