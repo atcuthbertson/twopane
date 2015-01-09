@@ -249,7 +249,7 @@ function(
         radioTitle:"Select Data Type:",
         paramTitle:"Select Period:",
         checkTitle:"Show Layers:",
-        tabName:"Water Levels",
+        tabName:"Water Levels"
       }
     );
   });
