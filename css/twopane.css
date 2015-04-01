@@ -17,9 +17,6 @@ h3, b{
   clear:both;
 }
 
-
-
-
 #mainContainer {
   visibility:hidden;
   width: 100%;
@@ -70,7 +67,7 @@ h3, b{
   height:100%;
   width:360px;
   overflow-x:hidden;
-  overflow-y:scroll;
+   
   box-shadow: 0 0 2px 0 #8596b0;
   background-color:#fafafa;
   background: -webkit-linear-gradient(0deg, #ecfafd 10%, #fafcff 90%); /* Chrome 10+, Saf5.1+ */
@@ -128,29 +125,38 @@ h3, b{
   border-left:none;
 }
 .serviceWrapper{
-  margin:10px 0 25px 10px;
+  margin:0px 0px 20px 15px;
   font-size:16px;
+  clear: both;
+  
+  
+}
+.serviceWrapper > .sliderWrapper{
+	margin:0 0 0 19px;
+	clear: both;
+}
+.serviceWrapper > .titleWrapper{
+	clear: both;
+}
+.serviceWrapper > .legendWrapper{
+	clear: both;
 }
 
-.serviceWrapper > input{
+
+.titleWrapper > input{
   float:left;
-  vertical-align: bottom;
+  vertical-align: middle;
   cursor:pointer;
-  margin:0;
+  margin: 3px 0px 0px 0px;
 }
-.serviceWrapper > label{
-  margin:-4px 0 5px 0;
+.titleWrapper > label{
+  margin:0px 0px 0px 0px;
   padding-left:8px;
   float:left;
   width:277px;
+  overflow: hide;
+  vertical-align: middle;
 }
-
-.serviceWrapper > .dijitSliderH{
-  margin:0 0 0 19px;
-  clear:both;
-}
-
-
 .radioInput{
   margin:0 10px 4px 10px;
 }
@@ -170,8 +176,6 @@ h3, b{
 .dijitSliderBar{
   height:2px;
 }
-
-
 
 
 .paneHeading{
@@ -204,6 +208,7 @@ h3, b{
 
 .legend{
   margin: 5px 0 0 20px; 
+  clear: left;
 }
 
 label:hover,.serviceRadio,.layerCheck{

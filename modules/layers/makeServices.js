@@ -32,6 +32,7 @@ function(
     var excludeLayers = options.excludeLayers || [];
     var downloader = options.downloader || null;
     var excludeDownload = options.excludeDownload || [];
+	var startEnabled = options.startEnabled || [];  // by default, layers are off; pass list of layers to turn on initially
     
     //Implement a queue so UI is attached in the right order if we have more than one tab
     layerQueue.push(makeService(url), processService, needsUI);
@@ -52,13 +53,14 @@ function(
       var serviceName = utils.space(utils.getServiceName(url));
       var serviceUnderscored = utils.underscore(serviceName);
 
-      info.register(url);
+      info.register(url); // 
       excludeDownloads(serviceUnderscored, layerInfos);
      
       /*One map layer for each service layer, for independent transparencies*/
       
-      for(var i=0; i<layerCount; i++){
+      for(var i=0; i<layerCount; i++){ // for each sublayer in service
         var service;
+		var enabled = false;
         var underscoredName = utils.underscore(layerInfos[i].name);
         var excluded=0;
         for(j=0; j<excludeLayers.length; j++){
@@ -70,21 +72,32 @@ function(
         if(excluded) continue;
         if(i>0) service = makeService(url);
         else service = firstService;
+		
+		//determine if service should be enabled
+		for(j=0; j<startEnabled.length; j++){
+          if(startEnabled[j]===underscoredName){
+            enabled = true;
+            break; // no need to finish looping though layers, we found the layer
+          }
+        }
+		
   
         service.setVisibleLayers([i]);
         service.fullName =  serviceUnderscored + "/" + underscoredName;
         service.serviceName = serviceUnderscored;
         service.layerName = underscoredName;
+		service.startEnabled = enabled;
         
+		if (service.startEnabled) service.resume();
+		
+		
         map.addLayer(service, 1);
         services.push(service);
       }
-      console.log(services.length)
-      attachUI(services,serviceObj); 
+      attachUI(services,serviceObj);
+
 
     }
-
-
 
     function excludeDownloads(serviceUnderscored, layerInfos){
       var i;

@@ -28,22 +28,17 @@ function(
     return services[0]; 
   }
 
-
-
-
   //Resolve a check to a given layer (passing in the proper resolver). The 'this' value is expected to be a check
   //Each check is registered with the resolver (below in makeAttacher) so that it can later be resolved
   //This also toggles the layer's visibility once it is resolved
   function checkResolver(resolver){
     var layer = resolver.resolve(this);
+	
     if(layer){
       toggleLayer.toggle(layer);
       if(!layer.suspended)spinner(this,layer);
     }
   }
-
-
-
 
 
   //Save a function in this closure and return a function that will be used
@@ -59,18 +54,8 @@ function(
     return function (serviceLayers, serviceObj){
 
 
-      for(var i=0; i<serviceLayers.length; i++){
+	  for(var i=0; i<serviceLayers.length; i++){
         var serviceLayer = serviceLayers[i];
-        var excluded = 0;
-        if(options.excludeLayers){
-          for(var j=0; j<options.excludeLayers.length; j++){
-            if(options.excludeLayers[j] === serviceLayer.layerName){
-              excluded = 1;
-              break;
-            }
-          }
-        }
-        if (excluded) continue;
         var check = makeCheck(container, serviceLayer, resolver.resolve, options);
 
         resolver.register(check, serviceLayer);
@@ -96,12 +81,12 @@ function(
    *
    */ 
   return function(url, map, hookServiceToTab, options){
+     
+    var serviceName = utils.space(utils.getServiceName(url));
+
     //Create options as an empty object if we didn't pass one.
     //This allows other modules to not have to worry if it exists or not
     if(!options) options = {};
-
-    var serviceName = options.title||utils.space(utils.getServiceName(url));
-
     if (!options.tabName) options.tabName = serviceName;
 
     var container = document.createElement('div');
@@ -122,6 +107,7 @@ function(
      
     //Make the actual map services for the ArcGIS Server service at the provided URL
     makeServices(url, map, attachUI, 1, options);
+
   }
 
 });

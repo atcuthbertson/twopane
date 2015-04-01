@@ -101,7 +101,6 @@ function(
     setNodeDimensions();
     on(W,"resize",setNodeDimensions);
 
-   
 
 
     // Choose your initial extent. The easiest way to find this is to pan around the map, checking the
@@ -115,8 +114,6 @@ function(
         "wkid" : 102100
       }
     });
-
-  
 
 
     // Create the map. The first argument is either an HTML element (usually a div) or, as in this case,
@@ -132,7 +129,6 @@ function(
 
     //save the map to a global variable, useful for app development
     window.map = map;
-
 
 
     
@@ -182,7 +178,7 @@ function(
     //Place your downloads in the downloads folder (provide the path below)
     //Assumes Service_Name_Layer_Name.zip format
     //Services can be exluded on a case by case basis (see below)
-    var downloader = GetDownloads("./downloads", downloadNode, "http://water.ca.gov/groundwater");
+    var downloader = GetDownloads("./downloads", downloadNode, "http://www.water.ca.gov/groundwater/boundaries.cfm");
     toggleLayer.registerDownloader(downloader);    
 
     //Preparing downloads means discovering the active layers and queuing them for download
@@ -216,12 +212,20 @@ function(
   
     //A simple check layer. Accepts the service url, a reference to the map, 
     //a function that binds the service to the left and right panes, and an optional options object for configuring legends, downloads, titles, and parameters.
-    CheckLayer("https://gis.water.ca.gov/arcgis/rest/services/Public/GIC_Boundaries/MapServer",
+    CheckLayer("https://darcgis.water.ca.gov/arcgis/rest/services/cadre/Boundaries_Map/MapServer",
       map,
       hookServiceToTab,
-      {excludeLayers:["County_Boundary"]}
+      {
+        //excludeLegends:true,
+        excludeLayers:["Location_of_a_Historic_or_Landless_Tribe", "Tribal_Trust_Land_Office_Out_of_State", "Tribal_Trust_Land_in_a_Public_Domain_Allotment", "Tribal_Trust_Land_held_by_US_Government"],
+        downloader:downloader,
+        excludeDownload:["*"],
+		startEnabled:["County_Boundaries", "Hydrologic_Regions"]
+        //excludeDownload:["Regional_Water_Quality_Control_Board_Boundaries", "CA_State_Park_Lands", "Federal_Lands", "California_Senate_Districts", "California_Assembly_Districts"]
+
+      }
     );
-   
+   /* 
     //A simple check layer with downloads and legends turned off
     CheckLayer("https://gis.water.ca.gov/arcgis/rest/services/Public/Subsidence/MapServer",
       map,
@@ -249,8 +253,8 @@ function(
         radioTitle:"Select Data Type:",
         paramTitle:"Select Period:",
         checkTitle:"Show Layers:",
-        tabName:"Water Levels"
+        tabName:"Water Levels",
       }
-    );
+    );*/
   });
   });

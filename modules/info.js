@@ -66,7 +66,7 @@ function(
 
     identifyParameters = new IdentifyParameters();
     identifyParameters.layerOption = IdentifyParameters.LAYER_OPTION_VISIBLE;
-    identifyParameters.tolerance = 3;
+    identifyParameters.tolerance = 5;
     identifyParameters.returnGeometry = false;
 
 

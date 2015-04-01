@@ -15,11 +15,14 @@ function(
   }
 
   function clear(resolver){
+	
     var layerObjects = resolver.getRegistered();
     for(var i=0; i< layerObjects.length; i++){
       var layerObj = layerObjects[i];
       if(layerObj.check.checked){
-        layerObj.check.checked = false;
+		
+		// turning off check box
+        layerObj.check.doUncheck();
         toggleLayer.toggle(resolver.resolve(layerObj.check));
       }
     }
