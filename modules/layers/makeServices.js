@@ -53,6 +53,8 @@ function(
       var serviceName = utils.space(utils.getServiceName(url));
       var serviceUnderscored = utils.underscore(serviceName);
 
+	  
+	  console.log("makeServices -- info.register " + url);
       info.register(url); // 
       excludeDownloads(serviceUnderscored, layerInfos);
      

@@ -1,12 +1,14 @@
 define([
   "dijit/form/HorizontalSlider",
   "modules/utils.js",
+  "modules/toggleLayer.js",
   "dojo/on"
 ],
 
 function(
   Slider,
   utils,
+  ToggleLayer,
   on
 ){
 
@@ -34,6 +36,7 @@ function(
 		if (!check.excludeLegends){
 			check.legendWrapper.style.display = "block";
 		}
+		
 		check.checked = true;
 	}
 	
@@ -131,6 +134,7 @@ function(
 		}
 		check.checked = true;*/
 		doCheck();
+		ToggleLayer.toggleOn(service);
 		} else {
 		doUncheck();
 	}
