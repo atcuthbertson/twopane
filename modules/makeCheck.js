@@ -31,7 +31,7 @@ function(
     }
 	function doCheck(){
 	//var doCheck = function(){  // doCheck method of check object
-		console.log("doCheck fucntion");
+		//console.log("doCheck fucntion");
 		check.sliderWrapper.style.display = "block";
 		if (!check.excludeLegends){
 			check.legendWrapper.style.display = "block";
@@ -42,7 +42,7 @@ function(
 	
 	function doUncheck(){
 	//var doUncheck = function(){ // doUncheck method of check object
-		console.log("doUncheck function");
+		//console.log("doUncheck function");
 		check.sliderWrapper.style.display = "none";
 		if (!check.excludeLegends) {
 			check.legendWrapper.style.display = "none";
@@ -145,10 +145,10 @@ function(
 	
 	on (check, "change", function(){
 		if (check.checked){
-			console.log("checked");
+			// console.log("checked");
 			doCheck();
 		}else {
-			console.log("unchecked");
+			// console.log("unchecked");
 			doUncheck();
 		}});
 	

@@ -54,7 +54,7 @@ function(
       var serviceUnderscored = utils.underscore(serviceName);
 
 	  
-	  console.log("makeServices -- info.register " + url);
+	  //console.log("makeServices -- info.register " + url);
       info.register(url); // 
       excludeDownloads(serviceUnderscored, layerInfos);
      
