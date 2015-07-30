@@ -25,7 +25,8 @@ require([
   "modules/populate.js",
   "modules/clearAllLayers.js",
   "modules/layers/radio.js",
-  "modules/layers/simple.js"
+  "modules/layers/simple.js",
+  "modules/layers/complex.js"
 ], 
 
 function(
@@ -49,7 +50,9 @@ function(
   populate,
   clearAllLayers,
   RadioLayer,
-  CheckLayer
+  CheckLayer,
+  CheckMulti
+  
 ){
 
   //Disable CORS detection, since services.arcgisonline.com is not CORS enabled
@@ -212,19 +215,65 @@ function(
   
     //A simple check layer. Accepts the service url, a reference to the map, 
     //a function that binds the service to the left and right panes, and an optional options object for configuring legends, downloads, titles, and parameters.
-    CheckLayer("https://darcgis.water.ca.gov/arcgis/rest/services/cadre/Boundaries_Map/MapServer",
+    CheckLayer("https://darcgis.water.ca.gov/arcgis/rest/services/cadre/HabitatSites/MapServer",
       map,
       hookServiceToTab,
       {
-        //excludeLegends:true,
-        excludeLayers:["Location_of_a_Historic_or_Landless_Tribe", "Tribal_Trust_Land_Office_Out_of_State", "Tribal_Trust_Land_in_a_Public_Domain_Allotment", "Tribal_Trust_Land_held_by_US_Government"],
-        downloader:downloader,
-        excludeDownload:["*"],
-		startEnabled:["County_Boundaries", "Hydrologic_Regions"]
-        //excludeDownload:["Regional_Water_Quality_Control_Board_Boundaries", "CA_State_Park_Lands", "Federal_Lands", "California_Senate_Districts", "California_Assembly_Districts"]
+			excludeLegends:false,
+			downloader:downloader,
+			excludeDownload:["*"],
+			startEnabled:["Mitigation"]
+			//excludeDownload:["Regional_Water_Quality_Control_Board_Boundaries", "CA_State_Park_Lands", "Federal_Lands", "California_Senate_Districts", "California_Assembly_Districts"]
 
       }
+    ); 
+	 
+	 CheckLayer("https://parcgis.water.ca.gov/arcgis/rest/services/Geology/B118_ReferenceGeologicMaps/MapServer",
+      map,
+      hookServiceToTab,
+      {
+        excludeLegends:true,
+        downloader:downloader,
+        excludeDownload:["*"],
+		  tabName: "Reference Geology",
+		  names: [{B118BoundaryCache: "Regional Geologic Maps"}]
+      }
     );
+	 
+	 CheckMulti(["https://parcgis.water.ca.gov/arcgis/rest/services/Geology/B118_ReferenceGeologicMaps/MapServer",
+					 "http://services.gis.ca.gov/arcgis/rest/services/GeoscientificInformation/CA_750K_Geology/MapServer"],
+      map,
+      hookServiceToTab,
+      {
+        excludeLegends:true,
+		  excludeLayers: ["GMC_geo_anno", 
+								"Map_Unit_Label", 
+								"GMC_anno_leaders", 
+								"GMC_onshore_faults_Anno", 
+								"Fault_names-6", 
+								"Fault_Labels",
+								"Fault_names-5",
+								"Fault_names-3",
+								"Fault_names-4",
+								"GMC_offshore_faults_Anno",
+								"Fault_Names",
+								"_Leader",
+								"Fault_References",
+								"GMC_str_point",
+								"GMC_str_arc",
+								"GMC_offshore_faults",
+								"GMC_geo_arc",
+								"GMC_geo_poly"
+							],
+        downloader:downloader,
+        excludeDownload:["*"],
+		  tabName: "Geology References",
+		  names: [{B118BoundaryCache: "Regional Geologic Maps (more detail)"},
+					 {"Geologic Map of CA": "Statewide Geologic Map (less detail)"}],
+		  descriptionFile:  "./descriptions/br.txt"
+      }
+    );
+	
    /* 
     //A simple check layer with downloads and legends turned off
     CheckLayer("https://gis.water.ca.gov/arcgis/rest/services/Public/Subsidence/MapServer",

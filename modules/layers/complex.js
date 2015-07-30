@@ -1,5 +1,7 @@
 define([
   "dojo/on",
+  "dojo/_base/array",
+  "dojo/request",
 
   "modules/layers/makeServices.js",
   "modules/resolveLayers.js",
@@ -12,6 +14,8 @@ define([
 
 function(
   on,
+  array,
+  request,
 
   makeServices,
   ResolveLayers,
@@ -61,15 +65,28 @@ function(
         resolver.register(check, serviceLayer);
         on(check,"change",boundResolver);
       }
-       
+      var loadedDescription; 
       if(serviceObj.needsUI){
-        var serviceProps = {
-          node : container,
-          description : serviceObj.evt.layer.description,
-          tabName : options.tabName
-        }
-
-        hookServiceToTab(serviceProps);
+			var serviceProps = {
+				node : container,
+				//description : serviceObj.evt.layer.description,
+				//description: loadedDescription,
+				tabName : options.tabName
+			};
+			//get text file of description into variable
+			request.get(options.descriptionFile).then (
+				function(text){
+					console.log("The file's contents are: " + text);
+					serviceProps.description = text;
+					
+				}, 
+				function(error){
+					console.log("An error occurred: " + error);
+					serviceProps.description= "error!";
+					
+				});
+			
+			hookServiceToTab(serviceProps);
       }
     }
   }
@@ -80,23 +97,25 @@ function(
    * The return value of the module. This is what we are calling from twopane.js
    *
    */ 
-  return function(url, map, hookServiceToTab, options){
+  return function(urls, map, hookServiceToTab, options){
+	  // urls is an array of services
      
-    var serviceName = utils.space(utils.getServiceName(url));
+    //var serviceName = utils.space(utils.getServiceName(url)); // not applicable to multiple services
 
     //Create options as an empty object if we didn't pass one.
     //This allows other modules to not have to worry if it exists or not
     if(!options) options = {};
     
 
-    var container = document.createElement('div');
-    var title = document.createElement('h3');
-	if (!options.tabName) {
-		options.tabName = serviceName;
-		title.textContent = title.innerText = serviceName;
-	} else {
-		title.textContent = title.innerText = options.tabName;
+   var container = document.createElement('div');
+	
+   var title = document.createElement('h3');
+	
+	if (!options.tabName) {  // should always have tab title option, but handle if it isn't passed
+		options.tabName = "Untitled Tab";
 	}
+	title.textContent = title.innerText = options.tabName;
+	
     
     container.appendChild(title);
      
@@ -111,7 +130,9 @@ function(
     clearAllLayers.register(resolver);
      
     //Make the actual map services for the ArcGIS Server service at the provided URL
-    makeServices(url, map, attachUI, 1, options);
+	 array.forEach(urls, function(url,i){
+      makeServices(url, map, attachUI, +(i===0), options);
+    });
 
   }
 

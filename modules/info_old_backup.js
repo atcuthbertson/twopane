@@ -38,7 +38,7 @@ function(
   IdentifyParameters,
   utils
 ){
-  var DOC = document
+	var DOC = document
     , map
     , infoWindow
     , tabs
@@ -58,26 +58,26 @@ function(
     , titleFn
     , contentFn
     ;
-  
-  var highlightPolygon = new SimpleFillSymbol(
-    SimpleFillSymbol.STYLE_NULL, 
-    new SimpleLineSymbol(
-      SimpleLineSymbol.STYLE_SOLID, 
+	
+	var highlightPolygon = new SimpleFillSymbol(
+		SimpleFillSymbol.STYLE_NULL, 
+		new SimpleLineSymbol(
+			SimpleLineSymbol.STYLE_SOLID, 
             new Color([10,255,255]), 3
-      ), 
-    //new Color([200,200,200,1.0])
-    new Color()
-    );
-    
-  var highlightLine = new SimpleLineSymbol(
+			), 
+		//new Color([200,200,200,1.0])
+		new Color()
+		);
+		
+	var highlightLine = new SimpleLineSymbol(
             SimpleLineSymbol.STYLE_SOLID, 
             new Color([10,255,255]), 3
-    );
-    
-  var highlightMarker = new SimpleMarkerSymbol(
+		);
+		
+	var highlightMarker = new SimpleMarkerSymbol(
           SimpleMarkerSymbol.STYLE_CIRCLE, //style
-      8, //size
-      new SimpleLineSymbol( //outline
+		  8, //size
+			new SimpleLineSymbol( //outline
             SimpleLineSymbol.STYLE_SOLID, 
             new Color([255,255,255]), 0.5
           ), 
@@ -87,10 +87,10 @@ function(
 
   function init (mapArg, options){
     
-  map = mapArg;
+	map = mapArg;
     titleFn = options&&options.setTitle ? options.setTitle : setTitle;
     contentFn = options&&options.setContent ? options.setContent : setContent;
-  
+	
     mapPane = map.container;
     mapPaneId = mapPane.id;
 
@@ -111,38 +111,38 @@ function(
 
 
     infoWindow.on('hide',function(){
-      infoWindow.resize(325,275);
+      infoWindow.resize(425,325);
     })
 
-    infoWindow.resize(325,275);
+    infoWindow.resize(425,325);
     infoWindow.show(0,0);
     setTimeout(function(){infoWindow.hide()},0);
 
-  
-  // register 'listener' to highlight currently selected feature
+	
+	// register 'listener' to highlight currently selected feature
  
-  // todo:  handle what to do when infowindow is closed.
-  tabs.watch("selectedChildWidget", function(name, oval, nval){
-    map.graphics.clear();
-    var highlightSymbol;  // store correct type of symbol here.
-    switch (nval.geom.type){
-      case "polygon": highlightSymbol = highlightPolygon;
-              break;
-      case "line":  highlightSymbol = highlightLine;
-              break;
-      case "point": highlightSymbol = highlightMarker;
-              break;
-      default:    highlightSymbol = highlightPolygon;
-    }
-    
-    var selected = new Graphic(nval.geom, highlightSymbol);
-    selected.geometry.spatialReference = map.spatialReference;
-    map.graphics.add(selected);
-    selected.draw();
-    //map.graphics.show();
-    
-    //console.log("spatialref ==" + map.spatialReference);
-    });
+	// todo:  handle what to do when infowindow is closed.
+	tabs.watch("selectedChildWidget", function(name, oval, nval){
+		map.graphics.clear();
+		var highlightSymbol;  // store correct type of symbol here.
+		switch (nval.geom.type){
+			case "polygon": highlightSymbol = highlightPolygon;
+							break;
+			case "line":	highlightSymbol = highlightLine;
+							break;
+			case "point":	highlightSymbol = highlightMarker;
+							break;
+			default: 		highlightSymbol = highlightPolygon;
+		}
+		
+		var selected = new Graphic(nval.geom, highlightSymbol);
+		selected.geometry.spatialReference = map.spatialReference;
+		map.graphics.add(selected);
+		selected.draw();
+		//map.graphics.show();
+		
+		//console.log("spatialref ==" + map.spatialReference);
+		});
 
 
     //Handle clicks intelligently
@@ -162,7 +162,7 @@ function(
       if(wasDouble&&notMap){
         return;
       }
-  // if click is on map or selected feature (e.graphic is selected feature)
+	// if click is on map or selected feature (e.graphic is selected feature)
       if(e.target.id.slice(0,mapPaneId.length)===mapPaneId || e.graphic)
         notMap = 0;
       else
@@ -242,7 +242,7 @@ function(
   }
 
   function processIdentify (results){
-  //map.graphics.hide();
+	//map.graphics.hide();
     if(!results.length) return setNoData();
 
     array.forEach(results,function(result){
@@ -251,45 +251,42 @@ function(
     })
 
     tabs.resize();
-  //map.graphics.show();
+	//map.graphics.show();
   }
 
   function makePane(result){
     var title = titleFn(result);
     var content = contentFn(result)
-  var geom = result.feature.geometry;
-  
+	var geom = result.feature.geometry;
+	
     return {
-    title:title,
-    content:content,
-    geom: geom
-  }
-  }
-
-  function setTitle(result){
-    return utils.space(result.layerName);
+		title:title,
+		content:content,
+		geom: geom
+	}
   }
 
-  function setContent(result){
-    var attributes = result.feature.attributes;
-    var list = "<ul>";
-    for (var key in attributes){
-      if(attributes.hasOwnProperty(key)
-        &&key!=="OBJECTID"
-        &&key!=="Shape"
-        &&key!=="Shape_Area"
-        &&key!=="Shape_Length"
-        &&key!=="Pixel Value"
-        &&key!=="FID"
-        &&key!=="Transparen"
-        &&key!=="OBJECTID_1"
-      ){
-        list += "<li><strong>" + utils.space(key) + "</strong>: " + getAttributeHTML(attributes[key]) + "</li>"
-      }
-    }
-    list +="</ul>";
-    return list;
-  }
+	function setTitle(result){
+		return utils.space(result.layerName);
+	}
+
+	function setContent(result){
+		var attributes = result.feature.attributes;
+		var list = "<ul>";
+		for (var key in attributes){
+			if(attributes.hasOwnProperty(key)
+				&&key!=="OBJECTID"
+				&&key!=="Shape"
+				&&key!=="Shape_Area"
+				&&key!=="Shape_Length"
+				&&key!=="Pixel Value"
+			){
+				list += "<li><strong>" + utils.space(key) + "</strong>: " + getAttributeHTML(attributes[key]) + "</li>"
+			}
+		}
+		list +="</ul>";
+		return list;
+	}
 
   function getAttributeHTML(value){
     var link = /(?:^https?|^ftp):\/\//i;

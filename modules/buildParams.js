@@ -112,7 +112,8 @@ function(
 
 
     function setParams(e){
-      var params = groupObj[utils.underscore(utils.getRadioLabel(e))].params;
+      //var params = groupObj[utils.underscore(utils.getRadioLabel(e))].params;
+		var params = groupObj[e.target.serviceName].params;
       var lastVal = combo.value;
       memory.setData(params);
       for(var i=0; i<params.length; i++){

@@ -29,9 +29,9 @@ function(
   return function(url, map, attachUI, needsUI, options){
 
 
-    var excludeLayers = options.excludeLayers || [];
-    var downloader = options.downloader || null;
-    var excludeDownload = options.excludeDownload || [];
+   var excludeLayers = options.excludeLayers || [];
+   var downloader = options.downloader || null;
+   var excludeDownload = options.excludeDownload || [];
 	var startEnabled = options.startEnabled || [];  // by default, layers are off; pass list of layers to turn on initially
     
     //Implement a queue so UI is attached in the right order if we have more than one tab

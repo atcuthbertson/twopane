@@ -65,7 +65,7 @@ h3, b{
   left:0;
   z-index: 1;
   height:100%;
-  width:360px;
+  width:366px;
   overflow-x:hidden;
    
   box-shadow: 0 0 2px 0 #8596b0;
@@ -313,7 +313,9 @@ label:hover,.serviceRadio,.layerCheck{
 
 .dijitTabPane ul{
   list-style-type:none;
-  margin-left:-20px;
+  margin:0px 0px 0px -40px;
+  overflow-x:hidden;
+  word-wrap: break-word;
 }
 
 #zoomLink:hover{
